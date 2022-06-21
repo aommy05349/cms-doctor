@@ -58,8 +58,22 @@ export default function VideoCard() {
         console.log(`Call Id: ${callIdRef.current}`);
     }, [callIdRef.current]);
 
-    useEffect(async () => {
-        await getToken()
+    useEffect(() => {
+        getToken()
+    }, [])
+
+    async function getToken() {
+        const res = await axios({
+            method: 'get',
+            url: 'http://localhost:8080/token'
+        })
+        setToken(res.data.token)
+        setUser(res.data.user)
+        console.log('get token', res.data)
+        getAdaptor(res.data.user, res.data.token)
+    }
+
+    async function getAdaptor(user:any, token:any) {
         const displayName = 'fight'
         const callLocator = {
             groupId: 'b49ffd20-ee24-11ec-9615-d1e1c325a8f4'
@@ -70,7 +84,6 @@ export default function VideoCard() {
             credential: createAutoRefreshingCredential(user.communicationUserId, token),
             locator: callLocator
         })
-        console.log('a', adapter)
         adapter.on('callEnded', () => {
             // onCallEnded();
             console.log('call end')
@@ -89,16 +102,6 @@ export default function VideoCard() {
         return () => {
             adapterRef?.current?.dispose();
         };
-    }, [])
-
-    async function getToken() {
-        const res = await axios({
-            method: 'get',
-            url: 'http://localhost:8080/token'
-        })
-        setToken(res.data.token)
-        setUser(res.data.user)
-        console.log('get token', res.data)
     }
 
     if (!adapter) {

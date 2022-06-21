@@ -3,12 +3,14 @@ import axios from 'axios'
 import { AzureCommunicationTokenCredential } from '@azure/communication-common'
 
 export const createAutoRefreshingCredential = (userId, token) => {
-  const options = {
-    token,
-    tokenRefresher: refreshTokenAsync(userId),
-    refreshProactively: true
-  }
-  return new AzureCommunicationTokenCredential(options)
+    console.log('userId', userId)
+    console.log('token', token)
+    const options = {
+        token,
+        tokenRefresher: refreshTokenAsync(userId),
+        refreshProactively: true
+    }
+    return new AzureCommunicationTokenCredential(options)
 }
 
 const refreshTokenAsync = async (userIdentity) => {
