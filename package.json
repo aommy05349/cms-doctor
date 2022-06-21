@@ -9,10 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@azure/communication-react": "^1.2.0",
     "@azure/communication-calling": "^1.5.4",
     "@azure/communication-common": "^2.0.0",
     "@azure/communication-identity": "^1.0.0",
-    "@azure/communication-react": "^1.2.0",
     "@azure/core-http": "^2.2.5",
     "@fluentui/react": "^8.77.0",
     "@fluentui/react-icons": "^2.0.153-canary.0",
