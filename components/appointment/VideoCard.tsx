@@ -42,12 +42,8 @@ const currentTheme = {
     }
 }
 
-export default function VideoCard() {
+export default function VideoCard({ groupId, token }) {
     const [adapter, setAdapter] = useState<CallAdapter>();
-    const [token, setToken] = useState('')
-    const [user, setUser] = useState({
-        communicationUserId: ''
-    })
     const callIdRef = useRef<string>();
     const adapterRef = useRef<CallAdapter>();
 
@@ -55,7 +51,6 @@ export default function VideoCard() {
         if (!callIdRef.current) {
             return;
         }
-        console.log(`Call Id: ${callIdRef.current}`);
     }, [callIdRef.current]);
 
     useEffect(() => {
@@ -67,9 +62,6 @@ export default function VideoCard() {
             method: 'get',
             url: 'http://localhost:8080/token'
         })
-        setToken(res.data.token)
-        setUser(res.data.user)
-        console.log('get token', res.data)
         getAdaptor(res.data.user, res.data.token)
     }
 
@@ -85,12 +77,9 @@ export default function VideoCard() {
             locator: callLocator
         })
         adapter.on('callEnded', () => {
-            // onCallEnded();
             console.log('call end')
         });
         adapter.on('error', (e) => {
-            // Error is already acted upon by the Call composite, but the surrounding application could
-            // add top-level error handling logic here (e.g. reporting telemetry).
             console.log('Adapter error event:', e);
         });
         adapter.onStateChange((state: CallAdapterState) => {
@@ -105,19 +94,20 @@ export default function VideoCard() {
     }
 
     if (!adapter) {
-        return <Spinner label={'Creating adapter'} ariaLive="assertive" labelPosition="top" />;
+        return <Spinner label={'Video Call Loading'} ariaLive="assertive" labelPosition="top" />;
     }
 
     return (
         <div>
-            <h1>Video Card</h1>
-            <CallComposite
-                adapter={adapter}
-                callInvitationUrl="http://localhost:3001/?groupId=0691c4a0-ee30-11ec-9e02-f74b242d4e84"
-                formFactor="desktop"
-                rtl={false}
-                fluentTheme={currentTheme}
-            />
+            <div className="video-frame" style={{width: '300px', height: '400px'}}>
+                <CallComposite
+                    adapter={adapter}
+                    callInvitationUrl="http://localhost:3001/?groupId=0691c4a0-ee30-11ec-9e02-f74b242d4e84"
+                    formFactor="mobile"
+                    rtl={false}
+                    fluentTheme={currentTheme}
+                />
+            </div>
         </div>
     )
 }
