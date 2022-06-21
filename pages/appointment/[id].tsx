@@ -10,7 +10,7 @@ export default function appointment() {
         <div>
             <h1>Appointment Page</h1>
             <div>
-                <VideoCard groupId={groupId} />
+                <VideoCard groupId={groupId} displayName="คุณหมอ"/>
             </div>
         </div>
     )

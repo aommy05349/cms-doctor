@@ -44,9 +44,10 @@ const currentTheme = {
 
 type VideoCardProp = {
     groupId:string;
+    displayName:string;
 }
 
-export default function VideoCard({ groupId }: VideoCardProp) {
+export default function VideoCard({ groupId, displayName }: VideoCardProp) {
     const [adapter, setAdapter] = useState<CallAdapter>();
     const callIdRef = useRef<string>();
     const adapterRef = useRef<CallAdapter>();
@@ -70,7 +71,6 @@ export default function VideoCard({ groupId }: VideoCardProp) {
     }
 
     async function getAdaptor(user:any, token:string) {
-        const displayName = 'fight'
         const callLocator = {
             groupId
         }
