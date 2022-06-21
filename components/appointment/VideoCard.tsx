@@ -42,7 +42,11 @@ const currentTheme = {
     }
 }
 
-export default function VideoCard({ groupId, token }) {
+type VideoCardProp = {
+    groupId:string;
+}
+
+export default function VideoCard({ groupId }: VideoCardProp) {
     const [adapter, setAdapter] = useState<CallAdapter>();
     const callIdRef = useRef<string>();
     const adapterRef = useRef<CallAdapter>();
@@ -65,10 +69,10 @@ export default function VideoCard({ groupId, token }) {
         getAdaptor(res.data.user, res.data.token)
     }
 
-    async function getAdaptor(user:any, token:any) {
+    async function getAdaptor(user:any, token:string) {
         const displayName = 'fight'
         const callLocator = {
-            groupId: 'b49ffd20-ee24-11ec-9615-d1e1c325a8f4'
+            groupId
         }
         const adapter = await createAzureCommunicationCallAdapter({
             userId: user,
