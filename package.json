@@ -1,33 +1,44 @@
 {
-  "name": "cms-doctor",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@azure/communication-react": "^1.2.0",
-    "@azure/communication-calling": "^1.5.4",
-    "@azure/communication-common": "^2.0.0",
-    "@azure/communication-identity": "^1.0.0",
-    "@azure/core-http": "^2.2.5",
-    "@fluentui/react": "^8.77.0",
-    "@fluentui/react-icons": "^2.0.153-canary.0",
-    "axios": "^0.27.2",
-    "next": "12.1.6",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "uuid": "^8.3.2"
-  },
-  "devDependencies": {
-    "@types/node": "18.0.0",
-    "@types/react": "^17.0.39",
-    "@types/react-dom": "^17.0.11",
-    "eslint": "8.18.0",
-    "eslint-config-next": "12.1.6",
-    "typescript": "4.7.4"
-  }
+    "name": "cms-doctor",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "dev": "next dev",
+        "build": "next build",
+        "start": "next start",
+        "lint": "next lint"
+    },
+    "dependencies": {
+        "@azure/communication-calling": "^1.5.4",
+        "@azure/communication-common": "^2.0.0",
+        "@azure/communication-identity": "^1.0.0",
+        "@azure/communication-react": "^1.2.0",
+        "@azure/core-http": "^2.2.5",
+        "@fluentui/react": "^8.77.0",
+        "@fluentui/react-icons": "^2.0.153-canary.0",
+        "@fortawesome/fontawesome-svg-core": "^6.1.1",
+        "@fortawesome/free-brands-svg-icons": "^6.1.1",
+        "@fortawesome/free-solid-svg-icons": "^6.1.1",
+        "@fortawesome/react-fontawesome": "^0.1.18",
+        "axios": "^0.27.2",
+        "next": "12.1.6",
+        "next-auth": "^4.6.0",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "uuid": "^8.3.2"
+    },
+    "devDependencies": {
+        "@types/node": "18.0.0",
+        "@types/react": "^17.0.39",
+        "@types/react-dom": "^17.0.11",
+        "autoprefixer": "^10.4.7",
+        "eslint": "8.18.0",
+        "eslint-config-next": "12.1.6",
+        "eslint-config-prettier": "^8.5.0",
+        "postcss": "^8.4.14",
+        "prettier": "2.7.1",
+        "sass": "^1.52.3",
+        "tailwindcss": "^3.1.4",
+        "typescript": "4.7.4"
+    }
 }
