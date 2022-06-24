@@ -42,8 +42,10 @@ function Home() {
     async function getList() {
         const res = await boardApi.getPatients(filters);
         console.log('getList', res.data);
-        setAppointment(res.data.patient_list);
-        setTotalPage(res.data.summary.total);
+        if (res.data) {
+            setAppointment(res.data.patient_list);
+            setTotalPage(res.data.summary.total);
+        }
     }
 
     useEffect(() => {
@@ -114,7 +116,7 @@ function Home() {
                                     <Image
                                         src={e.profile_img}
                                         layout="fill"
-                                        objectFit="contain"
+                                        objectFit="cover"
                                         className="w-full h-full"
                                     />
                                 </div>
@@ -203,7 +205,7 @@ function Home() {
                         </button>
                     </div>
                 </div>
-                <div className="font-noto-medium px-6 flex-grow text-sm text-[#17221E] text-right">
+                <div className="font-noto-medium px-6 flex-grow text-sm text-[#17221E] text-left flex justify-end">
                     ระเบียบการใช้งาน:
                     ในกรณีแพทย์เกิดกรณีฉุกเฉินไม่สามารถมาทำการตรวจได้
                     ระบบจะให้ผู้ใช้งานเลือกวันนัดใหม่

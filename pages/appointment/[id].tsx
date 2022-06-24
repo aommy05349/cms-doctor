@@ -13,7 +13,9 @@ const VideoCard = dynamic(
 );
 
 async function getPatient(memberId: string) {
+    console.log('memberId', memberId);
     const res = await patientApi.getPatient(memberId);
+    console.log('getPatient', res);
 }
 
 function Appointment() {
