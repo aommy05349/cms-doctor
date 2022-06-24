@@ -1,7 +1,7 @@
 import { apiApp } from './config';
 
 export default {
-    getPatientsHistory: async (memberId) => {
+    getReportHistory: async (memberId) => {
         try {
             const url = `/telemigraine/history/${memberId}`;
             const res = await apiApp.get(url);

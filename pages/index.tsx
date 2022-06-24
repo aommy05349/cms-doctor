@@ -96,7 +96,7 @@ function Home() {
                     </div>
                 </div>
             </section>
-            <section className="p-4 min-h-[80vh]">
+            <section className="p-4 min-h-[80vh] animate-[fadeIn_.5s_ease-in]">
                 {appointments &&
                     appointments.map((e: any) => {
                         return (

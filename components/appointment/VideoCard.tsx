@@ -1,12 +1,12 @@
-import React, { useEffect, useRef, useState } from 'react'
-import axios from 'axios'
+import React, { useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 import {
     CallAdapter,
     CallComposite,
     CallAdapterState,
-    createAzureCommunicationCallAdapter
-} from '@azure/communication-react'
-import { createAutoRefreshingCredential } from '../../utils/creadential'
+    createAzureCommunicationCallAdapter,
+} from '@azure/communication-react';
+import { createAutoRefreshingCredential } from '../../utils/creadential';
 import { Spinner } from '@fluentui/react';
 
 const currentTheme = {
@@ -14,7 +14,7 @@ const currentTheme = {
         callRed: '#a42e43',
         callRedDark: '#8b2c3d',
         callRedDarker: '#772a38',
-        iconWhite: '#ffffff'
+        iconWhite: '#ffffff',
     },
     palette: {
         black: '#000000',
@@ -38,14 +38,14 @@ const currentTheme = {
         themePrimary: '#0078d4',
         themeSecondary: '#2b88d8',
         themeTertiary: '#71afe5',
-        white: '#ffffff'
-    }
-}
+        white: '#ffffff',
+    },
+};
 
 type VideoCardProp = {
-    groupId:string;
-    displayName:string;
-}
+    groupId: string;
+    displayName: string;
+};
 
 export default function VideoCard({ groupId, displayName }: VideoCardProp) {
     const [adapter, setAdapter] = useState<CallAdapter>();
@@ -59,29 +59,32 @@ export default function VideoCard({ groupId, displayName }: VideoCardProp) {
     }, [callIdRef.current]);
 
     useEffect(() => {
-        getToken()
-    }, [])
+        getToken();
+    }, []);
 
     async function getToken() {
         const res = await axios({
             method: 'get',
-            url: 'http://localhost:8080/token'
-        })
-        getAdaptor(res.data.user, res.data.token)
+            url: 'http://localhost:8080/token',
+        });
+        getAdaptor(res.data.user, res.data.token);
     }
 
-    async function getAdaptor(user:any, token:string) {
+    async function getAdaptor(user: any, token: string) {
         const callLocator = {
-            groupId
-        }
+            groupId,
+        };
         const adapter = await createAzureCommunicationCallAdapter({
             userId: user,
             displayName,
-            credential: createAutoRefreshingCredential(user.communicationUserId, token),
-            locator: callLocator
-        })
+            credential: createAutoRefreshingCredential(
+                user.communicationUserId,
+                token
+            ),
+            locator: callLocator,
+        });
         adapter.on('callEnded', () => {
-            console.log('call end')
+            console.log('call end');
         });
         adapter.on('error', (e) => {
             console.log('Adapter error event:', e);
@@ -90,7 +93,7 @@ export default function VideoCard({ groupId, displayName }: VideoCardProp) {
             document.title = `webAppTitle`;
             callIdRef.current = state?.call?.id;
         });
-        setAdapter(adapter)
+        setAdapter(adapter);
         adapterRef.current = adapter;
         return () => {
             adapterRef?.current?.dispose();
@@ -98,12 +101,18 @@ export default function VideoCard({ groupId, displayName }: VideoCardProp) {
     }
 
     if (!adapter) {
-        return <Spinner label={'Video Call Loading'} ariaLive="assertive" labelPosition="top" />;
+        return (
+            <Spinner
+                label={'Video Call Loading'}
+                ariaLive="assertive"
+                labelPosition="top"
+            />
+        );
     }
 
     return (
         <div>
-            <div className="video-frame" style={{width: '300px', height: '400px'}}>
+            <div className="video-frame h-[500px] w-full">
                 <CallComposite
                     adapter={adapter}
                     callInvitationUrl="http://localhost:3001/?groupId=0691c4a0-ee30-11ec-9e02-f74b242d4e84"
@@ -113,5 +122,5 @@ export default function VideoCard({ groupId, displayName }: VideoCardProp) {
                 />
             </div>
         </div>
-    )
+    );
 }

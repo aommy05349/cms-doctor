@@ -4,6 +4,8 @@ import MainLayout from '../../components/layouts/Main';
 import TopNav from '../../components/appointment/TopNav';
 import { useRouter } from 'next/router';
 import { patientApi } from '../../services';
+import PatientCard from '../../components/appointment/PatientCard';
+import ReportHistory from '../../components/appointment/ReportHistory';
 
 const VideoCard = dynamic(
     () => import('../../components/appointment/VideoCard'),
@@ -11,12 +13,6 @@ const VideoCard = dynamic(
         ssr: false,
     }
 );
-
-async function getPatient(memberId: string) {
-    console.log('memberId', memberId);
-    const res = await patientApi.getPatient(memberId);
-    console.log('getPatient', res);
-}
 
 function Appointment() {
     const [groupId, setGroupId] = useState(
@@ -27,27 +23,37 @@ function Appointment() {
     const router = useRouter();
 
     useEffect(() => {
-        getPatient(router.query.id);
-    }, []);
+        if (router.isReady) {
+            getPatient(router.query.id);
+        }
+    }, [router]);
+
+    async function getPatient(memberId: string) {
+        const res = await patientApi.getPatient(memberId);
+        setPatient(res);
+    }
 
     return (
-        <div>
+        <div className="h-full flex flex-col bg-[#CBD5DD]">
             <TopNav />
-            <section className="flex flex-row">
-                <div className="flex flex-col">
-                    <div className="">
-                        <div className=""></div>
+            {patient && (
+                <section className="flex flex-row flex-grow animate-[fadeIn_.5s_ease-in]">
+                    <div className="flex flex-col flex-grow">
+                        <div className="">
+                            <PatientCard data={patient} />
+                        </div>
+                        <div className="flex-grow bg-[#CBD5DD]">
+                            <ReportHistory memberId={router.query.id} />
+                        </div>
+                    </div>
+                    <div className="w-[400px] bg-white">
+                        <div className="">
+                            <VideoCard groupId={groupId} displayName="คุณหมอ" />
+                        </div>
                         <div className=""></div>
                     </div>
-                    <div className="">
-                        {/* <VideoCard groupId={groupId} displayName="คุณหมอ" /> */}
-                    </div>
-                </div>
-                <div className="">
-                    <div className=""></div>
-                    <div className=""></div>
-                </div>
-            </section>
+                </section>
+            )}
         </div>
     );
 }

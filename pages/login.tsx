@@ -4,7 +4,6 @@ import Router, { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { authApi } from '../services';
 import { apiApp } from '../services/config';
-import { setCookies } from 'cookies-next';
 
 const inputStyle =
     'bg-[#F4F5F4] h-[40px] w-full rounded-[4px] pl-2  pt-4 text-[14px] border-b-[2px] font-noto-medium';
@@ -29,7 +28,7 @@ export default function login() {
     }
 
     return (
-        <div className="flex flex-col justify-center items-center h-[100vh]">
+        <div className="flex flex-col justify-center items-center h-[100vh] animate-[fadeIn_.5s_ease-in]">
             <div className="flex flex-col items-center w-[350px]">
                 <div className="relative w-[49px] h-[51px]">
                     <Image

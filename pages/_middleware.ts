@@ -1,8 +1,14 @@
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
+import { apiApp } from '../services/config';
 
 export async function middleware(req: NextRequest, ev: NextFetchEvent) {
     const nextPath = req.nextUrl.pathname;
-    const noAuthPaths: Array<String> = ['/images', '/api', '/login'];
+    const noAuthPaths: Array<String> = [
+        '/images',
+        '/api',
+        '/login',
+        'firebasestorage',
+    ];
     const hasAuth = req.cookies['cms-doctor-cookie'] ? true : false;
     let SkipPath = false;
     noAuthPaths.map((path) => {

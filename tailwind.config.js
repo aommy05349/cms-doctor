@@ -6,6 +6,19 @@ module.exports = {
     ],
     theme: {
         extend: {
+            keyframes: {
+                fadeIn: {
+                    '0%': {
+                        opacity: '0',
+                    },
+                    '100%': {
+                        opacity: '1',
+                    },
+                },
+            },
+            animation: {
+                fadeIn: 'fadeIn .67s ease-in',
+            },
             colors: {
                 'i-green': '#25AC67',
                 'i-red': '#E54D3F',

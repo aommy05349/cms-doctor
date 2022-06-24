@@ -7,8 +7,9 @@ export default function TopNav() {
     const router = useRouter();
     return (
         <section className="bg-[#F2F2F2] flex flex-row flex-wrap items-center w-full">
-            <div className="p-4">
+            <div className="p-2">
                 <button
+                    className="w-[40px] h-[40px] rounded-full hover:bg-white ease-in duration-200"
                     onClick={() => {
                         router.push('/');
                     }}

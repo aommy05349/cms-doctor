@@ -7,7 +7,11 @@ const nextConfig = {
         includePaths: [path.join(__dirname, 'assets/styles')],
     },
     images: {
-        domains: ['storage.googleapis.com', 'cdngarenanow-a.akamaihd.net'],
+        domains: [
+            'storage.googleapis.com',
+            'cdngarenanow-a.akamaihd.net',
+            'firebasestorage.googleapis.com',
+        ],
     },
 };
 
