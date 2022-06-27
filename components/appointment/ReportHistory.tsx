@@ -21,9 +21,9 @@ export default function ReportHistory({ memberId }: ReportProps) {
     return (
         <div>
             {reports &&
-                reports.map((data: any) => {
+                reports.map((data: any, index: number) => {
                     return (
-                        <div className="flex flex-col bg-white">
+                        <div className="flex flex-col bg-white" key={index}>
                             <div className="p-2 flex flex-row">
                                 <div className="flex-1">
                                     {data.header_report.appointment_date}{' '}

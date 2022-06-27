@@ -8,7 +8,7 @@ import { apiApp } from '../services/config';
 const inputStyle =
     'bg-[#F4F5F4] h-[40px] w-full rounded-[4px] pl-2  pt-4 text-[14px] border-b-[2px] font-noto-medium';
 
-export default function login() {
+export default function LoginPage() {
     const [email, setEmail] = useState('surat.md@gmail.com');
     const [password, setPassword] = useState('qwerty');
     const router = useRouter();
