@@ -23,7 +23,14 @@ export default function ReportHistory({ memberId }: ReportProps) {
             {reports &&
                 reports.map((data: any, index: number) => {
                     return (
+<<<<<<< Updated upstream
                         <div className="flex flex-col bg-white" key={index}>
+=======
+                        <div
+                            className="flex flex-col bg-white"
+                            key={data.patient_report.id}
+                        >
+>>>>>>> Stashed changes
                             <div className="p-2 flex flex-row">
                                 <div className="flex-1">
                                     {data.header_report.appointment_date}{' '}
