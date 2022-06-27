@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { patientApi } from '../../services';
 import PatientCard from '../../components/appointment/PatientCard';
 import ReportHistory from '../../components/appointment/ReportHistory';
+import NewReport from '../../components/appointment/NewReport';
 
 const VideoCard = dynamic(
     () => import('../../components/appointment/VideoCard'),
@@ -40,12 +41,13 @@ function Appointment() {
         <div className="h-full flex flex-col bg-[#CBD5DD]">
             <TopNav />
             {patient && (
-                <section className="flex flex-row flex-grow animate-[fadeIn_.5s_ease-in]">
+                <section className="flex flex-row flex-grow animate-[fadeIn_.5s_ease-in] h-[90vh]">
                     <div className="flex flex-col flex-grow">
                         <div className="">
                             <PatientCard data={patient} />
                         </div>
-                        <div className="flex-grow bg-[#CBD5DD] p-5">
+                        <div className="flex-grow bg-[#CBD5DD] p-5 overflow-auto">
+                            <NewReport patient={patient} />
                             <ReportHistory
                                 memberId={memberId ? memberId : ''}
                             />

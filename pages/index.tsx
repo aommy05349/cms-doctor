@@ -108,16 +108,17 @@ function Home() {
                                 }}
                             >
                                 <div
-                                    className={`relative w-[45px] h-[45px] rounded-[50%] overflow-hidden ${
+                                    className={`relative w-[45px] h-[45px] min-w-[45px] rounded-[50%] overflow-hidden ${
                                         e.is_premium_member &&
                                         'border-[3px] border-[#F98B03]'
                                     }`}
                                 >
                                     <Image
                                         src={e.profile_img}
-                                        layout="fill"
+                                        layout="fixed"
                                         objectFit="cover"
-                                        className="w-full h-full"
+                                        width={45}
+                                        height={45}
                                     />
                                 </div>
                                 <div className="flex flex-col pl-4 flex-grow flex-wrap">

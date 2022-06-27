@@ -23,7 +23,7 @@ export default function Aside() {
                 </div>
             </div>
             <div className="menuList flex-grow">
-                <div className="mt-[50px] p-3 bg-[#09cf6d] font-noto-medium text-xl text-white text-center border-r-8 border-[#03e058]">
+                <div className="mt-[50px] p-3 bg-[#09cf6d] font-noto-medium text-xl text-white text-center border-r-8 border-[#03e058] w-[220px]">
                     Tele Migraine
                 </div>
             </div>
