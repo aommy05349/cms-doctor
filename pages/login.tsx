@@ -23,7 +23,7 @@ export default function LoginPage() {
             psw: password,
         });
         if (res.data) {
-            await apiApp.defaults.headers.common['Authorization'] =
+            apiApp.defaults.headers.common['Authorization'] =
                 'Bearer ' + res.data.token;
             const resSetCookie = await authApi.createSession(res.data.token);
             console.log('resSetCookie', resSetCookie);
