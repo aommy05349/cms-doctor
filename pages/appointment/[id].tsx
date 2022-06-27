@@ -42,13 +42,16 @@ function Appointment() {
                         <div className="">
                             <PatientCard data={patient} />
                         </div>
-                        <div className="flex-grow bg-[#CBD5DD]">
-                            <ReportHistory memberId={router.query.id} />
+                        <div className="flex-grow bg-[#CBD5DD] p-5">
+                            <ReportHistory
+                                memberId={router.query.id}
+                                patient={patient}
+                            />
                         </div>
                     </div>
                     <div className="w-[400px] bg-white">
                         <div className="">
-                            <VideoCard groupId={groupId} displayName="คุณหมอ" />
+                            {/* <VideoCard groupId={groupId} displayName="คุณหมอ" /> */}
                         </div>
                         <div className=""></div>
                     </div>
