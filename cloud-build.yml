@@ -1,0 +1,26 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        docker pull gcr.io/august-enigma-262603/doctor_smilemigraine:latest || exit 0
+  - name: gcr.io/cloud-builders/docker
+    timeout: 1200s
+    args:
+      [
+        'build',
+        '-f',
+        'Dockerfile',
+        '-t',
+        'gcr.io/august-enigma-262603/doctor_smilemigraine',
+        '--cache-from',
+        'gcr.io/august-enigma-262603/doctor_smilemigraine:latest',
+        '.',
+      ]
+timeout: 1200s
+images:
+  - gcr.io/august-enigma-262603/doctor_smilemigraine
+
+# gcloud builds submit --project "august-enigma-262603" --config=./cloud-build.yml
+# gcloud run deploy doctor-smilemigraine-fe-dev --image gcr.io/august-enigma-262603/doctor_smilemigraine:latest --platform=managed --region=asia-southeast1

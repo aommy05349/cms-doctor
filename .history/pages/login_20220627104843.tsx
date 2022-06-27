@@ -77,7 +77,7 @@ export default function login() {
                         onClick={login}
                         className="bg-i-green text-white w-[150px] text-center h-[44px] rounded-[8px] hover:bg-[#35be78] ease-in duration-300"
                     >
-                        เข้าสู่ระบบ อิอิ
+                        เข้าสู่ระบบ
                     </button>
                 </div>
             </div>
