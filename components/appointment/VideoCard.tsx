@@ -65,7 +65,7 @@ export default function VideoCard({ groupId, displayName }: VideoCardProp) {
     async function getToken() {
         const res = await axios({
             method: 'get',
-            url: 'http://localhost:8080/token',
+            url: 'https://tele-smilemigraine-server-2k6beg54tq-as.a.run.app/token',
         });
         getAdaptor(res.data.user, res.data.token);
     }
@@ -115,7 +115,7 @@ export default function VideoCard({ groupId, displayName }: VideoCardProp) {
             <div className="video-frame h-[500px] w-full">
                 <CallComposite
                     adapter={adapter}
-                    callInvitationUrl="http://localhost:3001/?groupId=0691c4a0-ee30-11ec-9e02-f74b242d4e84"
+                    callInvitationUrl="http://localhost:3000/?groupId=0691c4a0-ee30-11ec-9e02-f74b242d4e84"
                     formFactor="mobile"
                     rtl={false}
                     fluentTheme={currentTheme}

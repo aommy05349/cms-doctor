@@ -1,8 +1,11 @@
 import Image from 'next/image';
 import React, { ReactChild } from 'react';
 
-export default function PatientCard({ data }) {
-    console.log(data);
+interface patientProps {
+    data: any;
+}
+
+export default function PatientCard({ data }: patientProps) {
     return (
         <div className="flex flex-row text-[14px] py-5 px-7 bg-white">
             <div className="flex-1 flex flex-col border-r-gray-100 border-r-[1px]">

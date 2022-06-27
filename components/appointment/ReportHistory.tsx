@@ -6,7 +6,7 @@ interface ReportProps {
     memberId: string;
 }
 
-export default function ReportHistory({ memberId, patient }: ReportProps) {
+export default function ReportHistory({ memberId }: ReportProps) {
     const [reports, setReports] = useState([]);
     const router = useRouter();
     async function getHistoryReports() {
@@ -20,26 +20,30 @@ export default function ReportHistory({ memberId, patient }: ReportProps) {
 
     return (
         <div>
-            {reports.map((data: any) => {
-                return (
-                    <div className="flex flex-col bg-white">
-                        <div className="p-2 flex flex-row">
-                            <div className="flex-1">
-                                {data.header_report.appointment_date}{' '}
-                                {data.header_report.appointment_time}
+            {reports &&
+                reports.map((data: any) => {
+                    return (
+                        <div className="flex flex-col bg-white">
+                            <div className="p-2 flex flex-row">
+                                <div className="flex-1">
+                                    {data.header_report.appointment_date}{' '}
+                                    {data.header_report.appointment_time}
+                                </div>
+                                <div className="flex-1 text-[14px]">
+                                    {
+                                        data.header_report
+                                            .appointment_specialist_name
+                                    }{' '}
+                                    {data.header_report.patient_name}
+                                </div>
                             </div>
-                            <div className="flex-1 text-[14px]">
-                                {data.header_report.appointment_specialist_name}{' '}
-                                {data.header_report.patient_name}
+                            <div className="p-2 flex flex-row">
+                                <div className=""></div>
+                                <div className=""></div>
                             </div>
                         </div>
-                        <div className="p-2 flex flex-row">
-                            <div className=""></div>
-                            <div className=""></div>
-                        </div>
-                    </div>
-                );
-            })}
+                    );
+                })}
         </div>
     );
 }

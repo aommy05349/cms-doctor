@@ -18,18 +18,21 @@ function Appointment() {
     const [groupId, setGroupId] = useState(
         'b49ffd20-ee24-11ec-9615-d1e1c325a8f4'
     );
+    const [memberId, setMemberId] = useState<string | undefined>('');
     const [patient, setPatient] = useState(null);
 
     const router = useRouter();
 
     useEffect(() => {
         if (router.isReady) {
-            getPatient(router.query.id);
+            getPatient();
         }
     }, [router]);
 
-    async function getPatient(memberId: string) {
-        const res = await patientApi.getPatient(memberId);
+    async function getPatient() {
+        const memberIdStr = router.query.id?.toString();
+        setMemberId(memberIdStr);
+        const res = await patientApi.getPatient(memberIdStr);
         setPatient(res);
     }
 
@@ -44,14 +47,13 @@ function Appointment() {
                         </div>
                         <div className="flex-grow bg-[#CBD5DD] p-5">
                             <ReportHistory
-                                memberId={router.query.id}
-                                patient={patient}
+                                memberId={memberId ? memberId : ''}
                             />
                         </div>
                     </div>
                     <div className="w-[400px] bg-white">
                         <div className="">
-                            {/* <VideoCard groupId={groupId} displayName="คุณหมอ" /> */}
+                            <VideoCard groupId={groupId} displayName="คุณหมอ" />
                         </div>
                         <div className=""></div>
                     </div>
