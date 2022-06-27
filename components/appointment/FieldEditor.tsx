@@ -6,7 +6,11 @@ type FieldEditorProps = {
     value: string;
     setValue: (text: string) => void;
 };
-export default function ({ title, value, setValue }: FieldEditorProps) {
+export default function FieldEditor({
+    title,
+    value,
+    setValue,
+}: FieldEditorProps) {
     const [isShow, setIsShow] = useState(false);
 
     function editField() {
