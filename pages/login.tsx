@@ -1,3 +1,5 @@
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Link from 'next/link';
 import Router, { useRouter } from 'next/router';
@@ -11,19 +13,27 @@ const inputStyle =
 export default function LoginPage() {
     const [email, setEmail] = useState('surat.md@gmail.com');
     const [password, setPassword] = useState('qwerty');
+    const [loading, setLoading] = useState<boolean>(false)
     const router = useRouter();
 
     async function login() {
+        setLoading(true)
         const res = await authApi.login({
             usrnm: email,
             psw: password,
         });
         if (res.data) {
-            apiApp.defaults.headers.common['Authorization'] =
+            await apiApp.defaults.headers.common['Authorization'] =
                 'Bearer ' + res.data.token;
             const resSetCookie = await authApi.createSession(res.data.token);
             console.log('resSetCookie', resSetCookie);
-            router.push('/');
+            if (resSetCookie.status == 'success') {
+                setLoading(false)
+                router.push('/');
+            } else {
+                setLoading(false)
+                console.log(resSetCookie)
+            }
         }
     }
 
@@ -77,7 +87,8 @@ export default function LoginPage() {
                         onClick={login}
                         className="bg-i-green text-white w-[150px] text-center h-[44px] rounded-[8px] hover:bg-[#35be78] ease-in duration-300"
                     >
-                        เข้าสู่ระบบ อิอิ
+                        {loading ? <FontAwesomeIcon icon={faSpinner} spin /> :
+                        <span>เข้าสู่ระบบ</span>}
                     </button>
                 </div>
             </div>
