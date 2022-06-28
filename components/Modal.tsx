@@ -20,7 +20,7 @@ export default function Modal({
     return (
         <>
             {isShow && (
-                <div className="z-10 modal fixed w-full h-full top-0 left-0 flex justify-center items-center animate-[fadeIn_.3s_ease-in-out]">
+                <div className="z-10 fixed w-full h-full top-0 left-0 flex justify-center items-center animate-[fadeIn_.3s_ease-in-out]">
                     <div
                         className="fixed left-0 top-0 wrapper w-full h-full bg-black bg-opacity-40 z-11"
                         onClick={() => {
@@ -28,11 +28,11 @@ export default function Modal({
                         }}
                     ></div>
                     <div
-                        className={`modal-container bg-white max-w-full min-h-[300px] rounded-[8px] overflow-hidden z-20`}
+                        className={` bg-white max-w-full min-h-[300px] rounded-[8px] overflow-hidden z-20`}
                         style={{ width: `${width}` }}
                     >
                         <div className="border-m-2 bg-[#F2F2F2] p-4 py-2 flex flex-row">
-                            <h1 className="font-noto-bold flex-1">{title}</h1>
+                            <h2 className="font-noto-bold flex-1">{title}</h2>
                             <button
                                 onClick={() => {
                                     onClose();
