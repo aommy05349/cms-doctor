@@ -1,6 +1,7 @@
 /* eslint-disable */
 import axios from 'axios';
 import { AzureCommunicationTokenCredential } from '@azure/communication-common';
+import { teleApiApp } from '../services/config';
 
 export const createAutoRefreshingCredential = (userId, token) => {
     console.log('userId', userId);
@@ -14,13 +15,10 @@ export const createAutoRefreshingCredential = (userId, token) => {
 };
 
 const refreshTokenAsync = async (userIdentity) => {
-    const res = await axios({
-        method: 'post',
-        url: `https://tele-smilemigraine-server-2k6beg54tq-as.a.run.app/refreshToken/${userIdentity}`,
-        data: {
-            firstName: 'Fred',
-            lastName: 'Flintstone',
-        },
+    const url = `/refreshToken/${userIdentity}`;
+    const res = await teleApiApp.post(url, {
+        firstName: 'Fred',
+        lastName: 'Flintstone',
     });
     return res.data.token;
 };

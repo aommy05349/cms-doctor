@@ -14,6 +14,7 @@ export default {
         try {
             const url = `/members/${memberId}`;
             const res = await apiApp.get(url);
+            console.log(res.data[0]);
             return res.data[0];
         } catch (error) {
             return error;
@@ -52,6 +53,15 @@ export default {
     getFrequencyTrigger: async (id) => {
         try {
             const url = `/getFrequencyTrigger/${id}/prev/180`;
+            const res = await apiApp.get(url);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
+    getListenning: async (memberId) => {
+        try {
+            const url = `/telemigraine/listenning/${memberId}`;
             const res = await apiApp.get(url);
             return res.data;
         } catch (error) {

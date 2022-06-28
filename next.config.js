@@ -11,7 +11,7 @@ const nextConfig = {
             'storage.googleapis.com',
             'cdngarenanow-a.akamaihd.net',
             'firebasestorage.googleapis.com',
-        ]
+        ],
     },
 };
 

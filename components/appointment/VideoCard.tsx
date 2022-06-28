@@ -8,6 +8,7 @@ import {
 } from '@azure/communication-react';
 import { createAutoRefreshingCredential } from '../../utils/creadential';
 import { Spinner } from '@fluentui/react';
+import { teleApiApp } from '../../services/config';
 
 const currentTheme = {
     callingPalette: {
@@ -59,14 +60,14 @@ export default function VideoCard({ groupId, displayName }: VideoCardProp) {
     }, [callIdRef.current]);
 
     useEffect(() => {
+        console.log('groupId', groupId);
         getToken();
     }, []);
 
     async function getToken() {
-        const res = await axios({
-            method: 'get',
-            url: 'https://tele-smilemigraine-server-2k6beg54tq-as.a.run.app/token',
-        });
+        const url = `${process.env.NEXT_PUBLIC_TELE_API}/token`;
+        const res = await teleApiApp.get(url);
+        console.log('get token', res);
         getAdaptor(res.data.user, res.data.token);
     }
 
@@ -115,7 +116,7 @@ export default function VideoCard({ groupId, displayName }: VideoCardProp) {
             <div className="video-frame h-[500px] w-full">
                 <CallComposite
                     adapter={adapter}
-                    callInvitationUrl="http://localhost:3000/?groupId=0691c4a0-ee30-11ec-9e02-f74b242d4e84"
+                    callInvitationUrl={`http://localhost:3000/?groupId=${groupId}`}
                     formFactor="mobile"
                     rtl={false}
                     fluentTheme={currentTheme}

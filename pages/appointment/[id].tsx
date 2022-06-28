@@ -16,9 +16,7 @@ const VideoCard = dynamic(
 );
 
 function Appointment() {
-    const [groupId, setGroupId] = useState(
-        'b49ffd20-ee24-11ec-9615-d1e1c325a8f4'
-    );
+    const [groupId, setGroupId] = useState('');
     const [memberId, setMemberId] = useState<string | undefined>('');
     const [patient, setPatient] = useState(null);
 
@@ -27,6 +25,7 @@ function Appointment() {
     useEffect(() => {
         if (router.isReady) {
             getPatient();
+            getGroupId(); // get groupId for video call
         }
     }, [router]);
 
@@ -35,6 +34,15 @@ function Appointment() {
         setMemberId(memberIdStr);
         const res = await patientApi.getPatient(memberIdStr);
         setPatient(res);
+    }
+
+    async function getGroupId() {
+        const res = await patientApi.getListenning(router.query.id?.toString());
+        if (res.data) {
+            setGroupId(res.data.group_id);
+        } else {
+            console.error('not data listening');
+        }
     }
 
     return (
@@ -55,7 +63,7 @@ function Appointment() {
                     </div>
                     <div className="w-[400px] bg-white">
                         <div className="">
-                            <VideoCard groupId={groupId} displayName="คุณหมอ" />
+                            {/* <VideoCard groupId={groupId} displayName="คุณหมอ" /> */}
                         </div>
                         <div className=""></div>
                     </div>
