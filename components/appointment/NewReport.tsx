@@ -12,6 +12,7 @@ import FieldEditor from './FieldEditor';
 import DatePicker, {registerLocale} from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import th from 'date-fns/locale/th'
+import moment from 'moment';
 registerLocale('th', th)
 
 
@@ -58,8 +59,8 @@ export default function NewReport({ patient }: NewReportProps) {
     const [isShowModalMedicine, setIsShowModalMedicine] = useState(false);
     const [searchResult, setSearchResult] = useState([]);
     const [isShowSearchResult, setIsShowSearchResult] = useState(false);
-    const [startDate, setStartDate] = useState('');
     const [includeDates, setIncludeDate] = useState([]);
+    const [scheduleAppointment, setScheduleAppointment] = useState([])
 
     async function searchOrder(searchTerm: string) {
         if (searchTerm == '') {
@@ -126,10 +127,17 @@ export default function NewReport({ patient }: NewReportProps) {
     }
 
     async function getScheduleAppointment(date:Date) {
-        const dateString = date
+        const dateString = moment(date).format('YYYY-MM-DD')
+        console.log('dateString', dateString)
         const specialistId = 1
-        const res = await specialistApi.getSpecialistById(specialistId, dateString)
-        console.log('res spe', res.data.available_date, new Date())
+        const res = await specialistApi.getScheduleAppointment(specialistId, dateString)
+        console.log(res.data);
+        if (res.data) {
+            setScheduleAppointment(res.data)
+        } else {
+            setScheduleAppointment([])
+        }
+
     }
 
     useEffect(() => {
@@ -322,8 +330,23 @@ export default function NewReport({ patient }: NewReportProps) {
                                 includeDates={includeDates}
                                 dateFormat="YYYY-MM-DD"
                                 locale="th"
-                                onChange={(date:Date) => getScheduleAppointment()}
+                                onChange={(date:Date) => getScheduleAppointment(date)}
                             />
+                            <div className="flex flex-row">
+                                <div className="">
+                                    เลือกเวลา
+                                </div>
+                                <div className="">
+                                    ท่านจะไม่สามารถแก้ไขวันนัดภายหลังได้
+                                </div>
+                            </div>
+                            <div className="flex flex-row flex-wrap">
+                                { scheduleAppointment.map((e:any) => {
+                                    return (
+                                        <div className="text-i-green p-2 border-2">{e.start_time} - {e.end_time}</div>
+                                    )
+                                })}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -63,7 +63,7 @@ function Appointment() {
                     </div>
                     <div className="w-[400px] bg-white">
                         <div className="">
-                            <VideoCard groupId={groupId} displayName="คุณหมอ" />
+                            {/* <VideoCard groupId={groupId} displayName="คุณหมอ" /> */}
                         </div>
                         <div className=""></div>
                     </div>
