@@ -15,7 +15,7 @@ export default function LoginPage() {
     const [password, setPassword] = useState('qwerty');
     const [loading, setLoading] = useState<boolean>(false);
 
-    async function login(e: Event) {
+    async function login(e: any) {
         e.preventDefault();
         setLoading(true);
         const res = await authApi.login({
