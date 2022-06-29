@@ -9,12 +9,11 @@ import React, { useEffect, useState } from 'react';
 import { patientApi, specialistApi } from '../../services';
 import Modal from '../Modal';
 import FieldEditor from './FieldEditor';
-import DatePicker, {registerLocale} from 'react-datepicker';
-import "react-datepicker/dist/react-datepicker.css";
-import th from 'date-fns/locale/th'
+import DatePicker, { registerLocale } from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import th from 'date-fns/locale/th';
 import moment from 'moment';
-registerLocale('th', th)
-
+registerLocale('th', th);
 
 const defaultForm = {
     doctor_appointment_id: 93,
@@ -29,25 +28,14 @@ const defaultForm = {
     note: '',
     diagnose: '',
     advice: '',
-    patient_order: [
-        {
-            common_name: 'Migraine Care Program',
-            trade_name: 'Premium User',
-            quantity: '1 Month',
-            note: 'บันทึกอาการ ช่วยรักษา',
-            side_effect: '',
-            isDefault: true,
-            amount: '',
-            indications: '',
-            unit: 'เดือน',
-        },
-    ],
+    patient_order: [],
     next_appointment_date: null,
 };
 
 interface PatientData {
     fname: string;
     lname: string;
+    is_premium_member: boolean;
 }
 
 type NewReportProps = {
@@ -55,12 +43,16 @@ type NewReportProps = {
 };
 
 export default function NewReport({ patient }: NewReportProps) {
-    const [formData, setFormData] = useState(defaultForm);
+    const [formData, setFormData] = useState<any | never>(defaultForm);
     const [isShowModalMedicine, setIsShowModalMedicine] = useState(false);
     const [searchResult, setSearchResult] = useState([]);
     const [isShowSearchResult, setIsShowSearchResult] = useState(false);
     const [includeDates, setIncludeDate] = useState([]);
-    const [scheduleAppointment, setScheduleAppointment] = useState([])
+    const [scheduleAppointment, setScheduleAppointment] = useState([]);
+    const [dateSelected, setDateSelected] = useState('');
+    const [scheduleSelected, setScheduleSelected] = useState<any | never>(null);
+    const [isShowModalDate, setIsShowModalDate] = useState(false);
+    const [isMegrainePremiumCare, setIsMegrainePremiumCare] = useState(false);
 
     async function searchOrder(searchTerm: string) {
         if (searchTerm == '') {
@@ -90,7 +82,7 @@ export default function NewReport({ patient }: NewReportProps) {
         setFormData({
             ...formData,
             patient_order: formData.patient_order.filter(
-                (e, index) => indexDel != index
+                (index: number) => indexDel != index
             ),
         });
     }
@@ -118,31 +110,34 @@ export default function NewReport({ patient }: NewReportProps) {
     }
 
     async function getSpecialist() {
-        const specialistId = 1
-        const res = await specialistApi.getSpecialistById(specialistId)
-        console.log('res spe', res.data.available_date, new Date())
-        const result = res.data.available_date.map((e:string) => new Date(e))
-        console.log('result',result)
-        setIncludeDate(result)
+        const specialistId = 1;
+        const res = await specialistApi.getSpecialistById(specialistId);
+        const result = res.data.available_date.map((e: string) => new Date(e));
+        setIncludeDate(result);
     }
 
-    async function getScheduleAppointment(date:Date) {
-        const dateString = moment(date).format('YYYY-MM-DD')
-        console.log('dateString', dateString)
-        const specialistId = 1
-        const res = await specialistApi.getScheduleAppointment(specialistId, dateString)
+    async function getScheduleAppointment(date: Date) {
+        const dateString = moment(date).format('YYYY-MM-DD');
+        setDateSelected(dateString);
+        setScheduleSelected(''); // clear schedule selected
+        console.log('dateString', dateString);
+        const specialistId = 1;
+        const res = await specialistApi.getScheduleAppointment(
+            specialistId,
+            dateString
+        );
         console.log(res.data);
         if (res.data) {
-            setScheduleAppointment(res.data)
+            setScheduleAppointment(res.data);
         } else {
-            setScheduleAppointment([])
+            setScheduleAppointment([]);
         }
-
     }
 
     useEffect(() => {
-        getSpecialist()
-    }, [])
+        getSpecialist();
+        setIsMegrainePremiumCare(patient.is_premium_member);
+    }, []);
 
     return (
         <>
@@ -278,6 +273,28 @@ export default function NewReport({ patient }: NewReportProps) {
                                 </button>
                             </div>
                             <ol start={0}>
+                                {isMegrainePremiumCare && (
+                                    <li className="flex flex-row">
+                                        <span className="flex-1 py-2">
+                                            0. Migraine Care Programe 3 เดือน
+                                        </span>
+                                        {!patient.is_premium_member && (
+                                            <span
+                                                className="py-2 cursor-pointer"
+                                                onClick={() => {
+                                                    setIsMegrainePremiumCare(
+                                                        false
+                                                    );
+                                                }}
+                                            >
+                                                <FontAwesomeIcon
+                                                    icon={faTimesCircle}
+                                                    className="text-[#CBD5DD] text-xl hover:text-i-red duration-300"
+                                                />
+                                            </span>
+                                        )}
+                                    </li>
+                                )}
                                 {formData.patient_order.map(
                                     (e: any, index: number) => {
                                         return (
@@ -286,7 +303,7 @@ export default function NewReport({ patient }: NewReportProps) {
                                                 key={index}
                                             >
                                                 <span className="flex-1 py-2">
-                                                    {index}. {e.common_name}{' '}
+                                                    {index + 1}. {e.common_name}{' '}
                                                     {e.amount} {e.unit}{' '}
                                                     {e.indications}
                                                 </span>
@@ -315,7 +332,7 @@ export default function NewReport({ patient }: NewReportProps) {
                                 <button
                                     className="text-i-green font-noto-bold p-2"
                                     onClick={() => {
-                                        setIsShowModalMedicine(true);
+                                        setIsShowModalDate(true);
                                     }}
                                 >
                                     <FontAwesomeIcon
@@ -325,27 +342,11 @@ export default function NewReport({ patient }: NewReportProps) {
                                     เลือกวันตรวจ
                                 </button>
                             </div>
-                            <DatePicker
-                                inline
-                                includeDates={includeDates}
-                                dateFormat="YYYY-MM-DD"
-                                locale="th"
-                                onChange={(date:Date) => getScheduleAppointment(date)}
-                            />
-                            <div className="flex flex-row">
-                                <div className="">
-                                    เลือกเวลา
-                                </div>
-                                <div className="">
-                                    ท่านจะไม่สามารถแก้ไขวันนัดภายหลังได้
-                                </div>
-                            </div>
-                            <div className="flex flex-row flex-wrap">
-                                { scheduleAppointment.map((e:any) => {
-                                    return (
-                                        <div className="text-i-green p-2 border-2">{e.start_time} - {e.end_time}</div>
-                                    )
-                                })}
+                            <div className="">
+                                {dateSelected &&
+                                    moment(dateSelected).format('DD/MM/YYYY')}
+                                {scheduleSelected &&
+                                    ` เวลา ${scheduleSelected.start_time} - ${scheduleSelected.end_time}`}
                             </div>
                         </div>
                     </div>
@@ -418,6 +419,27 @@ export default function NewReport({ patient }: NewReportProps) {
                                 </tr>
                             </thead>
                             <tbody>
+                                <tr className="text-[14px]">
+                                    <td className="w-[40px] text-center">
+                                        {!patient.is_premium_member && (
+                                            <input
+                                                type="checkbox"
+                                                checked={isMegrainePremiumCare}
+                                                onChange={() => {
+                                                    setIsMegrainePremiumCare(
+                                                        !isMegrainePremiumCare
+                                                    );
+                                                }}
+                                            />
+                                        )}
+                                    </td>
+                                    <td>Migraine Care Program</td>
+                                    <td>Premium User</td>
+                                    <td>3 เดือน</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
                                 {formData.patient_order.map(
                                     (e: any, index: number) => {
                                         return (
@@ -493,6 +515,60 @@ export default function NewReport({ patient }: NewReportProps) {
                                 )}
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            </Modal>
+            <Modal
+                title="ตารางนัดหมาย"
+                isShow={isShowModalDate}
+                width="350px"
+                onClose={() => {
+                    setIsShowModalDate(false);
+                }}
+            >
+                <div>
+                    <DatePicker
+                        inline
+                        includeDates={includeDates}
+                        dateFormat="YYYY-MM-DD"
+                        locale="th"
+                        calendarStartDay={1}
+                        onChange={(date: Date) => getScheduleAppointment(date)}
+                    />
+                    <div className="p-4">
+                        <div className="flex flex-row text-[14px] mb-3">
+                            <div className="flex-1 font-noto-bold">
+                                เลือกเวลา
+                            </div>
+                            <div className="">
+                                ท่านจะไม่สามารถแก้ไขวันนัดภายหลังได้
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-3">
+                            {scheduleAppointment.map((e: any) => {
+                                return (
+                                    <div
+                                        key={e.id}
+                                        className={`text-[14px] text-center rounded-[8px] p-1 border-[1px] m-1 cursor-pointer hover:text-i-green duration-300 ${
+                                            e == scheduleSelected
+                                                ? 'text-i-green border-i-green'
+                                                : 'text-[#6C6C6C]'
+                                        }`}
+                                        onClick={() => {
+                                            console.log('e', e);
+                                            setScheduleSelected(e);
+                                        }}
+                                    >
+                                        {e.start_time} - {e.end_time}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    </div>
+                    <div className="p-2 border-t-2">
+                        <button className="bg-i-green w-full text-white rounded-[8px] h-[44px]">
+                            ยืนยันวันนัด
+                        </button>
                     </div>
                 </div>
             </Modal>

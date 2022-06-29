@@ -6,6 +6,15 @@ interface patientProps {
 }
 
 export default function PatientCard({ data }: patientProps) {
+    function getGenderText(id: string) {
+        if (id == 'm') {
+            return 'ชาย';
+        } else if (id == 'f') {
+            return 'หญิง';
+        } else {
+            return 'ไม่ระบุ';
+        }
+    }
     return (
         <div className="flex flex-row text-[14px] py-5 px-7 bg-white border-b-2">
             <div className="flex-1 flex flex-col border-r-gray-100 border-r-[1px]">
@@ -57,7 +66,9 @@ export default function PatientCard({ data }: patientProps) {
                     </div>
                     <div className="px-2">
                         <p className="text-gray-500">เพศ</p>
-                        <h3 className="text-[16px]">{data.gender}</h3>
+                        <h3 className="text-[16px]">
+                            {getGenderText(data.gender)}
+                        </h3>
                     </div>
                     <div className="px-2">
                         <p className="text-gray-500">น้ำหนัก</p>
