@@ -5,10 +5,15 @@ import {
     faTimesCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import React, { useState } from 'react';
-import { patientApi } from '../../services';
+import React, { useEffect, useState } from 'react';
+import { patientApi, specialistApi } from '../../services';
 import Modal from '../Modal';
 import FieldEditor from './FieldEditor';
+import DatePicker, {registerLocale} from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
+import th from 'date-fns/locale/th'
+registerLocale('th', th)
+
 
 const defaultForm = {
     doctor_appointment_id: 93,
@@ -53,6 +58,8 @@ export default function NewReport({ patient }: NewReportProps) {
     const [isShowModalMedicine, setIsShowModalMedicine] = useState(false);
     const [searchResult, setSearchResult] = useState([]);
     const [isShowSearchResult, setIsShowSearchResult] = useState(false);
+    const [startDate, setStartDate] = useState('');
+    const [includeDates, setIncludeDate] = useState([]);
 
     async function searchOrder(searchTerm: string) {
         if (searchTerm == '') {
@@ -108,6 +115,26 @@ export default function NewReport({ patient }: NewReportProps) {
             patient_order: orders,
         });
     }
+
+    async function getSpecialist() {
+        const specialistId = 1
+        const res = await specialistApi.getSpecialistById(specialistId)
+        console.log('res spe', res.data.available_date, new Date())
+        const result = res.data.available_date.map((e:string) => new Date(e))
+        console.log('result',result)
+        setIncludeDate(result)
+    }
+
+    async function getScheduleAppointment(date:Date) {
+        const dateString = date
+        const specialistId = 1
+        const res = await specialistApi.getSpecialistById(specialistId, dateString)
+        console.log('res spe', res.data.available_date, new Date())
+    }
+
+    useEffect(() => {
+        getSpecialist()
+    }, [])
 
     return (
         <>
@@ -290,6 +317,13 @@ export default function NewReport({ patient }: NewReportProps) {
                                     เลือกวันตรวจ
                                 </button>
                             </div>
+                            <DatePicker
+                                inline
+                                includeDates={includeDates}
+                                dateFormat="YYYY-MM-DD"
+                                locale="th"
+                                onChange={(date:Date) => getScheduleAppointment()}
+                            />
                         </div>
                     </div>
                 </div>

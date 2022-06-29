@@ -9,6 +9,7 @@ import {
 import { createAutoRefreshingCredential } from '../../utils/creadential';
 import { Spinner } from '@fluentui/react';
 import { teleApiApp } from '../../services/config';
+import { specialistApi } from '../../services';
 
 const currentTheme = {
     callingPalette: {
@@ -65,10 +66,17 @@ export default function VideoCard({ groupId, displayName }: VideoCardProp) {
     }, []);
 
     async function getToken() {
-        const url = `${process.env.NEXT_PUBLIC_TELE_API}/token`;
-        const res = await teleApiApp.get(url);
-        console.log('get token', res);
-        getAdaptor(res.data.user, res.data.token);
+        // const url = `${process.env.NEXT_PUBLIC_TELE_API}/token`;
+        // const res = await teleApiApp.get(url);
+        // console.log('get token', res);
+        // getAdaptor(res.data.user, res.data.token);
+
+        const mockId = 292
+        const res = await specialistApi.getSpecialistToken(mockId)
+        console.log('res', res.data.room_doctor_user_access_token)
+        getAdaptor({
+            communicationUserId: res.data.room_doctor_identify_token
+        }, res.data.room_patient_user_access_token);
     }
 
     async function getAdaptor(user: any, token: string) {

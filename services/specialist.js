@@ -10,13 +10,23 @@ export default {
             return error;
         }
     },
-    getScheduleAppointment: async (dateString) => {
+    getScheduleAppointment: async (specialistId, dateString) => {
         try {
-            const url = `/appointment/1/schedule/${dateString}`;
+            const url = `/appointment/${specialistId}/schedule/${dateString}`;
             const res = await apiApp.get(url);
             return res.data;
         } catch (error) {
             return error;
         }
     },
+    getSpecialistToken: async (doctorAppointmentID) => {
+        try {
+            const url = `community-service/token/${doctorAppointmentID}`;
+            const res = await apiApp.get(url);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
+    
 };
