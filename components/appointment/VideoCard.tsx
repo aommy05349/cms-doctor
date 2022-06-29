@@ -71,12 +71,15 @@ export default function VideoCard({ groupId, displayName }: VideoCardProp) {
         // console.log('get token', res);
         // getAdaptor(res.data.user, res.data.token);
 
-        const mockId = 292
-        const res = await specialistApi.getSpecialistToken(mockId)
-        console.log('res', res.data.room_doctor_user_access_token)
-        getAdaptor({
-            communicationUserId: res.data.room_doctor_identify_token
-        }, res.data.room_patient_user_access_token);
+        const mockId = 292;
+        const res = await specialistApi.getSpecialistToken(mockId);
+        console.log('res', res.data.room_doctor_user_access_token);
+        getAdaptor(
+            {
+                communicationUserId: res.data.room_doctor_identify_token,
+            },
+            res.data.room_patient_user_access_token
+        );
     }
 
     async function getAdaptor(user: any, token: string) {
@@ -94,6 +97,9 @@ export default function VideoCard({ groupId, displayName }: VideoCardProp) {
         });
         adapter.on('callEnded', () => {
             console.log('call end');
+        });
+        adapter.on('callIdChanged', () => {
+            console.log('callIdChanged');
         });
         adapter.on('error', (e) => {
             console.log('Adapter error event:', e);
