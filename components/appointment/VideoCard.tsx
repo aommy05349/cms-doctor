@@ -16,10 +16,10 @@ type VideoCardProp = {
     groupId: string;
     displayName: string;
     memberId: string;
-    specialistId: string;
+    appointmentId: string;
 };
 
-export default function VideoCard({ groupId, displayName, memberId, specialistId }: VideoCardProp) {
+export default function VideoCard({ groupId, displayName, memberId, appointmentId }: VideoCardProp) {
     const [adapter, setAdapter] = useState<CallAdapter>();
     const callIdRef = useRef<string>();
     const adapterRef = useRef<CallAdapter>();
@@ -37,7 +37,9 @@ export default function VideoCard({ groupId, displayName, memberId, specialistId
     }, []);
 
     useEffect(() => {
-        console.log('statusState', statusState)
+        if (statusState == 'Connected') {
+            startCall()
+        }
     }, [statusState])
 
     async function getToken() {
@@ -45,10 +47,10 @@ export default function VideoCard({ groupId, displayName, memberId, specialistId
         // const res = await teleApiApp.get(url);
         // console.log('get token', res);
         // getAdaptor(res.data.user, res.data.token);
-        console.log('specialistId', specialistId)
-        const res = await specialistApi.getSpecialistToken(specialistId);
+        console.log('appointmentId : ', appointmentId)
+        const res = await specialistApi.getSpecialistToken(appointmentId);
         if (res.data) {
-            console.log('res', res.data.room_patient_user_access_token);
+            console.log('res', res.data);
             getAdaptor(
                 {
                     communicationUserId: res.data.room_doctor_identify_token,
@@ -67,17 +69,17 @@ export default function VideoCard({ groupId, displayName, memberId, specialistId
             successful_doctor_consultation: false
         }
         const res = await specialistApi.endCall(data)
-        console.log('end call', res);
+        console.log('start call', res.data);
     }
 
     async function endCall() {
         const data = {
             member_id: memberId,
-            doctor_in_room: true,
-            successful_doctor_consultation: false
+            doctor_in_room: false,
+            successful_doctor_consultation: true
         }
         const res = await specialistApi.endCall(data)
-        console.log('end call', res);
+        console.log('end call', res.data);
     }
 
     async function getAdaptor(user: any, token: string) {
@@ -102,8 +104,9 @@ export default function VideoCard({ groupId, displayName, memberId, specialistId
         adapter.onStateChange((state: CallAdapterState) => {
             // document.title = `webAppTitle`;
             callIdRef.current = state?.call?.id;
-            console.log('state', state && state.call)
-            setStatusState(state.call)
+            const newState = state.call ? state.call.state : ''
+            if (newState != statusState)
+            setStatusState(newState)
         });
         setAdapter(adapter);
         adapterRef.current = adapter;

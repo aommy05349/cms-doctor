@@ -98,7 +98,7 @@ function Home() {
             </section>
             <section className="p-4 min-h-[75vh] animate-[fadeIn_.5s_ease-in]">
                 {appointments &&
-                    appointments.map((e: any) => {
+                    appointments.map((e: any, index: number) => {
                         return (
                             <div
                                 key={e.id}
@@ -161,7 +161,7 @@ function Home() {
                                             className="cursor-pointer text-i-red hover:text-red-700"
                                         />
                                     </div>
-                                    <div className="">คิวที่ 1</div>
+                                    <div className="">คิวที่ {index + 1}</div>
                                 </div>
                             </div>
                         );

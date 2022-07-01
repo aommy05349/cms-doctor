@@ -36,6 +36,15 @@ export default {
         } catch (error) {
             return error;
         }
+    },
+    saveNextAppointment : async (data) => {
+        try {
+            const url = 'appointment/specialists';
+            const res = await apiApp.post(url, data);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
     }
     
 };

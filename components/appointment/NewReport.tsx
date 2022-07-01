@@ -36,6 +36,7 @@ interface PatientData {
     fname: string;
     lname: string;
     is_premium_member: boolean;
+    member_id: string;
 }
 
 type NewReportProps = {
@@ -133,6 +134,19 @@ export default function NewReport({ patient, specialistId }: NewReportProps) {
         } else {
             setScheduleAppointment([]);
         }
+    }
+
+    async function saveNextAppointment() {
+        setIsShowModalDate(false)
+        console.log('save appointment')
+        const data = {
+            specialists_id: specialistId,
+            member_id: patient.member_id,
+            doctor_appointment_date: dateSelected,
+            schedule_time_id: scheduleSelected.schedule_time_id
+        }
+        console.log('data', data)
+        // const res = await specialistApi.saveNextAppointment()
     }
 
     useEffect(() => {
@@ -524,6 +538,8 @@ export default function NewReport({ patient, specialistId }: NewReportProps) {
                 isShow={isShowModalDate}
                 width="350px"
                 onClose={() => {
+                    setDateSelected('')
+                    setScheduleSelected(null)
                     setIsShowModalDate(false);
                 }}
             >
@@ -567,7 +583,7 @@ export default function NewReport({ patient, specialistId }: NewReportProps) {
                         </div>
                     </div>
                     <div className="p-2 border-t-2">
-                        <button className="bg-i-green w-full text-white rounded-[8px] h-[44px]">
+                        <button disabled={!scheduleSelected} className={`bg-i-green w-full text-white rounded-[8px] h-[44px] ${!scheduleSelected && 'bg-slate-200 cursor-not-allowed'}`} onClick={() => {saveNextAppointment()}}>
                             ยืนยันวันนัด
                         </button>
                     </div>

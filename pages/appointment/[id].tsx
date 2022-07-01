@@ -16,18 +16,23 @@ const VideoCard = dynamic(
 );
 
 function Appointment() {
+    const [loading, setLoading] = useState(true)
     const [groupId, setGroupId] = useState('');
     const [memberId, setMemberId] = useState<string | undefined>('');
-    const [patient, setPatient] = useState(null);
+    const [patient, setPatient] = useState<any>();
     const [specialistId, setSpecialistId] = useState('')
+    const [appointmentId, setAppointmentId] = useState('')
 
     const router = useRouter();
 
     useEffect(() => {
         if (router.isReady) {
-            getPatient();
-            getGroupId(); // get groupId for video call
-            getAppointment();
+            (async () => {
+                await getPatient();
+                await getAppointment();
+                await getGroupId(); // get groupId for video call
+                setLoading(false)
+            })();
         }
     }, [router]);
 
@@ -42,6 +47,7 @@ function Appointment() {
         const res = await patientApi.getAppointmentByMemberId(router.query.id?.toString())
         console.log('app', res)
         setSpecialistId(res.data.appointment_specialist_id)
+        setAppointmentId(res.data.apppointment_id)
     }
 
     async function getGroupId() {
@@ -56,7 +62,7 @@ function Appointment() {
     return (
         <div className="h-full flex flex-col bg-[#CBD5DD]">
             <TopNav />
-            {patient && (
+            {!loading && (
                 <section className="flex flex-row flex-grow animate-[fadeIn_.5s_ease-in] h-[90vh]">
                     <div className="flex flex-col flex-grow">
                         <div className="">
@@ -71,7 +77,7 @@ function Appointment() {
                     </div>
                     <div className="w-[400px] bg-white">
                         <div className="">
-                            <VideoCard groupId={groupId} displayName="คุณหมอ" memberId={memberId ? memberId : ''} specialistId={specialistId}/>
+                            <VideoCard groupId={groupId} displayName="คุณหมอ" memberId={memberId ? memberId : ''} appointmentId={appointmentId}/>
                         </div>
                         <div className=""></div>
                     </div>
