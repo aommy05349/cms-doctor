@@ -28,5 +28,14 @@ export default {
             return error;
         }
     },
+    endCall: async (data) => {
+        try {
+            const url = `/telemigraine/listenning`;
+            const res = await apiApp.post(url, data);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    }
     
 };

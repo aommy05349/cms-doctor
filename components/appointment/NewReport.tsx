@@ -40,9 +40,10 @@ interface PatientData {
 
 type NewReportProps = {
     patient: PatientData;
+    specialistId: string;
 };
 
-export default function NewReport({ patient }: NewReportProps) {
+export default function NewReport({ patient, specialistId }: NewReportProps) {
     const [formData, setFormData] = useState<any | never>(defaultForm);
     const [isShowModalMedicine, setIsShowModalMedicine] = useState(false);
     const [searchResult, setSearchResult] = useState([]);
@@ -110,8 +111,8 @@ export default function NewReport({ patient }: NewReportProps) {
     }
 
     async function getSpecialist() {
-        const specialistId = 1;
         const res = await specialistApi.getSpecialistById(specialistId);
+        console.log('spec', res.data)
         const result = res.data.available_date.map((e: string) => new Date(e));
         setIncludeDate(result);
     }

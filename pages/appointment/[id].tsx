@@ -19,6 +19,7 @@ function Appointment() {
     const [groupId, setGroupId] = useState('');
     const [memberId, setMemberId] = useState<string | undefined>('');
     const [patient, setPatient] = useState(null);
+    const [specialistId, setSpecialistId] = useState('')
 
     const router = useRouter();
 
@@ -26,6 +27,7 @@ function Appointment() {
         if (router.isReady) {
             getPatient();
             getGroupId(); // get groupId for video call
+            getAppointment();
         }
     }, [router]);
 
@@ -34,6 +36,12 @@ function Appointment() {
         setMemberId(memberIdStr);
         const res = await patientApi.getPatient(memberIdStr);
         setPatient(res);
+    }
+
+    async function getAppointment() {
+        const res = await patientApi.getAppointmentByMemberId(router.query.id?.toString())
+        console.log('app', res)
+        setSpecialistId(res.data.appointment_specialist_id)
     }
 
     async function getGroupId() {
@@ -55,7 +63,7 @@ function Appointment() {
                             <PatientCard data={patient} />
                         </div>
                         <div className="flex-grow bg-[#CBD5DD] p-5 overflow-auto">
-                            <NewReport patient={patient} />
+                            <NewReport patient={patient} specialistId={specialistId}/>
                             <ReportHistory
                                 memberId={memberId ? memberId : ''}
                             />
@@ -63,7 +71,7 @@ function Appointment() {
                     </div>
                     <div className="w-[400px] bg-white">
                         <div className="">
-                            <VideoCard groupId={groupId} displayName="คุณหมอ" />
+                            <VideoCard groupId={groupId} displayName="คุณหมอ" memberId={memberId ? memberId : ''} specialistId={specialistId}/>
                         </div>
                         <div className=""></div>
                     </div>

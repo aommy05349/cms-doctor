@@ -10,49 +10,20 @@ import { createAutoRefreshingCredential } from '../../utils/creadential';
 import { Spinner } from '@fluentui/react';
 import { teleApiApp } from '../../services/config';
 import { specialistApi } from '../../services';
-
-const currentTheme = {
-    callingPalette: {
-        callRed: '#a42e43',
-        callRedDark: '#8b2c3d',
-        callRedDarker: '#772a38',
-        iconWhite: '#ffffff',
-    },
-    palette: {
-        black: '#000000',
-        neutralDark: '#201f1e',
-        neutralLight: '#edebe9',
-        neutralLighter: '#f3f2f1',
-        neutralLighterAlt: '#faf9f8',
-        neutralPrimary: '#323130',
-        neutralPrimaryAlt: '#3b3a39',
-        neutralQuaternary: '#d0d0d0',
-        neutralQuaternaryAlt: '#e1dfdd',
-        neutralSecondary: '#605e5c',
-        neutralTertiary: '#a19f9d',
-        neutralTertiaryAlt: '#c8c6c4',
-        themeDark: '#59b0f7',
-        themeDarkAlt: '#106ebe',
-        themeDarker: '#004578',
-        themeLight: '#c7e0f4',
-        themeLighter: '#deecf9',
-        themeLighterAlt: '#eff6fc',
-        themePrimary: '#0078d4',
-        themeSecondary: '#2b88d8',
-        themeTertiary: '#71afe5',
-        white: '#ffffff',
-    },
-};
+import {currentTheme} from '../../utils/videoCardTheme'
 
 type VideoCardProp = {
     groupId: string;
     displayName: string;
+    memberId: string;
+    specialistId: string;
 };
 
-export default function VideoCard({ groupId, displayName }: VideoCardProp) {
+export default function VideoCard({ groupId, displayName, memberId, specialistId }: VideoCardProp) {
     const [adapter, setAdapter] = useState<CallAdapter>();
     const callIdRef = useRef<string>();
     const adapterRef = useRef<CallAdapter>();
+    const [statusState, setStatusState] = useState<any>('') 
 
     useEffect(() => {
         if (!callIdRef.current) {
@@ -65,21 +36,48 @@ export default function VideoCard({ groupId, displayName }: VideoCardProp) {
         getToken();
     }, []);
 
+    useEffect(() => {
+        console.log('statusState', statusState)
+    }, [statusState])
+
     async function getToken() {
         // const url = `${process.env.NEXT_PUBLIC_TELE_API}/token`;
         // const res = await teleApiApp.get(url);
         // console.log('get token', res);
         // getAdaptor(res.data.user, res.data.token);
+        console.log('specialistId', specialistId)
+        const res = await specialistApi.getSpecialistToken(specialistId);
+        if (res.data) {
+            console.log('res', res.data.room_patient_user_access_token);
+            getAdaptor(
+                {
+                    communicationUserId: res.data.room_doctor_identify_token,
+                },
+                res.data.room_patient_user_access_token
+            );
+        } else {
+            console.log(res)
+        }
+    }
 
-        const mockId = 292;
-        const res = await specialistApi.getSpecialistToken(mockId);
-        console.log('res', res.data.room_doctor_user_access_token);
-        getAdaptor(
-            {
-                communicationUserId: res.data.room_doctor_identify_token,
-            },
-            res.data.room_patient_user_access_token
-        );
+    async function startCall() {
+        const data = {
+            member_id: memberId,
+            doctor_in_room: true,
+            successful_doctor_consultation: false
+        }
+        const res = await specialistApi.endCall(data)
+        console.log('end call', res);
+    }
+
+    async function endCall() {
+        const data = {
+            member_id: memberId,
+            doctor_in_room: true,
+            successful_doctor_consultation: false
+        }
+        const res = await specialistApi.endCall(data)
+        console.log('end call', res);
     }
 
     async function getAdaptor(user: any, token: string) {
@@ -96,17 +94,16 @@ export default function VideoCard({ groupId, displayName }: VideoCardProp) {
             locator: callLocator,
         });
         adapter.on('callEnded', () => {
-            console.log('call end');
-        });
-        adapter.on('callIdChanged', () => {
-            console.log('callIdChanged');
+            endCall()
         });
         adapter.on('error', (e) => {
             console.log('Adapter error event:', e);
         });
         adapter.onStateChange((state: CallAdapterState) => {
-            document.title = `webAppTitle`;
+            // document.title = `webAppTitle`;
             callIdRef.current = state?.call?.id;
+            console.log('state', state && state.call)
+            setStatusState(state.call)
         });
         setAdapter(adapter);
         adapterRef.current = adapter;

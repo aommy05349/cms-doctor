@@ -68,4 +68,13 @@ export default {
             return error;
         }
     },
+    getAppointmentByMemberId: async (memberId)=> {
+        try {
+            const url = `/appointment/${memberId}/schedule`;
+            const res = await apiApp.get(url);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    }
 };
