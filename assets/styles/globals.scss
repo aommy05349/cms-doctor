@@ -58,22 +58,25 @@ table {
     }
 }
 
-button[data-ui-id="call-composite-start-call-button"] {
-    background: #25AC67 !important;
+button[data-ui-id='call-composite-start-call-button'] {
+    background: #25ac67 !important;
     border-radius: 8px;
     border: none;
     font-family: Noto-Thai-Medium, Noto-Medium;
-    transition: .3s;
+    transition: 0.3s;
+    cursor: pointer;
+    color: white;
     &:hover {
         border: none;
         background: #2bc173 !important;
     }
 }
 
-button[data-ui-id="call-composite-hangup-button"] {
-    background: #E54D3F !important;
+button[data-ui-id='call-composite-hangup-button'] {
+    background: #e54d3f !important;
     border-radius: 8px;
     border: none;
+    cursor: pointer;
     &:hover {
         border: none;
         background: #f44737 !important;

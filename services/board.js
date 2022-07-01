@@ -11,4 +11,17 @@ export default {
             return error;
         }
     },
+    cancelAppointment: async (appointmentId) => {
+        try {
+            const url = '/appointment/specialists';
+            const data = {
+                doctor_appointment_id: appointmentId,
+                doctor_appointment_status: 3,
+            };
+            const res = await apiApp.patch(url, data);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
 };
