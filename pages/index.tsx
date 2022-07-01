@@ -150,7 +150,7 @@ function Home() {
                     <div className="mr-1">รายชื่อ</div>
                     <div className="text-i-green">
                         <select
-                            className="border-none"
+                            className="border-none cursor-pointer"
                             value={filters.categories}
                             onChange={(event) => {
                                 setFilters({
@@ -237,11 +237,12 @@ function Home() {
                                             <div className="pr-2">
                                                 {e.doctor_appointment_time}
                                             </div>
+                                            {e.timeText && (
+                                                <div className="pr-2">
+                                                    {`(เหลือเวลาอีก -${e.timeText}นาที ก่อนระบบเลื่อนคิวคนไข้)`}
+                                                </div>
+                                            )}
                                             <div className="pr-2">
-                                                {e.timeText}
-                                            </div>
-                                            <div className="pr-2">
-                                                <div className=""></div>
                                                 <div className="">
                                                     <span
                                                         className={`rounded-[20px] px-4 py-1 ${

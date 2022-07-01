@@ -23,11 +23,11 @@ export default function TopNav() {
                 <span className="ml-2">#HN938405</span>
             </div>
             <div className="p-4 flex-grow flex justify-end items-center">
-                <span>เหลือเวลาอีก -14:52 นาที ก่อนระบบเลื่อนคิวคนไข้</span>
+                {/* <span>เหลือเวลาอีก -14:52 นาที ก่อนระบบเลื่อนคิวคนไข้</span>
                 <button className="bg-i-green text-white w-[80px] h-[32px] rounded-[6px] ml-3">
                     <FontAwesomeIcon icon={faPhone} />
                     <span className="ml-1">Call</span>
-                </button>
+                </button> */}
             </div>
         </section>
     );

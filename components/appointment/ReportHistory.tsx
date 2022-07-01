@@ -45,7 +45,7 @@ export default function ReportHistory({ memberId }: ReportProps) {
                                     <h2 className="font-noto-bold text-[14px] mb-2">
                                         รายละเอียด
                                     </h2>
-                                    <h3 className="text-[#179B97]">
+                                    <h3 className="text-[#179B97] mb-2">
                                         ความถี่และความรุนแรง
                                     </h3>
                                     <p className="mb-2 ml-2">
@@ -54,13 +54,13 @@ export default function ReportHistory({ memberId }: ReportProps) {
                                                 .frequency_and_severity
                                         }
                                     </p>
-                                    <h3 className="text-[#179B97]">
+                                    <h3 className="text-[#179B97] mb-2">
                                         สิ่งกระตุ้น
                                     </h3>
                                     <p className="mb-2 ml-2">
                                         {data.patient_report.trigger_note}
                                     </p>
-                                    <h3 className="text-[#179B97]">
+                                    <h3 className="text-[#179B97] mb-2">
                                         พฤติกรรมกระตุ้น หรือลดไมเกรน
                                     </h3>
                                     <p className="mb-2 ml-2">
@@ -69,21 +69,25 @@ export default function ReportHistory({ memberId }: ReportProps) {
                                                 .behaviors_trigger_reduce_migraines
                                         }
                                     </p>
-                                    <h3 className="text-[#179B97]">ยาแก้ปวด</h3>
+                                    <h3 className="text-[#179B97] mb-2">
+                                        ยาแก้ปวด
+                                    </h3>
                                     <p className="mb-2 ml-2">
                                         {data.patient_report.acute}
                                     </p>
-                                    <h3 className="text-[#179B97]">
+                                    <h3 className="text-[#179B97] mb-2">
                                         ยาป้องกัน
                                     </h3>
                                     <p className="mb-2 ml-2">
                                         {data.patient_report.prevention}
                                     </p>
-                                    <h3 className="text-[#179B97]">โรคร่วม</h3>
+                                    <h3 className="text-[#179B97] mb-2">
+                                        โรคร่วม
+                                    </h3>
                                     <p className="mb-2 ml-2">
                                         {data.patient_report.comorbidity}
                                     </p>
-                                    <h3 className="text-[#179B97]">
+                                    <h3 className="text-[#179B97] mb-2">
                                         บันทึก อื่นๆ
                                     </h3>
                                     <p className="mb-2 ml-2">
@@ -97,11 +101,15 @@ export default function ReportHistory({ memberId }: ReportProps) {
                                     <button className="absolute right-2 top-2 bg-[#EFFAF5] text-i-green rounded-[8px] px-4 py-2">
                                         ส่งสรุปการรักษา
                                     </button>
-                                    <h3 className="text-[#179B97]">วินิจฉัย</h3>
+                                    <h3 className="text-[#179B97] mb-2">
+                                        วินิจฉัย
+                                    </h3>
                                     <p className="mb-2 ml-2">
                                         {data.patient_report.diagnose}
                                     </p>
-                                    <h3 className="text-[#179B97]">คำแนะนำ</h3>
+                                    <h3 className="text-[#179B97] mb-2">
+                                        คำแนะนำ
+                                    </h3>
                                     <p className="mb-2 ml-2">
                                         {data.patient_report.advice}
                                     </p>
