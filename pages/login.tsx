@@ -16,7 +16,6 @@ export default function LoginPage() {
     const [loading, setLoading] = useState<boolean>(false);
 
     async function login(e: any) {
-        e.preventDefault();
         setLoading(true);
         const res = await authApi.login({
             usrnm: email,
@@ -28,6 +27,7 @@ export default function LoginPage() {
             const resSetCookie = await authApi.createSession(res.data.token);
             console.log('resSetCookie', resSetCookie);
             if (resSetCookie.status == 'success') {
+                e.preventDefault();
                 Router.push('/');
             } else {
                 setLoading(false);
