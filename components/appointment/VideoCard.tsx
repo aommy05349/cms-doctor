@@ -11,6 +11,8 @@ import { Spinner } from '@fluentui/react';
 import { teleApiApp } from '../../services/config';
 import { specialistApi } from '../../services';
 import {currentTheme} from '../../utils/videoCardTheme'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 type VideoCardProp = {
     groupId: string;
@@ -23,8 +25,7 @@ export default function VideoCard({ groupId, displayName, memberId, appointmentI
     const [adapter, setAdapter] = useState<CallAdapter>();
     const callIdRef = useRef<string>();
     const adapterRef = useRef<CallAdapter>();
-    const [statusState, setStatusState] = useState<any>('') 
-
+    const [statusState, setStatusState] = useState<any>('')
     useEffect(() => {
         if (!callIdRef.current) {
             return;
@@ -43,10 +44,6 @@ export default function VideoCard({ groupId, displayName, memberId, appointmentI
     }, [statusState])
 
     async function getToken() {
-        // const url = `${process.env.NEXT_PUBLIC_TELE_API}/token`;
-        // const res = await teleApiApp.get(url);
-        // console.log('get token', res);
-        // getAdaptor(res.data.user, res.data.token);
         console.log('appointmentId : ', appointmentId)
         const res = await specialistApi.getSpecialistToken(appointmentId);
         if (res.data) {
@@ -117,20 +114,19 @@ export default function VideoCard({ groupId, displayName, memberId, appointmentI
 
     if (!adapter) {
         return (
-            <Spinner
-                label={'Video Call Loading'}
-                ariaLive="assertive"
-                labelPosition="top"
-            />
+            <div className="flex flex-col justify-center items-center h-[400px] w-full">
+                <FontAwesomeIcon icon={faSpinner} spin className="text-[30px] text-gray-300" />
+                <h2 className="mt-2 text-gray-300">กำลังโหลดวิดีโอ</h2>
+            </div>
         );
     }
 
     return (
         <div>
-            <div className="video-frame h-[500px] w-full">
+            <div className="video-frame h-[400px] w-full">
                 <CallComposite
                     adapter={adapter}
-                    callInvitationUrl={`http://localhost:3000/?groupId=${groupId}`}
+                    callInvitationUrl={`${window.location.href}?ref=${new Date()}`}
                     formFactor="mobile"
                     rtl={false}
                     fluentTheme={currentTheme}

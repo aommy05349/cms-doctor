@@ -28,7 +28,7 @@ export default function LoginPage() {
             const resSetCookie = await authApi.createSession(res.data.token);
             console.log('resSetCookie', resSetCookie);
             try {
-                Router.push('/');
+                location.href='/'
             } catch (error) {
                 setLoading(false)
                 console.log(error);
