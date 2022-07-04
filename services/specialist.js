@@ -45,6 +45,60 @@ export default {
         } catch (error) {
             return error;
         }
+    },
+    resendAppointment: async (data) => {
+        try {
+            const url = '/telemigraine/chatrooms';
+            const res = await apiApp.post(url, data);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
+    createOrders: async (data) => {
+        try {
+            const url = '/telemigraine/order';
+            const res = await apiApp.post(url, data);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
+    createReport: async (data) => {
+        try {
+            const url = '/telemigraine/report';
+            const res = await apiApp.post(url, data);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
+    updateStatusSuccessConsult: async (data) => {
+        try {
+            const url = '/appointment/specialists';
+            const res = await apiApp.patch(url, data);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
+    sendToChat: async (data) => {
+        try {
+            const url = '/telemigraine/chatrooms';
+            const res = await apiApp.post(url, data);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
+    getAppointmentById: async (appointmentId) => {
+        try {
+            const url = `/telemigraine/appointment/${appointmentId}`;
+            const res = await apiApp.get(url);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
     }
     
 };

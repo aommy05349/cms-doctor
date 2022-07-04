@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { patientApi } from '../../services';
+import Swal from 'sweetalert2';
+import { patientApi, specialistApi } from '../../services';
 
 interface ReportProps {
     memberId: string;
@@ -17,6 +18,14 @@ export default function ReportHistory({ memberId }: ReportProps) {
     useEffect(() => {
         getHistoryReports();
     }, [router]);
+
+    async function resendAppointment(dateStr: string, timerStr: string) {
+        Swal.fire({
+            title: 'เรียบร้อย',
+            text: `ทำการส่งสรุปการรักษาของวันที่ ${dateStr} ${timerStr}`,
+            icon: 'success'
+        })
+    }
 
     return (
         <div>
@@ -98,7 +107,7 @@ export default function ReportHistory({ memberId }: ReportProps) {
                                     <h2 className="font-noto-bold text-[14px] mb-2">
                                         คำสั่งรักษา
                                     </h2>
-                                    <button className="absolute right-2 top-2 bg-[#EFFAF5] text-i-green rounded-[8px] px-4 py-2">
+                                    <button onClick={() => {resendAppointment(data.header_report.appointment_date, data.header_report.appointment_time)}} className="absolute right-2 top-2 bg-[#EFFAF5] text-i-green rounded-[8px] px-4 py-2">
                                         ส่งสรุปการรักษา
                                     </button>
                                     <h3 className="text-[#179B97] mb-2">

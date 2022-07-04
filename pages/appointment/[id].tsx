@@ -69,7 +69,7 @@ function Appointment() {
                             <PatientCard data={patient} />
                         </div>
                         <div className="flex-grow bg-[#CBD5DD] p-5 overflow-auto">
-                            <NewReport patient={patient} specialistId={specialistId}/>
+                            <NewReport patient={patient} specialistId={specialistId} appointmentId={appointmentId}/>
                             <ReportHistory
                                 memberId={memberId ? memberId : ''}
                             />

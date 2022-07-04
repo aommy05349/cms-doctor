@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import axios from 'axios';
 import {
     CallAdapter,
     CallComposite,
@@ -7,8 +6,6 @@ import {
     createAzureCommunicationCallAdapter,
 } from '@azure/communication-react';
 import { createAutoRefreshingCredential } from '../../utils/creadential';
-import { Spinner } from '@fluentui/react';
-import { teleApiApp } from '../../services/config';
 import { specialistApi } from '../../services';
 import {currentTheme} from '../../utils/videoCardTheme'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -34,6 +31,7 @@ export default function VideoCard({ groupId, displayName, memberId, appointmentI
 
     useEffect(() => {
         console.log('groupId', groupId);
+        console.log('room url', `${window.location.href}?room=${appointmentId}`);
         getToken();
     }, []);
 
@@ -99,7 +97,6 @@ export default function VideoCard({ groupId, displayName, memberId, appointmentI
             console.log('Adapter error event:', e);
         });
         adapter.onStateChange((state: CallAdapterState) => {
-            // document.title = `webAppTitle`;
             callIdRef.current = state?.call?.id;
             const newState = state.call ? state.call.state : ''
             if (newState != statusState)
@@ -114,7 +111,7 @@ export default function VideoCard({ groupId, displayName, memberId, appointmentI
 
     if (!adapter) {
         return (
-            <div className="flex flex-col justify-center items-center h-[400px] w-full">
+            <div className="flex flex-col justify-center items-center h-[500px] w-full">
                 <FontAwesomeIcon icon={faSpinner} spin className="text-[30px] text-gray-300" />
                 <h2 className="mt-2 text-gray-300">กำลังโหลดวิดีโอ</h2>
             </div>
@@ -123,10 +120,10 @@ export default function VideoCard({ groupId, displayName, memberId, appointmentI
 
     return (
         <div>
-            <div className="video-frame h-[400px] w-full">
+            <div className="video-frame h-[500px] w-full">
                 <CallComposite
                     adapter={adapter}
-                    callInvitationUrl={`${window.location.href}?ref=${new Date()}`}
+                    callInvitationUrl={`${window.location.href}?room=${appointmentId}`}
                     formFactor="mobile"
                     rtl={false}
                     fluentTheme={currentTheme}

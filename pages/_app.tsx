@@ -13,7 +13,6 @@ type AppPropsWithLayout = AppProps & {
     Component: NextPageWithLayout;
 };
 
-console.log('app init');
 const tokenAuth = getCookie('cms-doctor-cookie');
 if (tokenAuth) {
     apiApp.defaults.headers.common['Authorization'] = 'Bearer ' + tokenAuth;
