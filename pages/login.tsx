@@ -16,6 +16,7 @@ export default function LoginPage() {
     const [loading, setLoading] = useState<boolean>(false);
 
     async function login(e: any) {
+        e.preventDefault();
         setLoading(true);
         const res = await authApi.login({
             usrnm: email,
@@ -26,12 +27,11 @@ export default function LoginPage() {
                 'Bearer ' + res.data.token;
             const resSetCookie = await authApi.createSession(res.data.token);
             console.log('resSetCookie', resSetCookie);
-            if (resSetCookie.status == 'success') {
-                e.preventDefault();
+            try {
                 Router.push('/');
-            } else {
-                setLoading(false);
-                console.log(resSetCookie);
+            } catch (error) {
+                setLoading(false)
+                console.log(error);
             }
         }
     }
