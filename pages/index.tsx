@@ -104,7 +104,7 @@ function Home() {
             confirmButtonText: 'ตกลง',
             cancelButtonColor: '#ccc',
             confirmButtonColor: '#E54D3F',
-        }).then(async (confirm) => {
+        }).then(async (confirm: any) => {
             if (confirm.isConfirmed) {
                 const res = await boardApi.cancelAppointment(appointmentId);
                 if (res.success) {
