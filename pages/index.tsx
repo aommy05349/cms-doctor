@@ -114,6 +114,8 @@ function Home() {
                         icon: 'success',
                         timer: 2000,
                         showConfirmButton: false,
+                    }).then(() => {
+                        getList();
                     });
                 } else {
                     Swal.fire({
@@ -210,7 +212,7 @@ function Home() {
                                     <div
                                         className="flex flex-col pl-4 flex-grow flex-wrap"
                                         onClick={() => {
-                                            location.href=`appointment/${e.member_id}`
+                                            location.href = `appointment/${e.member_id}`;
                                         }}
                                     >
                                         <div className="">

@@ -4,6 +4,7 @@ import type { ReactElement, ReactNode } from 'react';
 import type { NextPage } from 'next';
 import { getCookie } from 'cookies-next';
 import { apiApp } from '../services/config';
+import { AppWrapper } from '../contexts/state';
 
 type NextPageWithLayout = NextPage & {
     getLayout?: (page: ReactElement) => ReactNode;
@@ -20,7 +21,7 @@ if (tokenAuth) {
 
 function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     const getLayout = Component.getLayout ?? ((page) => page);
-    return getLayout(<Component {...pageProps} />);
+    return <AppWrapper>{getLayout(<Component {...pageProps} />)}</AppWrapper>;
 }
 
 export default MyApp;

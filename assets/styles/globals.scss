@@ -83,3 +83,11 @@ button[data-ui-id='call-composite-hangup-button'] {
         background: #f44737 !important;
     }
 }
+
+.ms-StackItem.css-178 {
+    display: none;
+}
+
+div[data-ui-id='call-composite-local-preview'] {
+    margin-top: 0px !important;
+}

@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faPhone } from '@fortawesome/free-solid-svg-icons';
+import {
+    faChevronLeft,
+    faPhone,
+    faStethoscope,
+} from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 import Swal from 'sweetalert2';
 
@@ -19,7 +23,7 @@ export default function TopNav() {
             confirmButtonColor: '#25AC67',
         }).then(async (confirm: any) => {
             if (confirm.isConfirmed) {
-                location.href="/"
+                location.href = '/';
             }
         });
     }
@@ -31,7 +35,7 @@ export default function TopNav() {
                     className="w-[40px] h-[40px] rounded-full hover:bg-white ease-in duration-200"
                     onClick={() => {
                         // เพิ่ม confirm box กรณี ที่ไม่ได้ ใส่ข้อมูลรายงานทั้งหมด
-                        confirmBack()
+                        confirmBack();
                     }}
                 >
                     <FontAwesomeIcon
@@ -43,11 +47,11 @@ export default function TopNav() {
                 <span className="ml-2">#HN938405</span>
             </div>
             <div className="p-4 flex-grow flex justify-end items-center">
-                {/* <span>เหลือเวลาอีก -14:52 นาที ก่อนระบบเลื่อนคิวคนไข้</span>
-                <button className="bg-i-green text-white w-[80px] h-[32px] rounded-[6px] ml-3">
-                    <FontAwesomeIcon icon={faPhone} />
-                    <span className="ml-1">Call</span>
-                </button> */}
+                <FontAwesomeIcon
+                    icon={faStethoscope}
+                    className="mr-2 text-i-green"
+                />
+                <span>เหลือเวลาอีก -14:52 นาที ก่อนระบบเลื่อนคิวคนไข้</span>
             </div>
         </section>
     );

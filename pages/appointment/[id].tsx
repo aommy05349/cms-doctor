@@ -72,7 +72,7 @@ function Appointment() {
             {!loading && (
                 <section className="flex flex-row flex-grow animate-[fadeIn_.5s_ease-in] h-[90vh]">
                     <div className="flex flex-col flex-grow">
-                        <div className="">
+                        <div className="border-r-[1px] border-gray-100">
                             <PatientCard data={patient} />
                         </div>
                         <div className="flex-grow bg-[#CBD5DD] p-5 overflow-auto">
