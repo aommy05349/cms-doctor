@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Router, { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 import { authApi } from '../services';
 import { apiApp } from '../services/config';
 
@@ -33,6 +34,13 @@ export default function LoginPage() {
                 setLoading(false)
                 console.log(error);
             }
+        } else {
+            setLoading(false)
+            Swal.fire({
+                title: 'ไม่สามารถเข้าสู่ระบบได้',
+                text: 'กรุณาตรวจสอบอีเมลและรหัสผ่านของท่านอีกครั้ง',
+                icon: 'error'
+            })
         }
     }
 

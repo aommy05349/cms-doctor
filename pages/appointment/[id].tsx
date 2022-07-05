@@ -16,12 +16,13 @@ const VideoCard = dynamic(
 );
 
 function Appointment() {
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
     const [groupId, setGroupId] = useState('');
     const [memberId, setMemberId] = useState<string | undefined>('');
     const [patient, setPatient] = useState<any>();
-    const [specialistId, setSpecialistId] = useState('')
-    const [appointmentId, setAppointmentId] = useState('')
+    const [specialistId, setSpecialistId] = useState('');
+    const [appointmentId, setAppointmentId] = useState('');
+    const [listeningAppointmentId, setListeningAppointmentId] = useState();
 
     const router = useRouter();
 
@@ -31,7 +32,7 @@ function Appointment() {
                 await getPatient();
                 await getAppointment();
                 await getGroupId(); // get groupId for video call
-                setLoading(false)
+                setLoading(false);
             })();
         }
     }, [router]);
@@ -44,15 +45,21 @@ function Appointment() {
     }
 
     async function getAppointment() {
-        const res = await patientApi.getAppointmentByMemberId(router.query.id?.toString())
-        console.log('app', res)
-        setSpecialistId(res.data.appointment_specialist_id)
-        setAppointmentId(res.data.apppointment_id)
+        const res = await patientApi.getAppointmentByMemberId(
+            router.query.id?.toString()
+        );
+        console.log('app', res);
+        if (res.data) {
+            setSpecialistId(res.data.appointment_specialist_id);
+            setAppointmentId(res.data.apppointment_id);
+        }
     }
 
     async function getGroupId() {
         const res = await patientApi.getListenning(router.query.id?.toString());
+        console.log('getGroupId', res);
         if (res.data) {
+            setListeningAppointmentId(res.data.id);
             setGroupId(res.data.group_id);
         } else {
             console.error('not data listening');
@@ -69,7 +76,11 @@ function Appointment() {
                             <PatientCard data={patient} />
                         </div>
                         <div className="flex-grow bg-[#CBD5DD] p-5 overflow-auto">
-                            <NewReport patient={patient} specialistId={specialistId} appointmentId={appointmentId}/>
+                            <NewReport
+                                patient={patient}
+                                specialistId={specialistId}
+                                appointmentId={appointmentId}
+                            />
                             <ReportHistory
                                 memberId={memberId ? memberId : ''}
                             />
@@ -77,7 +88,12 @@ function Appointment() {
                     </div>
                     <div className="w-[400px] bg-white">
                         <div className="">
-                            <VideoCard groupId={groupId} displayName="คุณหมอ" memberId={memberId ? memberId : ''} appointmentId={appointmentId}/>
+                            <VideoCard
+                                groupId={groupId}
+                                displayName="คุณหมอ"
+                                memberId={memberId ? memberId : ''}
+                                appointmentId={appointmentId}
+                            />
                         </div>
                         <div className=""></div>
                     </div>

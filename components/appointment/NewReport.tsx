@@ -15,6 +15,7 @@ import th from 'date-fns/locale/th';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 registerLocale('th', th);
+import firebase from '../../utils/firebase'
 
 const defaultForm = {
     frequency_and_severity: '',
@@ -46,7 +47,7 @@ type NewReportProps = {
 export default function NewReport({
     patient,
     specialistId,
-    appointmentId,
+    appointmentId
 }: NewReportProps) {
     const [formData, setFormData] = useState<any | never>(defaultForm);
     const [isShowModalMedicine, setIsShowModalMedicine] = useState(false);
@@ -159,10 +160,25 @@ export default function NewReport({
         );
         console.log(res.data);
         if (res.data) {
-            setScheduleAppointment(res.data);
+            const schedules = res.data.filter((e:any) => e.is_available)
+            setScheduleAppointment(schedules);
         } else {
             setScheduleAppointment([]);
         }
+    }
+
+    async function updateListeningNextAppointmentFirebase(nextAppointmentId: string) {
+        const start_time = scheduleSelected.start_time;
+        const end_time = scheduleSelected.end_time;
+        const data = {
+            next_appointment_date: dateSelected,
+            next_appointment_time: start_time + '-' + end_time,
+            next_appointment_id: nextAppointmentId,
+            member_id: patient.member_id
+        };
+        console.log('data send firebase', data);
+        
+        // call api
     }
 
     async function saveNextAppointment() {
@@ -174,14 +190,19 @@ export default function NewReport({
             schedule_time_id: scheduleSelected.schedule_time_id,
         };
         const res = await specialistApi.saveNextAppointment(data);
-        if (res.data.apppointment_id) {
-            Swal.fire({
-                title: 'เรียบร้อย',
-                text: 'การนัดหมายครั้งถัดไป ถูกสร้างแล้ว',
-                icon: 'success',
-            });
-            setNextAppointmentId(res.data.apppointment_id);
-        }
+
+        // New ยิง firebase
+        const resListening = await updateListeningNextAppointmentFirebase(res.data.apppointment_id)
+        console.log(resListening);
+        
+        // if (res.data.apppointment_id) {
+        //     Swal.fire({
+        //         title: 'เรียบร้อย',
+        //         text: 'การนัดหมายครั้งถัดไป ถูกสร้างแล้ว',
+        //         icon: 'success',
+        //     });
+        //     setNextAppointmentId(res.data.apppointment_id);
+        // }
     }
 
     async function createOrders() {
@@ -282,6 +303,10 @@ export default function NewReport({
         getSpecialist();
         setIsMigrainePremiumCare(patient.is_premium_member);
     }, []);
+
+    useEffect(() => {
+        console.log(scheduleSelected, dateSelected);
+    }, [scheduleSelected, dateSelected]);
 
     return (
         <>
