@@ -32,7 +32,7 @@ function Home() {
     async function getList() {
         setLoading(true);
         const res = await boardApi.getPatients(filters);
-        console.log('res.data', res.data);
+        console.log('Patient List', res.data.patient_list);
         if (res.data) {
             countdownTime(res.data.patient_list);
             setTotalPage(res.data.summary.total);
@@ -91,6 +91,8 @@ function Home() {
                 };
             });
             setAppointment(newAppointments);
+        } else {
+            setAppointment([])
         }
     }
 
@@ -297,7 +299,7 @@ function Home() {
                                 </div>
                             );
                         })}
-                    {!appointments && (
+                    {appointments.length == 0 && (
                         <p className="text-center mt-5 text-gray-400">
                             * ไม่พบรายการตรวจ
                         </p>

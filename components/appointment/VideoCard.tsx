@@ -52,6 +52,10 @@ export default function VideoCard({
             startCountdown();
             startCall();
         }
+        if (statusState == 'Disconnecting') {
+            clearCountdown();
+            endCall();
+        }
     }, [statusState]);
 
     async function getToken() {
@@ -81,7 +85,6 @@ export default function VideoCard({
     }
 
     async function endCall() {
-        clearCountdown();
         const data = {
             member_id: memberId,
             doctor_in_room: false,
@@ -104,9 +107,6 @@ export default function VideoCard({
             ),
             locator: callLocator,
         });
-        adapter.on('callEnded', () => {
-            endCall();
-        });
         adapter.on('error', (e) => {
             console.log('Adapter error event:', e);
         });
@@ -124,7 +124,7 @@ export default function VideoCard({
 
     if (!adapter) {
         return (
-            <div className="flex flex-col justify-center items-center h-[400px] w-full">
+            <div className="w-[400px] flex flex-col justify-center items-center h-[400px] w-full">
                 <FontAwesomeIcon
                     icon={faSpinner}
                     spin
@@ -136,15 +136,12 @@ export default function VideoCard({
     }
 
     return (
-        <div className="relative">
+        <div className="relative w-[400px]">
             {callCountdownText.minuteText != '' && (
-                <div className="right-4 top-4 z-[20] text-right font-noto-medium text-[14px] absolute animate-[fadeIn_.5s_ease-in]">
+                <div className="right-10 top-5 z-[20] text-right font-noto-medium text-[14px] absolute animate-[fadeIn_.5s_ease-in]">
                     <p className="flex justify-end items-center">
                         เหลือเวลาอีก {' : '}
                         <span
-                            onClick={() => {
-                                startCountdown();
-                            }}
                             className={`font-noto-bold text-[20px] font-bold ${
                                 callCountdownText.minuteText < 5 && 'text-i-red'
                             }`}
@@ -156,13 +153,21 @@ export default function VideoCard({
                 </div>
             )}
             <div className="video-frame h-[400px] w-full">
-                <CallComposite
-                    adapter={adapter}
-                    callInvitationUrl={`${window.location.href}?room=${appointmentId}`}
-                    formFactor="mobile"
-                    rtl={false}
-                    fluentTheme={currentTheme}
-                />
+                {statusState != 'Disconnecting' && (
+                    <CallComposite
+                        adapter={adapter}
+                        callInvitationUrl={`${window.location.href}?room=${appointmentId}`}
+                        formFactor="mobile"
+                        rtl={false}
+                        fluentTheme={currentTheme}
+                    />
+                )}
+                {statusState == 'Disconnecting' && (
+                    <div className="text-center h-[400px] w-full flex flex-col justify-center bg-gray-100">
+                        <h2 className="font-noto-medium text-[20px] mb-3">สิ้งสุดการสนทนา</h2>
+                        <p className='text-gray-700'>กรุณากด <b className='font-noto-medium'>ส่งสรุปการรักษา</b> ก่อนออกจากห้องตรวจ</p>
+                    </div>
+                )}
             </div>
         </div>
     );

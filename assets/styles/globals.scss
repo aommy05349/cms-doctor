@@ -91,3 +91,7 @@ button[data-ui-id='call-composite-hangup-button'] {
 div[data-ui-id='call-composite-local-preview'] {
     margin-top: 0px !important;
 }
+
+div[data-ui-id="left-call-page"] {
+    display: none !important;
+}

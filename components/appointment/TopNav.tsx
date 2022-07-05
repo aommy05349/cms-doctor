@@ -47,11 +47,11 @@ export default function TopNav() {
                 <span className="ml-2">#HN938405</span>
             </div>
             <div className="p-4 flex-grow flex justify-end items-center">
-                <FontAwesomeIcon
+                {/* <FontAwesomeIcon
                     icon={faStethoscope}
                     className="mr-2 text-i-green"
                 />
-                <span>เหลือเวลาอีก -14:52 นาที ก่อนระบบเลื่อนคิวคนไข้</span>
+                <span>เหลือเวลาอีก -14:52 นาที ก่อนระบบเลื่อนคิวคนไข้</span> */}
             </div>
         </section>
     );

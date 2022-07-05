@@ -87,7 +87,7 @@ function Appointment() {
                         </div>
                     </div>
                     <div className="w-[400px] bg-white">
-                        <div className="">
+                        <div className="w-[400px]">
                             <VideoCard
                                 groupId={groupId}
                                 displayName="คุณหมอ"

@@ -28,7 +28,12 @@ export function AppWrapper({ children }) {
     }
 
     function clearCountdown() {
+        console.log('clear');
         clearInterval(timer);
+        setCallCountdownText({
+            minuteText: '',
+            secondsText: '',
+        })
     }
 
     return (
