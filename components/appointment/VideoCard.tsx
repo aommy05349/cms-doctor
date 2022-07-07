@@ -14,14 +14,12 @@ import { useAppContext } from '../../contexts/state';
 
 type VideoCardProp = {
     groupId: string;
-    displayName: string;
     memberId: string;
     appointmentId: string;
 };
 
 export default function VideoCard({
     groupId,
-    displayName,
     memberId,
     appointmentId,
 }: VideoCardProp) {
@@ -61,13 +59,14 @@ export default function VideoCard({
     async function getToken() {
         console.log('appointmentId : ', appointmentId);
         const res = await specialistApi.getSpecialistToken(appointmentId);
+        console.log('room_doctor_identify_token', res.data)
         if (res.data) {
             console.log('res', res.data);
             getAdaptor(
                 {
                     communicationUserId: res.data.room_doctor_identify_token,
                 },
-                res.data.room_patient_user_access_token
+                res.data.room_doctor_user_access_token
             );
         } else {
             console.log(res);
@@ -100,7 +99,7 @@ export default function VideoCard({
         };
         const adapter = await createAzureCommunicationCallAdapter({
             userId: user,
-            displayName,
+            displayName: '',
             credential: createAutoRefreshingCredential(
                 user.communicationUserId,
                 token
@@ -124,7 +123,7 @@ export default function VideoCard({
 
     if (!adapter) {
         return (
-            <div className="w-[400px] flex flex-col justify-center items-center h-[400px] w-full">
+            <div className="w-[400px] flex flex-col justify-center items-center h-[450px] w-full">
                 <FontAwesomeIcon
                     icon={faSpinner}
                     spin
@@ -152,11 +151,11 @@ export default function VideoCard({
                     </p>
                 </div>
             )}
-            <div className="video-frame h-[400px] w-full">
+            <div className="video-frame h-[450px] w-full">
                 {statusState != 'Disconnecting' && (
                     <CallComposite
                         adapter={adapter}
-                        callInvitationUrl={`${window.location.href}?room=${appointmentId}`}
+                        callInvitationUrl={`http://localhost:3000`}
                         formFactor="mobile"
                         rtl={false}
                         fluentTheme={currentTheme}

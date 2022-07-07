@@ -15,7 +15,8 @@ import th from 'date-fns/locale/th';
 import moment from 'moment';
 import Swal from 'sweetalert2';
 registerLocale('th', th);
-import firebase from '../../utils/firebase'
+
+const MIGRAINE_CARE_PROGRAME_PRICE = 399;
 
 const defaultForm = {
     frequency_and_severity: '',
@@ -47,7 +48,7 @@ type NewReportProps = {
 export default function NewReport({
     patient,
     specialistId,
-    appointmentId
+    appointmentId,
 }: NewReportProps) {
     const [formData, setFormData] = useState<any | never>(defaultForm);
     const [isShowModalMedicine, setIsShowModalMedicine] = useState(false);
@@ -63,26 +64,45 @@ export default function NewReport({
         null
     );
     const [specialists, setSpecialists] = useState<any>(null);
+    const [totalPriceOrders, setTotalPriceOrder] = useState(0);
+    const [headerReport, setHeaderReport] = useState<any>()
 
     async function initFormData() {
         const res = await specialistApi.getAppointmentById(appointmentId);
-        console.log('getAppointmentById', res.data);
-        if (res.data && res.data.patient_order)
+        console.log('New Report Card => ', res.data);
+        setHeaderReport(res.data ? res.data.header_report : null)
+        if (res.data && res.data.next_doctor_appointment) {
+            setDateSelected(res.data.next_doctor_appointment.next_appointment_date)
+            setScheduleSelected(res.data.next_doctor_appointment.next_appointment_time)
+        }
+        if (res.data && res.data.patient_order) {
             setFormData({
                 ...formData,
-                patient_order: res.data.patient_order,
-            });
-        if (res.data && res.data.patient_report)
+                patient_order : res.data.patient_order
+            })
+        }
+        if (res.data && res.data.patient_report) {
             setFormData({
                 ...formData,
-                ...res.data.patient_report,
-            });
+                ...res.data.patient_report
+            })
+        }
         setFormData({
             ...formData,
             doctor_appointment_id: appointmentId,
             specialists_id: specialistId,
             member_id: patient.member_id,
         });
+    }
+
+    async function summaryOrderPrice() {
+        let totalPrice = 0;
+        formData.patient_order.map((e: any) => {
+            totalPrice += e.price * e.amount;
+        });
+        if (isMigrainePremiumCare && !patient.is_premium_member) totalPrice += MIGRAINE_CARE_PROGRAME_PRICE;
+        if (scheduleSelected) totalPrice += specialists.service_fee;
+        setTotalPriceOrder(totalPrice);
     }
 
     async function searchOrder(searchTerm: string) {
@@ -95,6 +115,8 @@ export default function NewReport({
     }
 
     function addOrder(order: any) {
+        console.log('add order => ', order);
+
         setFormData({
             ...formData,
             patient_order: [
@@ -152,7 +174,6 @@ export default function NewReport({
         const dateString = moment(date).format('YYYY-MM-DD');
         setDateSelected(dateString);
         setScheduleSelected(''); // clear schedule selected
-        console.log('dateString', dateString);
         const specialistId = 1;
         const res = await specialistApi.getScheduleAppointment(
             specialistId,
@@ -160,25 +181,11 @@ export default function NewReport({
         );
         console.log(res.data);
         if (res.data) {
-            const schedules = res.data.filter((e:any) => e.is_available)
+            const schedules = res.data.filter((e: any) => e.is_available);
             setScheduleAppointment(schedules);
         } else {
             setScheduleAppointment([]);
         }
-    }
-
-    async function updateListeningNextAppointmentFirebase(nextAppointmentId: string) {
-        const start_time = scheduleSelected.start_time;
-        const end_time = scheduleSelected.end_time;
-        const data = {
-            next_appointment_date: dateSelected,
-            next_appointment_time: start_time + '-' + end_time,
-            next_appointment_id: nextAppointmentId,
-            member_id: patient.member_id
-        };
-        console.log('data send firebase', data);
-        
-        // call api
     }
 
     async function saveNextAppointment() {
@@ -190,19 +197,27 @@ export default function NewReport({
             schedule_time_id: scheduleSelected.schedule_time_id,
         };
         const res = await specialistApi.saveNextAppointment(data);
-
-        // New ยิง firebase
-        const resListening = await updateListeningNextAppointmentFirebase(res.data.apppointment_id)
-        console.log(resListening);
+        console.log('saveAppointment api 1', res);
         
-        // if (res.data.apppointment_id) {
-        //     Swal.fire({
-        //         title: 'เรียบร้อย',
-        //         text: 'การนัดหมายครั้งถัดไป ถูกสร้างแล้ว',
-        //         icon: 'success',
-        //     });
-        //     setNextAppointmentId(res.data.apppointment_id);
-        // }
+        // New ยิง firebase
+        const dataSendFirebase = {
+            member_id: patient.member_id,
+            next_appointment_date: dateSelected,
+            next_appointment_id: res.data.apppointment_id,
+            next_appointment_time: `${scheduleSelected.start_time}-${scheduleSelected.end_time}`
+        }
+        const resFirebase = await specialistApi.updateNextAppointmentFirebase(dataSendFirebase)
+        console.log('resFirebase', resFirebase);
+        if (res.data.apppointment_id && resFirebase.success) {
+            Swal.fire({
+                title: 'เรียบร้อย',
+                text: 'การนัดหมายครั้งถัดไป ถูกสร้างแล้ว',
+                icon: 'success',
+            });
+            setNextAppointmentId(res.data.apppointment_id);
+        } else {
+            console.log('error something');
+        }
     }
 
     async function createOrders() {
@@ -218,8 +233,9 @@ export default function NewReport({
                 product_id_provider: 'mcp_clinic_3_months',
                 amount: 3,
                 indications: '',
+                price: MIGRAINE_CARE_PROGRAME_PRICE,
             };
-            if (isMigrainePremiumCare)
+            if (isMigrainePremiumCare && !patient.is_premium_member)
                 data.item_patient_order.push(migrainePremiumCare);
             const res = await specialistApi.createOrders(data);
             console.log('createOrders', res);
@@ -298,6 +314,13 @@ export default function NewReport({
         });
     }
 
+    function openDateModal() {
+        const dateString = moment(includeDates[0]).format('YYYY-MM-DD');
+        setDateSelected(dateString);
+        getScheduleAppointment(includeDates[0])
+        setIsShowModalDate(true)
+    }
+
     useEffect(() => {
         initFormData();
         getSpecialist();
@@ -308,12 +331,16 @@ export default function NewReport({
         console.log(scheduleSelected, dateSelected);
     }, [scheduleSelected, dateSelected]);
 
+    useEffect(() => {
+        summaryOrderPrice();
+    }, [formData, isMigrainePremiumCare, scheduleSelected]);
+
     return (
         <>
             {specialists && (
                 <div className="flex flex-col bg-white rounded-[6px] mb-[20px]">
                     <div className="p-4 flex flex-row text-[14px] border-b-2">
-                        <div>วันที่ 03/08/2565 เวลา 16:40-16:55</div>
+                        <div>{headerReport && headerReport.appointment_date} {headerReport && headerReport.appointment_time}</div>
                         <div className="flex-1 text-right">
                             {specialists.specialist_prename}{' '}
                             {specialists.specialist_fname}
@@ -454,11 +481,22 @@ export default function NewReport({
                                     </button>
                                 </div>
                                 <ol start={0}>
-                                    {isMigrainePremiumCare && (
+                                    {scheduleSelected && (
                                         <li className="flex flex-row">
                                             <span className="flex-1 py-2">
-                                                0. Migraine Care Programe 3
+                                                0. Tele Migraine {dateSelected} {scheduleSelected.start_time + ' - ' + scheduleSelected.end_time}
+                                            </span>
+                                            <span className="py-2 pr-2">{specialists.service_fee + ' บ.'}</span>
+                                        </li>
+                                    )}
+                                    {isMigrainePremiumCare && !patient.is_premium_member && (
+                                        <li className="flex flex-row">
+                                            <span className="flex-1 py-2">
+                                                {scheduleSelected ? 1 : 0}. Migraine Care Programe 3
                                                 เดือน
+                                            </span>
+                                            <span className="py-2 pr-2">
+                                                {`${MIGRAINE_CARE_PROGRAME_PRICE} บ.`}
                                             </span>
                                             {!patient.is_premium_member && (
                                                 <span
@@ -485,10 +523,16 @@ export default function NewReport({
                                                     key={index}
                                                 >
                                                     <span className="flex-1 py-2">
-                                                        {index + 1}.{' '}
+                                                        {index + (scheduleSelected && isMigrainePremiumCare ? 2 : 1)}.{' '}
                                                         {e.common_name}{' '}
                                                         {e.amount} {e.unit}{' '}
+                                                    </span>
+                                                    <span className="py-2 pr-2">
                                                         {e.indications}
+                                                    </span>
+                                                    <span className="py-2 pr-2">
+                                                        {e.price * e.amount}
+                                                        {' บ.'}
                                                     </span>
                                                     <span
                                                         className="py-2 cursor-pointer"
@@ -506,16 +550,20 @@ export default function NewReport({
                                         }
                                     )}
                                 </ol>
+                                <div className="text-right">
+                                    รวมทั้งหมด {totalPriceOrders} บ.
+                                </div>
                             </div>
                             <div>
                                 <div className="flex flex-row mb-2">
                                     <h2 className="flex-1 py-2 font-noto-bold text-[14px]">
                                         นัดตรวจครั้งต่อไป
                                     </h2>
-                                    <button
+                                    {!scheduleSelected && (
+                                        <button
                                         className="text-i-green font-noto-bold p-2"
                                         onClick={() => {
-                                            setIsShowModalDate(true);
+                                            openDateModal();
                                         }}
                                     >
                                         <FontAwesomeIcon
@@ -524,6 +572,7 @@ export default function NewReport({
                                         />
                                         เลือกวันตรวจ
                                     </button>
+                                    )}
                                 </div>
                                 <div className="">
                                     {dateSelected &&

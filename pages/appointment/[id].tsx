@@ -90,7 +90,6 @@ function Appointment() {
                         <div className="w-[400px]">
                             <VideoCard
                                 groupId={groupId}
-                                displayName="คุณหมอ"
                                 memberId={memberId ? memberId : ''}
                                 appointmentId={appointmentId}
                             />

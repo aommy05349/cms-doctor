@@ -27,20 +27,18 @@ export default function LoginPage() {
             apiApp.defaults.headers.common['Authorization'] =
                 'Bearer ' + res.data.token;
             const resSetCookie = await authApi.createSession(res.data.token);
-            console.log('resSetCookie', resSetCookie);
             try {
-                location.href = '/';
+                location.href='/'
             } catch (error) {
-                setLoading(false);
+                setLoading(false)
                 console.log(error);
             }
         } else {
-            setLoading(false);
             Swal.fire({
                 title: 'ไม่สามารถเข้าสู่ระบบได้',
                 text: 'กรุณาตรวจสอบอีเมลและรหัสผ่านของท่านอีกครั้ง',
-                icon: 'error',
-            });
+                icon: 'error'
+            })
         }
     }
 
@@ -85,7 +83,7 @@ export default function LoginPage() {
                     />
                 </div>
                 <div className="flex flex-row items-center w-full">
-                    <Link href="https://lin.ee/J41XqFo">
+                    <Link href="/">
                         <a className="flex-grow decoration-gray-400 underline text-[#6C6C6C] text-noto-bold hover:text-i-green ease-in duration-300">
                             ติดต่อเจ้าหน้าที่
                         </a>
