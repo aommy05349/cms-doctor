@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 import MainLayout from '../../components/layouts/Main';
 import TopNav from '../../components/appointment/TopNav';
 import { useRouter } from 'next/router';
-import { patientApi } from '../../services';
+import { patientApi, specialistApi } from '../../services';
 import PatientCard from '../../components/appointment/PatientCard';
 import ReportHistory from '../../components/appointment/ReportHistory';
 import NewReport from '../../components/appointment/NewReport';
@@ -21,46 +21,41 @@ function Appointment() {
     const [memberId, setMemberId] = useState<string | undefined>('');
     const [patient, setPatient] = useState<any>();
     const [specialistId, setSpecialistId] = useState('');
-    const [appointmentId, setAppointmentId] = useState('');
-    const [listeningAppointmentId, setListeningAppointmentId] = useState();
+    const [appointmentId, setAppointmentId] = useState<any>();
 
     const router = useRouter();
 
     useEffect(() => {
         if (router.isReady) {
             (async () => {
-                await getPatient();
-                await getAppointment();
-                await getGroupId(); // get groupId for video call
-                setLoading(false);
+                const appointmentId = router.query.id?.toString();
+                await getAppointment(appointmentId);
             })();
         }
     }, [router]);
 
-    async function getPatient() {
-        const memberIdStr = router.query.id?.toString();
-        setMemberId(memberIdStr);
-        const res = await patientApi.getPatient(memberIdStr);
+    async function getPatient(memberId: number) {
+        const res = await patientApi.getPatient(memberId);
         setPatient(res);
     }
 
-    async function getAppointment() {
-        const res = await patientApi.getAppointmentByMemberId(
-            router.query.id?.toString()
-        );
-        console.log('app', res);
+    async function getAppointment(appointmentId: any) {
+        const res = await specialistApi.getAppointmentId(appointmentId);
         if (res.data) {
-            setSpecialistId(res.data.appointment_specialist_id);
-            setAppointmentId(res.data.apppointment_id);
+            setMemberId(res.data.member_id)
+            setSpecialistId(res.data.specialists_id);
+            setAppointmentId(appointmentId);
+            await getPatient(res.data.member_id);
+            await getGroupId(res.data.member_id);
         }
     }
 
-    async function getGroupId() {
-        const res = await patientApi.getListenning(router.query.id?.toString());
+    async function getGroupId(memberId: number) {
+        const res = await patientApi.getListenning(memberId);
         console.log('getGroupId', res);
         if (res.data) {
-            setListeningAppointmentId(res.data.id);
             setGroupId(res.data.group_id);
+            setLoading(false);
         } else {
             console.error('not data listening');
         }

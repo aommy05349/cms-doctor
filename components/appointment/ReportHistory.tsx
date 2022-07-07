@@ -10,6 +10,8 @@ interface ReportProps {
 export default function ReportHistory({ memberId }: ReportProps) {
     const [reports, setReports] = useState([]);
     const router = useRouter();
+    console.log('memberId history', memberId);
+    
     async function getHistoryReports() {
         const res = await patientApi.getReportHistory(memberId);
         console.log('history reports', res.data);

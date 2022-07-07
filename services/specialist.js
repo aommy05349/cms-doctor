@@ -91,7 +91,7 @@ export default {
             return error;
         }
     },
-    getAppointmentById: async (appointmentId) => {
+    getNewCardByAppointmentId: async (appointmentId) => {
         try {
             const url = `/telemigraine/appointment/${appointmentId}`;
             const res = await apiApp.get(url);
@@ -104,6 +104,15 @@ export default {
         try {
             const url = `/telemigraine/listenning`;
             const res = await apiApp.patch(url, data);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
+    getAppointmentId: async (appointmentId) => {
+        try {
+            const url = `/appointment/${appointmentId}`;
+            const res = await apiApp.get(url);
             return res.data;
         } catch (error) {
             return error;

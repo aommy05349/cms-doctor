@@ -214,7 +214,7 @@ function Home() {
                                     <div
                                         className="flex flex-col pl-4 flex-grow flex-wrap"
                                         onClick={() => {
-                                            location.href = `appointment/${e.member_id}`;
+                                            location.href = `appointment/${e.id}`;
                                         }}
                                     >
                                         <div className="">

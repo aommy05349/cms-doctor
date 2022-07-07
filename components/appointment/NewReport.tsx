@@ -63,12 +63,14 @@ export default function NewReport({
     const [nextAppointmentId, setNextAppointmentId] = useState<number | any>(
         null
     );
-    const [specialists, setSpecialists] = useState<any>(null);
+    const [specialists, setSpecialists] = useState<any>({
+        service_fee: 0
+    });
     const [totalPriceOrders, setTotalPriceOrder] = useState(0);
     const [headerReport, setHeaderReport] = useState<any>()
 
     async function initFormData() {
-        const res = await specialistApi.getAppointmentById(appointmentId);
+        const res = await specialistApi.getNewCardByAppointmentId(appointmentId);
         console.log('New Report Card => ', res.data);
         setHeaderReport(res.data ? res.data.header_report : null)
         if (res.data && res.data.next_doctor_appointment) {
@@ -165,6 +167,8 @@ export default function NewReport({
 
     async function getSpecialist() {
         const res = await specialistApi.getSpecialistById(specialistId);
+        console.log('getSpecialist by id', res.data);
+        
         setSpecialists(res.data);
         const result = res.data.available_date.map((e: string) => new Date(e));
         setIncludeDate(result);
@@ -333,7 +337,7 @@ export default function NewReport({
 
     useEffect(() => {
         summaryOrderPrice();
-    }, [formData, isMigrainePremiumCare, scheduleSelected]);
+    }, [formData, isMigrainePremiumCare, scheduleSelected, specialists]);
 
     return (
         <>
@@ -523,7 +527,7 @@ export default function NewReport({
                                                     key={index}
                                                 >
                                                     <span className="flex-1 py-2">
-                                                        {index + (scheduleSelected && isMigrainePremiumCare ? 2 : 1)}.{' '}
+                                                        {index + (scheduleSelected && !patient.is_premium_member && isMigrainePremiumCare ? 2 : 1)}.{' '}
                                                         {e.common_name}{' '}
                                                         {e.amount} {e.unit}{' '}
                                                     </span>
