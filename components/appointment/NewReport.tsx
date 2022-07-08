@@ -64,30 +64,36 @@ export default function NewReport({
         null
     );
     const [specialists, setSpecialists] = useState<any>({
-        service_fee: 0
+        service_fee: 0,
     });
     const [totalPriceOrders, setTotalPriceOrder] = useState(0);
-    const [headerReport, setHeaderReport] = useState<any>()
+    const [headerReport, setHeaderReport] = useState<any>();
 
     async function initFormData() {
-        const res = await specialistApi.getNewCardByAppointmentId(appointmentId);
+        const res = await specialistApi.getNewCardByAppointmentId(
+            appointmentId
+        );
         console.log('New Report Card => ', res.data);
-        setHeaderReport(res.data ? res.data.header_report : null)
+        setHeaderReport(res.data ? res.data.header_report : null);
         if (res.data && res.data.next_doctor_appointment) {
-            setDateSelected(res.data.next_doctor_appointment.next_appointment_date)
-            setScheduleSelected(res.data.next_doctor_appointment.next_appointment_time)
+            setDateSelected(
+                res.data.next_doctor_appointment.next_appointment_date
+            );
+            setScheduleSelected(
+                res.data.next_doctor_appointment.next_appointment_time
+            );
         }
         if (res.data && res.data.patient_order) {
             setFormData({
                 ...formData,
-                patient_order : res.data.patient_order
-            })
+                patient_order: res.data.patient_order,
+            });
         }
         if (res.data && res.data.patient_report) {
             setFormData({
                 ...formData,
-                ...res.data.patient_report
-            })
+                ...res.data.patient_report,
+            });
         }
         setFormData({
             ...formData,
@@ -102,7 +108,8 @@ export default function NewReport({
         formData.patient_order.map((e: any) => {
             totalPrice += e.price * e.amount;
         });
-        if (isMigrainePremiumCare && !patient.is_premium_member) totalPrice += MIGRAINE_CARE_PROGRAME_PRICE;
+        if (isMigrainePremiumCare && !patient.is_premium_member)
+            totalPrice += MIGRAINE_CARE_PROGRAME_PRICE;
         if (scheduleSelected) totalPrice += specialists.service_fee;
         setTotalPriceOrder(totalPrice);
     }
@@ -168,7 +175,7 @@ export default function NewReport({
     async function getSpecialist() {
         const res = await specialistApi.getSpecialistById(specialistId);
         console.log('getSpecialist by id', res.data);
-        
+
         setSpecialists(res.data);
         const result = res.data.available_date.map((e: string) => new Date(e));
         setIncludeDate(result);
@@ -202,15 +209,17 @@ export default function NewReport({
         };
         const res = await specialistApi.saveNextAppointment(data);
         console.log('saveAppointment api 1', res);
-        
+
         // New ยิง firebase
         const dataSendFirebase = {
             member_id: patient.member_id,
             next_appointment_date: dateSelected,
             next_appointment_id: res.data.apppointment_id,
-            next_appointment_time: `${scheduleSelected.start_time}-${scheduleSelected.end_time}`
-        }
-        const resFirebase = await specialistApi.updateNextAppointmentFirebase(dataSendFirebase)
+            next_appointment_time: `${scheduleSelected.start_time}-${scheduleSelected.end_time}`,
+        };
+        const resFirebase = await specialistApi.updateNextAppointmentFirebase(
+            dataSendFirebase
+        );
         console.log('resFirebase', resFirebase);
         if (res.data.apppointment_id && resFirebase.success) {
             Swal.fire({
@@ -226,28 +235,26 @@ export default function NewReport({
 
     async function createOrders() {
         // บันทึกรายการยา
-        if (nextAppointmentId != null) {
-            const data = {
-                doctor_appointment_id: appointmentId,
-                next_doctor_appointment_id: nextAppointmentId,
-                member_id: patient.member_id,
-                item_patient_order: formData.patient_order,
-            };
-            const migrainePremiumCare = {
-                product_id_provider: 'mcp_clinic_3_months',
-                amount: 3,
-                indications: '',
-                price: MIGRAINE_CARE_PROGRAME_PRICE,
-            };
-            if (isMigrainePremiumCare && !patient.is_premium_member)
-                data.item_patient_order.push(migrainePremiumCare);
-            const res = await specialistApi.createOrders(data);
-            console.log('createOrders', res);
-            if (!res.success) {
-                return false;
-            }
-        } else {
-            console.error('Require nextAppointmentId !!');
+        const data = {
+            doctor_appointment_id: appointmentId,
+            next_doctor_appointment_id: nextAppointmentId
+                ? nextAppointmentId
+                : null,
+            member_id: patient.member_id,
+            item_patient_order: formData.patient_order ? formData.patient_order : null,
+        };
+        const migrainePremiumCare = {
+            product_id_provider: 'mcp_clinic_3_months',
+            amount: 3,
+            indications: '',
+            price: MIGRAINE_CARE_PROGRAME_PRICE,
+        };
+        if (isMigrainePremiumCare && !patient.is_premium_member)
+            data.item_patient_order.push(migrainePremiumCare);
+        const res = await specialistApi.createOrders(data);
+        console.log('createOrders', res);
+        if (!res.success) {
+            return false;
         }
     }
 
@@ -321,8 +328,8 @@ export default function NewReport({
     function openDateModal() {
         const dateString = moment(includeDates[0]).format('YYYY-MM-DD');
         setDateSelected(dateString);
-        getScheduleAppointment(includeDates[0])
-        setIsShowModalDate(true)
+        getScheduleAppointment(includeDates[0]);
+        setIsShowModalDate(true);
     }
 
     useEffect(() => {
@@ -344,7 +351,10 @@ export default function NewReport({
             {specialists && (
                 <div className="flex flex-col bg-white rounded-[6px] mb-[20px]">
                     <div className="p-4 flex flex-row text-[14px] border-b-2">
-                        <div>{headerReport && headerReport.appointment_date} {headerReport && headerReport.appointment_time}</div>
+                        <div>
+                            {headerReport && headerReport.appointment_date}{' '}
+                            {headerReport && headerReport.appointment_time}
+                        </div>
                         <div className="flex-1 text-right">
                             {specialists.specialist_prename}{' '}
                             {specialists.specialist_fname}
@@ -488,37 +498,45 @@ export default function NewReport({
                                     {scheduleSelected && (
                                         <li className="flex flex-row">
                                             <span className="flex-1 py-2">
-                                                0. Tele Migraine {dateSelected} {scheduleSelected.start_time + ' - ' + scheduleSelected.end_time}
-                                            </span>
-                                            <span className="py-2 pr-2">{specialists.service_fee + ' บ.'}</span>
-                                        </li>
-                                    )}
-                                    {isMigrainePremiumCare && !patient.is_premium_member && (
-                                        <li className="flex flex-row">
-                                            <span className="flex-1 py-2">
-                                                {scheduleSelected ? 1 : 0}. Migraine Care Programe 3
-                                                เดือน
+                                                0. Tele Migraine {dateSelected}{' '}
+                                                {scheduleSelected.start_time +
+                                                    ' - ' +
+                                                    scheduleSelected.end_time}
                                             </span>
                                             <span className="py-2 pr-2">
-                                                {`${MIGRAINE_CARE_PROGRAME_PRICE} บ.`}
+                                                {specialists.service_fee +
+                                                    ' บ.'}
                                             </span>
-                                            {!patient.is_premium_member && (
-                                                <span
-                                                    className="py-2 cursor-pointer"
-                                                    onClick={() => {
-                                                        setIsMigrainePremiumCare(
-                                                            false
-                                                        );
-                                                    }}
-                                                >
-                                                    <FontAwesomeIcon
-                                                        icon={faTimesCircle}
-                                                        className="text-[#CBD5DD] text-xl hover:text-i-red duration-300"
-                                                    />
-                                                </span>
-                                            )}
                                         </li>
                                     )}
+                                    {isMigrainePremiumCare &&
+                                        !patient.is_premium_member && (
+                                            <li className="flex flex-row">
+                                                <span className="flex-1 py-2">
+                                                    {scheduleSelected ? 1 : 0}.
+                                                    Migraine Care Programe 3
+                                                    เดือน
+                                                </span>
+                                                <span className="py-2 pr-2">
+                                                    {`${MIGRAINE_CARE_PROGRAME_PRICE} บ.`}
+                                                </span>
+                                                {!patient.is_premium_member && (
+                                                    <span
+                                                        className="py-2 cursor-pointer"
+                                                        onClick={() => {
+                                                            setIsMigrainePremiumCare(
+                                                                false
+                                                            );
+                                                        }}
+                                                    >
+                                                        <FontAwesomeIcon
+                                                            icon={faTimesCircle}
+                                                            className="text-[#CBD5DD] text-xl hover:text-i-red duration-300"
+                                                        />
+                                                    </span>
+                                                )}
+                                            </li>
+                                        )}
                                     {formData.patient_order.map(
                                         (e: any, index: number) => {
                                             return (
@@ -527,8 +545,13 @@ export default function NewReport({
                                                     key={index}
                                                 >
                                                     <span className="flex-1 py-2">
-                                                        {index + (scheduleSelected && !patient.is_premium_member && isMigrainePremiumCare ? 2 : 1)}.{' '}
-                                                        {e.common_name}{' '}
+                                                        {index +
+                                                            (scheduleSelected &&
+                                                            !patient.is_premium_member &&
+                                                            isMigrainePremiumCare
+                                                                ? 2
+                                                                : 1)}
+                                                        . {e.common_name}{' '}
                                                         {e.amount} {e.unit}{' '}
                                                     </span>
                                                     <span className="py-2 pr-2">
@@ -565,17 +588,17 @@ export default function NewReport({
                                     </h2>
                                     {!scheduleSelected && (
                                         <button
-                                        className="text-i-green font-noto-bold p-2"
-                                        onClick={() => {
-                                            openDateModal();
-                                        }}
-                                    >
-                                        <FontAwesomeIcon
-                                            icon={faCalendarPlus}
-                                            className="mr-2 font-bold"
-                                        />
-                                        เลือกวันตรวจ
-                                    </button>
+                                            className="text-i-green font-noto-bold p-2"
+                                            onClick={() => {
+                                                openDateModal();
+                                            }}
+                                        >
+                                            <FontAwesomeIcon
+                                                icon={faCalendarPlus}
+                                                className="mr-2 font-bold"
+                                            />
+                                            เลือกวันตรวจ
+                                        </button>
                                     )}
                                 </div>
                                 <div className="">
