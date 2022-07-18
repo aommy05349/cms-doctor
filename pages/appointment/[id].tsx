@@ -6,6 +6,7 @@ import { useRouter } from 'next/router';
 import { patientApi, specialistApi } from '../../services';
 import PatientCard from '../../components/appointment/PatientCard';
 import ReportHistory from '../../components/appointment/ReportHistory';
+import { Patient } from '../../types';
 import NewReport from '../../components/appointment/NewReport';
 
 const VideoCard = dynamic(
@@ -19,7 +20,7 @@ function Appointment() {
     const [loading, setLoading] = useState(true);
     const [groupId, setGroupId] = useState('');
     const [memberId, setMemberId] = useState<string | undefined>('');
-    const [patient, setPatient] = useState<any>();
+    const [patient, setPatient] = useState<Patient>();
     const [specialistId, setSpecialistId] = useState('');
     const [appointmentId, setAppointmentId] = useState<any>();
 
@@ -42,7 +43,7 @@ function Appointment() {
     async function getAppointment(appointmentId: any) {
         const res = await specialistApi.getAppointmentId(appointmentId);
         if (res.data) {
-            setMemberId(res.data.member_id)
+            setMemberId(res.data.member_id);
             setSpecialistId(res.data.specialists_id);
             setAppointmentId(appointmentId);
             await getPatient(res.data.member_id);
@@ -68,14 +69,17 @@ function Appointment() {
                 <section className="flex flex-row flex-grow animate-[fadeIn_.5s_ease-in] h-[90vh]">
                     <div className="flex flex-col flex-grow">
                         <div className="border-r-[1px] border-gray-100">
-                            <PatientCard data={patient} />
+                            {patient && <PatientCard data={patient} />}
                         </div>
                         <div className="flex-grow bg-[#CBD5DD] p-5 overflow-auto">
-                            <NewReport
-                                patient={patient}
-                                specialistId={specialistId}
-                                appointmentId={appointmentId}
-                            />
+                            {patient && (
+                                <NewReport
+                                    patient={patient}
+                                    specialistId={specialistId}
+                                    appointmentId={appointmentId}
+                                />
+                            )}
+
                             <ReportHistory
                                 memberId={memberId ? memberId : ''}
                             />

@@ -39,8 +39,17 @@ export default {
     },
     saveNextAppointment: async (data) => {
         try {
-            const url = 'appointment/specialists';
+            const url = 'next-appointment/specialists';
             const res = await apiApp.post(url, data);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
+    deleteAppointment: async (doctorAppointmentID) => {
+        try {
+            const url = `/appointment/specialists/${doctorAppointmentID}`;
+            const res = await apiApp.delete(url);
             return res.data;
         } catch (error) {
             return error;
@@ -117,5 +126,5 @@ export default {
         } catch (error) {
             return error;
         }
-    }
+    },
 };
