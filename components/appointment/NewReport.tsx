@@ -3,6 +3,7 @@ import {
     faPlus,
     faSearch,
     faTimesCircle,
+    faCircleXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useState } from 'react';
@@ -69,26 +70,33 @@ export default function NewReport({
         );
         console.log('New Report Card => ', res.data);
         setHeaderReport(res.data ? res.data.header_report : null);
-        if (res.data && res.data.next_doctor_appointment) {
-            setDateSelected(
-                res.data.next_doctor_appointment.next_appointment_date
-            );
-            setScheduleSelected(
-                res.data.next_doctor_appointment.next_appointment_time
-            );
+
+        if (res.data) {
+            if (res.data.next_doctor_appointment) {
+                setDateSelected(
+                    res.data.next_doctor_appointment.next_appointment_date
+                );
+                setScheduleSelected(
+                    res.data.next_doctor_appointment.next_appointment_time
+                );
+                setNextAppointmentId(
+                    res.data.next_doctor_appointment.next_appointment_id
+                );
+            }
+            if (res.data.patient_order) {
+                setFormData({
+                    ...formData,
+                    patient_order: res.data.patient_order,
+                });
+            }
+            if (res.data.patient_report) {
+                setFormData({
+                    ...formData,
+                    ...res.data.patient_report,
+                });
+            }
         }
-        if (res.data && res.data.patient_order) {
-            setFormData({
-                ...formData,
-                patient_order: res.data.patient_order,
-            });
-        }
-        if (res.data && res.data.patient_report) {
-            setFormData({
-                ...formData,
-                ...res.data.patient_report,
-            });
-        }
+
         setFormData({
             ...formData,
             doctor_appointment_id: appointmentId,
@@ -328,15 +336,48 @@ export default function NewReport({
         setIsShowModalDate(true);
     }
 
+    async function deleteAppointment() {
+        if (!nextAppointmentId) return;
+
+        const { success } = await specialistApi.deleteAppointment(
+            nextAppointmentId
+        );
+
+        if (success) {
+            Swal.fire({
+                title: 'เรียบร้อย',
+                text: 'การนัดหมายครั้งถัดไป ถูกลบแล้ว',
+                icon: 'success',
+            });
+            setDateSelected('');
+            setScheduleSelected(null);
+            setNextAppointmentId(null);
+        }
+    }
+
+    function handleDeleteAppointmentClick() {
+        if (!nextAppointmentId) return;
+        Swal.fire({
+            title: 'ยืนยัน ?',
+            text: 'ต้องการลบนัดตรวจครั้งต่อไปใช่หรือไม่?',
+            icon: 'warning',
+            showCancelButton: true,
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonText: 'ยืนยัน',
+            cancelButtonColor: '#ccc',
+            confirmButtonColor: '#fca5a5',
+        }).then(async (confirm: any) => {
+            if (confirm.isConfirmed) {
+                deleteAppointment();
+            }
+        });
+    }
+
     useEffect(() => {
         initFormData();
         getSpecialist();
         setIsMigrainePremiumCare(patient.is_premium_member);
     }, []);
-
-    useEffect(() => {
-        console.log(scheduleSelected, dateSelected);
-    }, [scheduleSelected, dateSelected]);
 
     useEffect(() => {
         summaryOrderPrice();
@@ -597,14 +638,26 @@ export default function NewReport({
                                         </button>
                                     )}
                                 </div>
-                                <div className="">
-                                    {dateSelected &&
-                                        moment(dateSelected).format(
-                                            'DD/MM/YYYY'
-                                        )}
-                                    {scheduleSelected &&
-                                        ` เวลา ${scheduleSelected.start_time} - ${scheduleSelected.end_time}`}
-                                </div>
+                                {dateSelected && scheduleSelected && (
+                                    <div className="flex justify-between items-center space-x-4">
+                                        <span className="truncate">
+                                            {moment(dateSelected).format(
+                                                'DD/MM/YYYY'
+                                            )}
+                                            {` เวลา ${scheduleSelected.start_time} - ${scheduleSelected.end_time}`}
+                                        </span>
+                                        <button
+                                            onClick={
+                                                handleDeleteAppointmentClick
+                                            }
+                                        >
+                                            <FontAwesomeIcon
+                                                icon={faCircleXmark}
+                                                className="text-[#CBD5DD] text-base"
+                                            />
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

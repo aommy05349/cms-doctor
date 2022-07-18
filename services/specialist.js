@@ -46,6 +46,15 @@ export default {
             return error;
         }
     },
+    deleteAppointment: async (doctorAppointmentID) => {
+        try {
+            const url = `/appointment/specialists/${doctorAppointmentID}`;
+            const res = await apiApp.delete(url);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
     resendAppointment: async (data) => {
         try {
             const url = '/telemigraine/chatrooms';
