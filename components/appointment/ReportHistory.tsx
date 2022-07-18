@@ -10,8 +10,7 @@ interface ReportProps {
 export default function ReportHistory({ memberId }: ReportProps) {
     const [reports, setReports] = useState([]);
     const router = useRouter();
-    console.log('memberId history', memberId);
-    
+
     async function getHistoryReports() {
         const res = await patientApi.getReportHistory(memberId);
         console.log('history reports', res.data);
@@ -19,14 +18,15 @@ export default function ReportHistory({ memberId }: ReportProps) {
     }
     useEffect(() => {
         getHistoryReports();
+        // eslint-disable-next-line
     }, [router]);
 
     async function resendAppointment(dateStr: string, timerStr: string) {
         Swal.fire({
             title: 'เรียบร้อย',
             text: `ทำการส่งสรุปการรักษาของวันที่ ${dateStr} ${timerStr}`,
-            icon: 'success'
-        })
+            icon: 'success',
+        });
     }
 
     return (
@@ -109,7 +109,17 @@ export default function ReportHistory({ memberId }: ReportProps) {
                                     <h2 className="font-noto-bold text-[14px] mb-2">
                                         คำสั่งรักษา
                                     </h2>
-                                    <button onClick={() => {resendAppointment(data.header_report.appointment_date, data.header_report.appointment_time)}} className="absolute right-2 top-2 bg-[#EFFAF5] text-i-green rounded-[8px] px-4 py-2">
+                                    <button
+                                        onClick={() => {
+                                            resendAppointment(
+                                                data.header_report
+                                                    .appointment_date,
+                                                data.header_report
+                                                    .appointment_time
+                                            );
+                                        }}
+                                        className="absolute right-2 top-2 bg-[#EFFAF5] text-i-green rounded-[8px] px-4 py-2"
+                                    >
                                         ส่งสรุปการรักษา
                                     </button>
                                     <h3 className="text-[#179B97] mb-2">

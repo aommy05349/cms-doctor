@@ -28,3 +28,18 @@ export interface Patient {
     stop_dtm: string;
     member_period: string;
 }
+
+export interface PatientHistory {
+    addinfo_id: string;
+    expert_id: string;
+    expert_fname: string;
+    expert_lname: string;
+    expert_profile: string;
+    member_id: string;
+    member_fname: string;
+    member_lname: string;
+    member_profile: string;
+    add_dtm: string;
+    update_dtm: string;
+    additional_information: string;
+}

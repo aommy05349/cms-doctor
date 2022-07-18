@@ -1,13 +1,16 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import { motion, AnimatePresence } from 'framer-motion';
+
 import MainLayout from '../../components/layouts/Main';
 import TopNav from '../../components/appointment/TopNav';
-import { useRouter } from 'next/router';
 import { patientApi, specialistApi } from '../../services';
 import PatientCard from '../../components/appointment/PatientCard';
 import ReportHistory from '../../components/appointment/ReportHistory';
-import { Patient } from '../../types';
 import NewReport from '../../components/appointment/NewReport';
+import PatientHistories from '../../components/appointment/PatientHistories';
+import { Patient } from '../../types';
 
 const VideoCard = dynamic(
     () => import('../../components/appointment/VideoCard'),
@@ -17,12 +20,12 @@ const VideoCard = dynamic(
 );
 
 function Appointment() {
-    const [loading, setLoading] = useState(true);
     const [groupId, setGroupId] = useState('');
-    const [memberId, setMemberId] = useState<string | undefined>('');
     const [patient, setPatient] = useState<Patient>();
     const [specialistId, setSpecialistId] = useState('');
     const [appointmentId, setAppointmentId] = useState<any>();
+
+    const [isShowHistories, setShowHistories] = useState<boolean>(false);
 
     const router = useRouter();
 
@@ -33,6 +36,7 @@ function Appointment() {
                 await getAppointment(appointmentId);
             })();
         }
+        // eslint-disable-next-line
     }, [router]);
 
     async function getPatient(memberId: number) {
@@ -43,7 +47,6 @@ function Appointment() {
     async function getAppointment(appointmentId: any) {
         const res = await specialistApi.getAppointmentId(appointmentId);
         if (res.data) {
-            setMemberId(res.data.member_id);
             setSpecialistId(res.data.specialists_id);
             setAppointmentId(appointmentId);
             await getPatient(res.data.member_id);
@@ -53,47 +56,70 @@ function Appointment() {
 
     async function getGroupId(memberId: number) {
         const res = await patientApi.getListenning(memberId);
-        console.log('getGroupId', res);
         if (res.data) {
             setGroupId(res.data.group_id);
-            setLoading(false);
-        } else {
-            console.error('not data listening');
         }
+    }
+
+    function handleToggleHistories() {
+        setShowHistories((prev) => !prev);
     }
 
     return (
         <div className="h-full flex flex-col bg-[#CBD5DD]">
             <TopNav />
-            {!loading && (
+            {patient && (
                 <section className="flex flex-row flex-grow animate-[fadeIn_.5s_ease-in] h-[90vh]">
-                    <div className="flex flex-col flex-grow">
+                    <div className="flex flex-col flex-grow bg-[#CBD5DD]">
                         <div className="border-r-[1px] border-gray-100">
-                            {patient && <PatientCard data={patient} />}
-                        </div>
-                        <div className="flex-grow bg-[#CBD5DD] p-5 overflow-auto">
-                            {patient && (
-                                <NewReport
-                                    patient={patient}
-                                    specialistId={specialistId}
-                                    appointmentId={appointmentId}
-                                />
-                            )}
-
-                            <ReportHistory
-                                memberId={memberId ? memberId : ''}
+                            <PatientCard
+                                data={patient}
+                                isShowHistories={isShowHistories}
+                                onToggleHistories={handleToggleHistories}
                             />
                         </div>
+                        <AnimatePresence exitBeforeEnter>
+                            <motion.div
+                                key={
+                                    isShowHistories
+                                        ? 'showHistories'
+                                        : 'hideHistories'
+                                }
+                                initial={{ y: 10, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: -10, opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="flex-grow  p-5 overflow-auto"
+                            >
+                                {isShowHistories ? (
+                                    <PatientHistories
+                                        patientId={patient.member_id}
+                                        onClose={() => setShowHistories(false)}
+                                    />
+                                ) : (
+                                    <>
+                                        <NewReport
+                                            patient={patient}
+                                            specialistId={specialistId}
+                                            appointmentId={appointmentId}
+                                        />
+
+                                        <ReportHistory
+                                            memberId={patient.member_id}
+                                        />
+                                    </>
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
                     <div className="w-[400px] bg-white">
                         <div className="w-[400px]">
                             <VideoCard
                                 groupId={groupId}
-                                memberId={memberId ? memberId : ''}
+                                memberId={patient.member_id}
                                 appointmentId={appointmentId}
                             />
                         </div>
-                        <div className=""></div>
                     </div>
                 </section>
             )}

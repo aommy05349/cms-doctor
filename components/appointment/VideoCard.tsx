@@ -5,12 +5,15 @@ import {
     CallAdapterState,
     createAzureCommunicationCallAdapter,
 } from '@azure/communication-react';
+import moment from 'moment';
+import numeral from 'numeral';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import { createAutoRefreshingCredential } from '../../utils/creadential';
 import { specialistApi } from '../../services';
 import { currentTheme } from '../../utils/videoCardTheme';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { useAppContext } from '../../contexts/state';
+import useCountdownTimer from '../../hooks/useCountdownTimer';
 
 type VideoCardProp = {
     groupId: string;
@@ -27,13 +30,21 @@ export default function VideoCard({
     const callIdRef = useRef<string>();
     const adapterRef = useRef<CallAdapter>();
     const [statusState, setStatusState] = useState<any>('');
-    const { callCountdownText, startCountdown, clearCountdown } =
-        useAppContext();
+
+    const {
+        minutes,
+        second,
+        start: startTimer,
+        stop: stopTimer,
+        isTimeout,
+        timer,
+    } = useCountdownTimer();
 
     useEffect(() => {
         if (!callIdRef.current) {
             return;
         }
+        // eslint-disable-next-line
     }, [callIdRef.current]);
 
     useEffect(() => {
@@ -47,19 +58,20 @@ export default function VideoCard({
 
     useEffect(() => {
         if (statusState == 'Connected') {
-            startCountdown();
+            startTimer(moment().add(15, 'minutes').toDate());
             startCall();
         }
         if (statusState == 'Disconnecting') {
-            clearCountdown();
+            stopTimer();
             endCall();
         }
+        // eslint-disable-next-line
     }, [statusState]);
 
     async function getToken() {
         console.log('appointmentId : ', appointmentId);
         const res = await specialistApi.getSpecialistToken(appointmentId);
-        console.log('room_doctor_identify_token', res.data)
+        console.log('room_doctor_identify_token', res.data);
         if (res.data) {
             console.log('res', res.data);
             getAdaptor(
@@ -123,7 +135,7 @@ export default function VideoCard({
 
     if (!adapter) {
         return (
-            <div className="w-[400px] flex flex-col justify-center items-center h-[450px] w-full">
+            <div className="max-w-[400px] flex flex-col justify-center items-center h-[450px] w-full">
                 <FontAwesomeIcon
                     icon={faSpinner}
                     spin
@@ -136,19 +148,27 @@ export default function VideoCard({
 
     return (
         <div className="relative w-[400px]">
-            {callCountdownText.minuteText != '' && (
+            {timer && (
                 <div className="right-10 top-5 z-[20] text-right font-noto-medium text-[14px] absolute animate-[fadeIn_.5s_ease-in]">
-                    <p className="flex justify-end items-center">
-                        เหลือเวลาอีก {' : '}
+                    {isTimeout ? (
                         <span
-                            className={`font-noto-bold text-[20px] font-bold ${
-                                callCountdownText.minuteText < 5 && 'text-i-red'
-                            }`}
+                            className={`font-noto-bold text-[20px]  text-i-red`}
                         >
-                            {callCountdownText.minuteText}:
-                            {callCountdownText.secondsText}
-                        </span>{' '}
-                    </p>
+                            หมดเวลา
+                        </span>
+                    ) : (
+                        <p className="flex justify-end items-center">
+                            เหลือเวลาอีก {' : '}
+                            <span
+                                className={`font-noto-bold text-[20px] font-bold ${
+                                    minutes < 5 && 'text-i-red'
+                                }`}
+                            >
+                                {numeral(minutes).format('00')}:
+                                {numeral(second).format('00')}
+                            </span>{' '}
+                        </p>
+                    )}
                 </div>
             )}
             <div className="video-frame h-[450px] w-full">
@@ -163,8 +183,14 @@ export default function VideoCard({
                 )}
                 {statusState == 'Disconnecting' && (
                     <div className="text-center h-[400px] w-full flex flex-col justify-center bg-gray-100">
-                        <h2 className="font-noto-medium text-[20px] mb-3">สิ้งสุดการสนทนา</h2>
-                        <p className='text-gray-700'>กรุณากด <b className='font-noto-medium'>ส่งสรุปการรักษา</b> ก่อนออกจากห้องตรวจ</p>
+                        <h2 className="font-noto-medium text-[20px] mb-3">
+                            สิ้งสุดการสนทนา
+                        </h2>
+                        <p className="text-gray-700">
+                            กรุณากด{' '}
+                            <b className="font-noto-medium">ส่งสรุปการรักษา</b>{' '}
+                            ก่อนออกจากห้องตรวจ
+                        </p>
                     </div>
                 )}
             </div>
