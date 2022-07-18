@@ -18,6 +18,7 @@ export default function ReportHistory({ memberId }: ReportProps) {
     }
     useEffect(() => {
         getHistoryReports();
+        // eslint-disable-next-line
     }, [router]);
 
     async function resendAppointment(dateStr: string, timerStr: string) {

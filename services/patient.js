@@ -20,6 +20,15 @@ export default {
             return error;
         }
     },
+    getPatientHistories: async (memberId) => {
+        try {
+            const url = `/members/additional/${memberId}`;
+            const res = await apiApp.get(url);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
     searchPatientOrder: async (searchTerm) => {
         try {
             const url = '/telemigraine/order/search';
@@ -68,7 +77,7 @@ export default {
             return error;
         }
     },
-    getAppointmentByMemberId: async (memberId)=> {
+    getAppointmentByMemberId: async (memberId) => {
         try {
             const url = `/appointment/${memberId}/schedule`;
             const res = await apiApp.get(url);
@@ -76,5 +85,5 @@ export default {
         } catch (error) {
             return error;
         }
-    }
+    },
 };

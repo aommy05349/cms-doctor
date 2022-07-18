@@ -181,7 +181,7 @@ export default function NewReport({
     async function getScheduleAppointment(date: Date) {
         const dateString = moment(date).format('YYYY-MM-DD');
         setDateSelected(dateString);
-        setScheduleSelected(''); // clear schedule selected
+        setScheduleSelected('');
         const specialistId = 1;
         const res = await specialistApi.getScheduleAppointment(
             specialistId,

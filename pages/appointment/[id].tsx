@@ -9,6 +9,7 @@ import { patientApi, specialistApi } from '../../services';
 import PatientCard from '../../components/appointment/PatientCard';
 import ReportHistory from '../../components/appointment/ReportHistory';
 import NewReport from '../../components/appointment/NewReport';
+import PatientHistories from '../../components/appointment/PatientHistories';
 import { Patient } from '../../types';
 
 const VideoCard = dynamic(
@@ -37,6 +38,7 @@ function Appointment() {
                 await getAppointment(appointmentId);
             })();
         }
+        // eslint-disable-next-line
     }, [router]);
 
     async function getPatient(memberId: number) {
@@ -57,7 +59,6 @@ function Appointment() {
 
     async function getGroupId(memberId: number) {
         const res = await patientApi.getListenning(memberId);
-        console.log('getGroupId', res);
         if (res.data) {
             setGroupId(res.data.group_id);
             setLoading(false);
@@ -73,17 +74,15 @@ function Appointment() {
     return (
         <div className="h-full flex flex-col bg-[#CBD5DD]">
             <TopNav />
-            {!loading && (
+            {patient && (
                 <section className="flex flex-row flex-grow animate-[fadeIn_.5s_ease-in] h-[90vh]">
                     <div className="flex flex-col flex-grow bg-[#CBD5DD]">
                         <div className="border-r-[1px] border-gray-100">
-                            {patient && (
-                                <PatientCard
-                                    data={patient}
-                                    isShowHistories={isShowHistories}
-                                    onToggleHistories={handleToggleHistories}
-                                />
-                            )}
+                            <PatientCard
+                                data={patient}
+                                isShowHistories={isShowHistories}
+                                onToggleHistories={handleToggleHistories}
+                            />
                         </div>
                         <AnimatePresence exitBeforeEnter>
                             <motion.div
@@ -92,23 +91,24 @@ function Appointment() {
                                         ? 'showHistories'
                                         : 'hideHistories'
                                 }
-                                initial={{ x: 10, opacity: 0 }}
-                                animate={{ x: 0, opacity: 1 }}
-                                exit={{ x: -10, opacity: 0 }}
+                                initial={{ y: 10, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: -10, opacity: 0 }}
                                 transition={{ duration: 0.2 }}
                                 className="flex-grow  p-5 overflow-auto"
                             >
                                 {isShowHistories ? (
-                                    'Histories'
+                                    <PatientHistories
+                                        patientId={patient.member_id}
+                                        onClose={() => setShowHistories(false)}
+                                    />
                                 ) : (
                                     <>
-                                        {patient && (
-                                            <NewReport
-                                                patient={patient}
-                                                specialistId={specialistId}
-                                                appointmentId={appointmentId}
-                                            />
-                                        )}
+                                        <NewReport
+                                            patient={patient}
+                                            specialistId={specialistId}
+                                            appointmentId={appointmentId}
+                                        />
 
                                         <ReportHistory
                                             memberId={memberId ? memberId : ''}

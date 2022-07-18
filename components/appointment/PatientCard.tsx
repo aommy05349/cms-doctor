@@ -62,11 +62,7 @@ export default function PatientCard({
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            className={`${
-                                isShowHistories
-                                    ? 'text-red-400'
-                                    : 'text-i-green'
-                            } truncate`}
+                            className="text-i-green truncate"
                             onClick={onToggleHistories}
                         >
                             {isShowHistories
