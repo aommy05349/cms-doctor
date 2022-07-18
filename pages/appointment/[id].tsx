@@ -20,9 +20,7 @@ const VideoCard = dynamic(
 );
 
 function Appointment() {
-    const [loading, setLoading] = useState(true);
     const [groupId, setGroupId] = useState('');
-    const [memberId, setMemberId] = useState<string | undefined>('');
     const [patient, setPatient] = useState<Patient>();
     const [specialistId, setSpecialistId] = useState('');
     const [appointmentId, setAppointmentId] = useState<any>();
@@ -49,7 +47,6 @@ function Appointment() {
     async function getAppointment(appointmentId: any) {
         const res = await specialistApi.getAppointmentId(appointmentId);
         if (res.data) {
-            setMemberId(res.data.member_id);
             setSpecialistId(res.data.specialists_id);
             setAppointmentId(appointmentId);
             await getPatient(res.data.member_id);
@@ -61,9 +58,6 @@ function Appointment() {
         const res = await patientApi.getListenning(memberId);
         if (res.data) {
             setGroupId(res.data.group_id);
-            setLoading(false);
-        } else {
-            console.error('not data listening');
         }
     }
 
@@ -111,7 +105,7 @@ function Appointment() {
                                         />
 
                                         <ReportHistory
-                                            memberId={memberId ? memberId : ''}
+                                            memberId={patient.member_id}
                                         />
                                     </>
                                 )}
@@ -122,11 +116,10 @@ function Appointment() {
                         <div className="w-[400px]">
                             <VideoCard
                                 groupId={groupId}
-                                memberId={memberId ? memberId : ''}
+                                memberId={patient.member_id}
                                 appointmentId={appointmentId}
                             />
                         </div>
-                        <div className=""></div>
                     </div>
                 </section>
             )}
