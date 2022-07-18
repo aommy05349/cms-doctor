@@ -1,13 +1,15 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
+import { motion, AnimatePresence } from 'framer-motion';
+
 import MainLayout from '../../components/layouts/Main';
 import TopNav from '../../components/appointment/TopNav';
-import { useRouter } from 'next/router';
 import { patientApi, specialistApi } from '../../services';
 import PatientCard from '../../components/appointment/PatientCard';
 import ReportHistory from '../../components/appointment/ReportHistory';
-import { Patient } from '../../types';
 import NewReport from '../../components/appointment/NewReport';
+import { Patient } from '../../types';
 
 const VideoCard = dynamic(
     () => import('../../components/appointment/VideoCard'),
@@ -23,6 +25,8 @@ function Appointment() {
     const [patient, setPatient] = useState<Patient>();
     const [specialistId, setSpecialistId] = useState('');
     const [appointmentId, setAppointmentId] = useState<any>();
+
+    const [isShowHistories, setShowHistories] = useState<boolean>(false);
 
     const router = useRouter();
 
@@ -62,28 +66,57 @@ function Appointment() {
         }
     }
 
+    function handleToggleHistories() {
+        setShowHistories((prev) => !prev);
+    }
+
     return (
         <div className="h-full flex flex-col bg-[#CBD5DD]">
             <TopNav />
             {!loading && (
                 <section className="flex flex-row flex-grow animate-[fadeIn_.5s_ease-in] h-[90vh]">
-                    <div className="flex flex-col flex-grow">
+                    <div className="flex flex-col flex-grow bg-[#CBD5DD]">
                         <div className="border-r-[1px] border-gray-100">
-                            {patient && <PatientCard data={patient} />}
-                        </div>
-                        <div className="flex-grow bg-[#CBD5DD] p-5 overflow-auto">
                             {patient && (
-                                <NewReport
-                                    patient={patient}
-                                    specialistId={specialistId}
-                                    appointmentId={appointmentId}
+                                <PatientCard
+                                    data={patient}
+                                    isShowHistories={isShowHistories}
+                                    onToggleHistories={handleToggleHistories}
                                 />
                             )}
-
-                            <ReportHistory
-                                memberId={memberId ? memberId : ''}
-                            />
                         </div>
+                        <AnimatePresence exitBeforeEnter>
+                            <motion.div
+                                key={
+                                    isShowHistories
+                                        ? 'showHistories'
+                                        : 'hideHistories'
+                                }
+                                initial={{ x: 10, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: -10, opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="flex-grow  p-5 overflow-auto"
+                            >
+                                {isShowHistories ? (
+                                    'Histories'
+                                ) : (
+                                    <>
+                                        {patient && (
+                                            <NewReport
+                                                patient={patient}
+                                                specialistId={specialistId}
+                                                appointmentId={appointmentId}
+                                            />
+                                        )}
+
+                                        <ReportHistory
+                                            memberId={memberId ? memberId : ''}
+                                        />
+                                    </>
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
                     <div className="w-[400px] bg-white">
                         <div className="w-[400px]">

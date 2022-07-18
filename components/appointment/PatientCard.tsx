@@ -1,12 +1,20 @@
-import Image from 'next/image';
-import { Patient } from '../../types';
 import React from 'react';
+import Image from 'next/image';
+import { motion, AnimatePresence } from 'framer-motion';
+
+import { Patient } from '../../types';
 
 interface patientProps {
     data: Patient;
+    isShowHistories: boolean;
+    onToggleHistories: () => void;
 }
 
-export default function PatientCard({ data }: patientProps) {
+export default function PatientCard({
+    data,
+    isShowHistories,
+    onToggleHistories,
+}: patientProps) {
     function getGenderText(id: string) {
         if (id == 'm') {
             return 'ชาย';
@@ -18,9 +26,9 @@ export default function PatientCard({ data }: patientProps) {
     }
     return (
         <div className="flex flex-row text-[14px] py-5 px-7 bg-white border-b-2">
-            <div className="flex-1 flex flex-col border-r-gray-100 border-r-[1px]">
+            <div className="flex-1 flex flex-col border-r-gray-100 border-r-[1px] pr-4">
                 <div className="flex flex-row mb-3">
-                    <div className="relative w-[40px] h-[40px] rounded-[50%] overflow-hidden">
+                    <div className="relative w-[40px] h-[40px] rounded-[50%] overflow-hidden  shrink-0">
                         <Image
                             src={data.profile_img}
                             alt="patient avatar"
@@ -30,7 +38,7 @@ export default function PatientCard({ data }: patientProps) {
                         />
                     </div>
                     <div className="ml-3">
-                        <div className="font-noto-medium text-[18px] text-black mb-2">
+                        <div className="font-noto-medium text-[18px] text-black mb-2 truncate">
                             คุณ {data.fname} {data.lname}
                         </div>
                         <div className="">
@@ -41,23 +49,31 @@ export default function PatientCard({ data }: patientProps) {
                         </div>
                     </div>
                 </div>
-                <div className="flex flex-col">
-                    <div className="flex flex-row mb-2">
-                        <div className="flex-1">บันทึกอาการไมเกรน</div>
-                        <div className="flex-1 text-i-green text-right pr-4">
-                            ดูประวัติการบันทึกย้อนหลัง
-                        </div>
-                    </div>
-                    <div className="flex flex-row">
-                        <div className="text-gray-300 flex-1">
-                            เกี่ยวกับผู้ป่วยไมเกรน
-                        </div>
-                        <div className="flex-1 text-right">
-                            <button className="border-2 border-[#E0E0E0] rounded-[6px] py-1 px-4 font-noto-bold text-[#6C6C6C] mr-4">
-                                บันทึก
-                            </button>
-                        </div>
-                    </div>
+                <div className="flex justify-between space-x-4 mt-8">
+                    <span className="truncate">บันทึกอาการไมเกรน</span>
+                    <AnimatePresence exitBeforeEnter>
+                        <motion.button
+                            key={
+                                isShowHistories
+                                    ? 'showHistories'
+                                    : 'hideHistories'
+                            }
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className={`${
+                                isShowHistories
+                                    ? 'text-red-400'
+                                    : 'text-i-green'
+                            } truncate`}
+                            onClick={onToggleHistories}
+                        >
+                            {isShowHistories
+                                ? 'ปิดบันทึกจากผู้ช่วยแพทย์'
+                                : 'บันทึกจากผู้ช่วยแพทย์'}
+                        </motion.button>
+                    </AnimatePresence>
                 </div>
             </div>
             <div className="flex-1 px-4">
