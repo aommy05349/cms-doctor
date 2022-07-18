@@ -46,7 +46,7 @@ export default function FieldEditor({
                         เพิ่มข้อมูล
                     </p>
                 ) : (
-                    <p className="py-1 px-2 hover:bg-gray-100 cursor-pointer duration-150 ease-in text-[#000]">
+                    <p className="py-1 px-2 hover:bg-gray-100 cursor-pointer duration-150 ease-in text-[#000] whitespace-pre-line">
                         {value == '' ? 'เพิ่มข้อมูล' : value}
                     </p>
                 )}
