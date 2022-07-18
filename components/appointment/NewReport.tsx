@@ -68,7 +68,6 @@ export default function NewReport({
         const res = await specialistApi.getNewCardByAppointmentId(
             appointmentId
         );
-        console.log('New Report Card => ', res.data);
         setHeaderReport(res.data ? res.data.header_report : null);
 
         if (res.data) {
@@ -126,8 +125,6 @@ export default function NewReport({
     }
 
     function addOrder(order: any) {
-        console.log('add order => ', order);
-
         setFormData({
             ...formData,
             patient_order: [
@@ -143,7 +140,6 @@ export default function NewReport({
     }
 
     function deleteOrder(indexDel: number) {
-        console.log('indexDel', indexDel);
         setFormData({
             ...formData,
             patient_order: formData.patient_order.filter(
@@ -176,7 +172,6 @@ export default function NewReport({
 
     async function getSpecialist() {
         const res = await specialistApi.getSpecialistById(specialistId);
-        console.log('getSpecialist by id', res.data);
 
         setSpecialists(res.data);
         const result = res.data.available_date.map((e: string) => new Date(e));
@@ -381,6 +376,7 @@ export default function NewReport({
 
     useEffect(() => {
         summaryOrderPrice();
+        // eslint-disable-next-line
     }, [formData, isMigrainePremiumCare, scheduleSelected, specialists]);
 
     return (
@@ -780,7 +776,14 @@ export default function NewReport({
                                                         <input
                                                             className="pr-[60%] w-full"
                                                             type="text"
+                                                            pattern="\d*"
                                                             value={e.amount}
+                                                            onKeyPress={(e) =>
+                                                                !/[0-9]/.test(
+                                                                    e.key
+                                                                ) &&
+                                                                e.preventDefault()
+                                                            }
                                                             onInput={(
                                                                 event: any
                                                             ) => {
