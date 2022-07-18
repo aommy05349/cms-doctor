@@ -1,8 +1,9 @@
 import Image from 'next/image';
-import React, { ReactChild } from 'react';
+import { Patient } from '../../types';
+import React from 'react';
 
 interface patientProps {
-    data: any;
+    data: Patient;
 }
 
 export default function PatientCard({ data }: patientProps) {
@@ -22,6 +23,7 @@ export default function PatientCard({ data }: patientProps) {
                     <div className="relative w-[40px] h-[40px] rounded-[50%] overflow-hidden">
                         <Image
                             src={data.profile_img}
+                            alt="patient avatar"
                             layout="fill"
                             objectFit="cover"
                             className="w-full h-full"

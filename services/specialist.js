@@ -39,7 +39,7 @@ export default {
     },
     saveNextAppointment: async (data) => {
         try {
-            const url = 'appointment/specialists';
+            const url = 'next-appointment/specialists';
             const res = await apiApp.post(url, data);
             return res.data;
         } catch (error) {
@@ -117,5 +117,5 @@ export default {
         } catch (error) {
             return error;
         }
-    }
+    },
 };

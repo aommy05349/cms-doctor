@@ -13,6 +13,7 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import th from 'date-fns/locale/th';
 import moment from 'moment';
+import { Patient } from '../../types';
 import Swal from 'sweetalert2';
 registerLocale('th', th);
 
@@ -32,15 +33,8 @@ const defaultForm = {
     next_appointment_date: null,
 };
 
-interface PatientData {
-    fname: string;
-    lname: string;
-    is_premium_member: boolean;
-    member_id: string;
-}
-
 type NewReportProps = {
-    patient: PatientData;
+    patient: Patient;
     specialistId: string;
     appointmentId: string;
 };
@@ -241,7 +235,9 @@ export default function NewReport({
                 ? nextAppointmentId
                 : null,
             member_id: patient.member_id,
-            item_patient_order: formData.patient_order ? formData.patient_order : null,
+            item_patient_order: formData.patient_order
+                ? formData.patient_order
+                : null,
         };
         const migrainePremiumCare = {
             product_id_provider: 'mcp_clinic_3_months',
