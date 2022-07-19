@@ -22,7 +22,7 @@ const VideoCard = dynamic(
 );
 
 function Appointment() {
-    const [groupId, setGroupId] = useState('');
+    const [groupId, setGroupId] = useState();
     const [patient, setPatient] = useState<Patient>();
     const [specialistId, setSpecialistId] = useState('');
     const [appointmentId, setAppointmentId] = useState<any>();
@@ -105,7 +105,7 @@ function Appointment() {
     return (
         <div className="h-full flex flex-col bg-[#CBD5DD]">
             <TopNav onBack={handleBack} />
-            {patient && groupId != '' && (
+            {patient && groupId && (
                 <section className="flex flex-row flex-grow animate-[fadeIn_.5s_ease-in] h-[90vh]">
                     <div className="flex flex-col flex-grow bg-[#CBD5DD]">
                         <div className="border-r-[1px] border-gray-100">
