@@ -486,7 +486,7 @@ export default function NewReport({
                                     }}
                                     className="absolute right-2 top-2 bg-[#EFFAF5] text-i-green rounded-[8px] px-4 py-2"
                                 >
-                                    ส่งสรุปการรักษา
+                                    บันทึกและส่งสรุปการรักษา
                                 </button>
                                 <FieldEditor
                                     title="วินิจฉัย"

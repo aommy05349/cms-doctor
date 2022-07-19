@@ -1,5 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
+import moment from 'moment';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { Patient } from '../../types';
@@ -15,6 +16,7 @@ export default function PatientCard({
     isShowHistories,
     onToggleHistories,
 }: patientProps) {
+    console.log('patient :', data);
     function getGenderText(id: string) {
         if (id == 'm') {
             return 'ชาย';
@@ -42,9 +44,12 @@ export default function PatientCard({
                             คุณ {data.fname} {data.lname}
                         </div>
                         <div className="">
-                            สมาชิก {data.member_period}
+                            สมาชิก {data.member_period} • Expire{' '}
+                            {moment(data.stop_dtm).format('DD/MM/YY')}
                             {!data.is_premium_member && (
-                                <span className="text-orange-400">Premium</span>
+                                <span className="text-orange-400 ml-2">
+                                    Premium
+                                </span>
                             )}
                         </div>
                     </div>
