@@ -175,17 +175,12 @@ export default function VideoCard({
                 {statusState != 'Disconnecting' && (
                     <CallComposite
                         adapter={adapter}
-                        callInvitationUrl={
-                            window.location.protocol +
-                            '//' +
-                            window.location.host
-                        }
+                        callInvitationUrl={`http://localhost:3000`}
                         formFactor="mobile"
                         rtl={false}
                         fluentTheme={currentTheme}
                     />
                 )}
-                {window.location.protocol + '//' + window.location.host}
                 {statusState == 'Disconnecting' && (
                     <div className="text-center h-[400px] w-full flex flex-col justify-center bg-gray-100">
                         <h2 className="font-noto-medium text-[20px] mb-3">
