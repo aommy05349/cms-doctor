@@ -1,9 +1,11 @@
 import { FC, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUp, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import numeral from 'numeral';
 
+import NotFound from '../common/NotFound';
+import Loader from '../common/Loader';
 import { Patient, PatientHistory } from '../../types';
 import { patientApi } from '../../services';
 
@@ -36,18 +38,10 @@ const PatientHistories: FC<Props> = ({ patientId, onClose }) => {
         // eslint-disable-next-line
     }, [patientId]);
 
-    let content = (
-        <div className="w-full h-20 flex justify-center items-center text-gray-500">
-            ยังไม่มีบันทึกจากผู้ช่วยแพทย์
-        </div>
-    );
+    let content = <NotFound>ยังไม่มีบันทึกจากผู้ช่วยแพทย์</NotFound>;
 
     if (!histories) {
-        content = (
-            <div className="w-full h-20 flex justify-center items-center text-gray-500">
-                <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
-            </div>
-        );
+        content = <Loader />;
     }
 
     if (histories && histories.length > 0) {

@@ -59,9 +59,9 @@ export default {
             return error;
         }
     },
-    getFrequencyTrigger: async (id) => {
+    getFrequencyTrigger: async (id, prev = 180) => {
         try {
-            const url = `/getFrequencyTrigger/${id}/prev/180`;
+            const url = `/getFrequencyTrigger/${id}/prev/${prev}`;
             const res = await apiApp.get(url);
             return res.data;
         } catch (error) {

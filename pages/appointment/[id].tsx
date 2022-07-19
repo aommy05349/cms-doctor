@@ -11,6 +11,7 @@ import PatientCard from '../../components/appointment/PatientCard';
 import ReportHistory from '../../components/appointment/ReportHistory';
 import NewReport from '../../components/appointment/NewReport';
 import PatientHistories from '../../components/appointment/PatientHistories';
+import Dashboard from '../../components/appointment/Dashboard/Index';
 import { Patient } from '../../types';
 
 const VideoCard = dynamic(
@@ -156,6 +157,7 @@ function Appointment() {
                                 appointmentId={appointmentId}
                             />
                         </div>
+                        {patient && <Dashboard patientId={patient.member_id} />}
                     </div>
                 </section>
             )}
