@@ -1,6 +1,7 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import Swal from 'sweetalert2';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import MainLayout from '../../components/layouts/Main';
@@ -65,9 +66,44 @@ function Appointment() {
         setShowHistories((prev) => !prev);
     }
 
+    async function checkSavedReport(appointmentId: string) {
+        const { data } = await specialistApi.getNewCardByAppointmentId(
+            appointmentId
+        );
+        return !!data && !!data.patient_report;
+    }
+
+    async function handleBack() {
+        const isSaved = await checkSavedReport(appointmentId);
+
+        if (isSaved) {
+            Swal.fire({
+                title: 'ยืนยันการออก ?',
+                text: 'ต้องการออกจากห้องตรวจหรือไม่',
+                icon: 'warning',
+                showCancelButton: true,
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonText: 'ตกลง',
+                cancelButtonColor: '#ccc',
+                confirmButtonColor: '#25AC67',
+            }).then(async (confirm: any) => {
+                if (confirm.isConfirmed) {
+                    location.href = '/';
+                }
+            });
+        } else {
+            Swal.fire({
+                title: 'คุณยังไม่ได้ส่งสรุปการรักษา',
+                text: 'กรุณาส่งสรุปการรักษา ก่อนออกจากห้องตรวจ',
+                icon: 'error',
+                confirmButtonText: 'ฉันเข้าใจ',
+            });
+        }
+    }
+
     return (
         <div className="h-full flex flex-col bg-[#CBD5DD]">
-            <TopNav />
+            <TopNav onBack={handleBack} />
             {patient && (
                 <section className="flex flex-row flex-grow animate-[fadeIn_.5s_ease-in] h-[90vh]">
                     <div className="flex flex-col flex-grow bg-[#CBD5DD]">
