@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 import MigraineLevel from './MigraineLevel';
-import Chart from './Chart';
+import Chart from './Chart/Index';
 import DataRangeSelector from './DataRangeSelector';
 import FrequencyTriggerList from './FrequencyTriggerList';
 import FrequencyMedicationList from './FrequencyMedicationList';
