@@ -60,7 +60,7 @@ const FrequencyMedicationList: FC<Props> = ({ patientId, dataRange }) => {
         const {
             data: { data },
         } = await patientApi.getFrequencyMedication(patientId, dataRange);
-        setFrequencyMedicationList(data);
+        setFrequencyMedicationList(data || []);
     };
 
     useEffect(() => {

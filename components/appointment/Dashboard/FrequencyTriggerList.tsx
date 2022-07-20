@@ -52,7 +52,7 @@ const FrequencyTriggerList: FC<Props> = ({ patientId, dataRange }) => {
         const {
             data: { data },
         } = await patientApi.getFrequencyTrigger(patientId, dataRange);
-        setFrequencyTriggerList(data);
+        setFrequencyTriggerList(data || []);
     };
 
     useEffect(() => {
