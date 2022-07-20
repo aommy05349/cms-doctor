@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { Children } from 'react';
 
 type ModalProps = {
-    title: string;
+    title?: string;
     isShow: boolean;
     width: string;
     children?: React.ReactNode;
@@ -31,8 +31,16 @@ export default function Modal({
                         className={` bg-white max-w-full min-h-[300px] rounded-[8px] overflow-hidden z-20`}
                         style={{ width: `${width}` }}
                     >
-                        <div className="border-m-2 bg-[#F2F2F2] p-4 py-2 flex flex-row">
-                            <h2 className="font-noto-bold flex-1">{title}</h2>
+                        <div
+                            className={`${
+                                title ? 'bg-[#F2F2F2]' : ''
+                            } p-4 py-2 flex flex-row justify-end`}
+                        >
+                            {title && (
+                                <h2 className="font-noto-bold flex-1">
+                                    {title}
+                                </h2>
+                            )}
                             <button
                                 onClick={() => {
                                     onClose();

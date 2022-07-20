@@ -476,143 +476,139 @@ export default function NewReport({
                             />
                         </div>
                         <div className="p-4 text-[14px] flex-1 relative flex flex-col">
-                            <div className="flex-1">
-                                <h2 className="font-noto-bold text-[14px] mb-2">
+                            <div className="flex space-x-2 justify-between items-baseline">
+                                <h2 className="font-noto-bold text-sm truncate">
                                     คำสั่งรักษา
                                 </h2>
                                 <button
                                     onClick={() => {
                                         sendAppointment();
                                     }}
-                                    className="absolute right-2 top-2 bg-[#EFFAF5] text-i-green rounded-[8px] px-4 py-2"
+                                    className="rounded text-sm text-white bg-i-green truncate  px-4 py-2"
                                 >
                                     บันทึกและส่งสรุปการรักษา
                                 </button>
-                                <FieldEditor
-                                    title="วินิจฉัย"
-                                    value={formData.diagnose}
-                                    setValue={(text) =>
-                                        setFormData({
-                                            ...formData,
-                                            diagnose: text,
-                                        })
-                                    }
-                                />
-                                <FieldEditor
-                                    title="คำแนะนำ"
-                                    value={formData.advice}
-                                    setValue={(text) =>
-                                        setFormData({
-                                            ...formData,
-                                            advice: text,
-                                        })
-                                    }
-                                />
                             </div>
-                            <div>
-                                <div className="flex flex-row">
-                                    <h2 className="flex-1 py-2 font-noto-bold text-[14px]">
-                                        รายการยา
-                                    </h2>
-                                    <button
-                                        className="text-i-green font-noto-bold p-2"
-                                        onClick={() => {
-                                            setIsShowModalMedicine(true);
-                                        }}
-                                    >
-                                        <FontAwesomeIcon
-                                            icon={faPlus}
-                                            className="mr-2 font-bold"
-                                        />
-                                        เพิ่มรายการยา
-                                    </button>
-                                </div>
-                                <ol start={0}>
-                                    {scheduleSelected && (
+                            <FieldEditor
+                                title="วินิจฉัย"
+                                value={formData.diagnose}
+                                setValue={(text) =>
+                                    setFormData({
+                                        ...formData,
+                                        diagnose: text,
+                                    })
+                                }
+                            />
+                            <FieldEditor
+                                title="คำแนะนำ"
+                                value={formData.advice}
+                                setValue={(text) =>
+                                    setFormData({
+                                        ...formData,
+                                        advice: text,
+                                    })
+                                }
+                            />
+                            <div className="flex flex-row">
+                                <h2 className="flex-1 py-2 font-noto-bold text-[14px]">
+                                    รายการยา
+                                </h2>
+                                <button
+                                    className="text-i-green font-noto-bold p-2"
+                                    onClick={() => {
+                                        setIsShowModalMedicine(true);
+                                    }}
+                                >
+                                    <FontAwesomeIcon
+                                        icon={faPlus}
+                                        className="mr-2 font-bold"
+                                    />
+                                    เพิ่มรายการยา
+                                </button>
+                            </div>
+                            <ol start={0}>
+                                {scheduleSelected && (
+                                    <li className="flex flex-row">
+                                        <span className="flex-1 py-2">
+                                            0. Tele Migraine {dateSelected}{' '}
+                                            {scheduleSelected.start_time +
+                                                ' - ' +
+                                                scheduleSelected.end_time}
+                                        </span>
+                                        <span className="py-2 pr-2">
+                                            {specialists.service_fee + ' บ.'}
+                                        </span>
+                                    </li>
+                                )}
+                                {isMigrainePremiumCare &&
+                                    !patient.is_premium_member && (
                                         <li className="flex flex-row">
                                             <span className="flex-1 py-2">
-                                                0. Tele Migraine {dateSelected}{' '}
-                                                {scheduleSelected.start_time +
-                                                    ' - ' +
-                                                    scheduleSelected.end_time}
+                                                {scheduleSelected ? 1 : 0}.
+                                                Migraine Care Programe 3 เดือน
                                             </span>
                                             <span className="py-2 pr-2">
-                                                {specialists.service_fee +
-                                                    ' บ.'}
+                                                {`${MIGRAINE_CARE_PROGRAME_PRICE} บ.`}
                                             </span>
+                                            {!patient.is_premium_member && (
+                                                <span
+                                                    className="py-2 cursor-pointer"
+                                                    onClick={() => {
+                                                        setIsMigrainePremiumCare(
+                                                            false
+                                                        );
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon
+                                                        icon={faTimesCircle}
+                                                        className="text-[#CBD5DD] text-xl hover:text-i-red duration-300"
+                                                    />
+                                                </span>
+                                            )}
                                         </li>
                                     )}
-                                    {isMigrainePremiumCare &&
-                                        !patient.is_premium_member && (
-                                            <li className="flex flex-row">
+                                {formData.patient_order.map(
+                                    (e: any, index: number) => {
+                                        return (
+                                            <li
+                                                className="flex flex-row"
+                                                key={index}
+                                            >
                                                 <span className="flex-1 py-2">
-                                                    {scheduleSelected ? 1 : 0}.
-                                                    Migraine Care Programe 3
-                                                    เดือน
+                                                    {index +
+                                                        (scheduleSelected &&
+                                                        !patient.is_premium_member &&
+                                                        isMigrainePremiumCare
+                                                            ? 2
+                                                            : 1)}
+                                                    . {e.common_name} {e.amount}{' '}
+                                                    {e.unit}{' '}
                                                 </span>
                                                 <span className="py-2 pr-2">
-                                                    {`${MIGRAINE_CARE_PROGRAME_PRICE} บ.`}
+                                                    {e.indications}
                                                 </span>
-                                                {!patient.is_premium_member && (
-                                                    <span
-                                                        className="py-2 cursor-pointer"
-                                                        onClick={() => {
-                                                            setIsMigrainePremiumCare(
-                                                                false
-                                                            );
-                                                        }}
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faTimesCircle}
-                                                            className="text-[#CBD5DD] text-xl hover:text-i-red duration-300"
-                                                        />
-                                                    </span>
-                                                )}
-                                            </li>
-                                        )}
-                                    {formData.patient_order.map(
-                                        (e: any, index: number) => {
-                                            return (
-                                                <li
-                                                    className="flex flex-row"
-                                                    key={index}
+                                                <span className="py-2 pr-2">
+                                                    {e.price * e.amount}
+                                                    {' บ.'}
+                                                </span>
+                                                <span
+                                                    className="py-2 cursor-pointer"
+                                                    onClick={() => {
+                                                        deleteOrder(index);
+                                                    }}
                                                 >
-                                                    <span className="flex-1 py-2">
-                                                        {index +
-                                                            (scheduleSelected &&
-                                                            !patient.is_premium_member &&
-                                                            isMigrainePremiumCare
-                                                                ? 2
-                                                                : 1)}
-                                                        . {e.common_name}{' '}
-                                                        {e.amount} {e.unit}{' '}
-                                                    </span>
-                                                    <span className="py-2 pr-2">
-                                                        {e.indications}
-                                                    </span>
-                                                    <span className="py-2 pr-2">
-                                                        {e.price * e.amount}
-                                                        {' บ.'}
-                                                    </span>
-                                                    <span
-                                                        className="py-2 cursor-pointer"
-                                                        onClick={() => {
-                                                            deleteOrder(index);
-                                                        }}
-                                                    >
-                                                        <FontAwesomeIcon
-                                                            icon={faTimesCircle}
-                                                            className="text-[#CBD5DD] text-xl hover:text-i-red duration-300"
-                                                        />
-                                                    </span>
-                                                </li>
-                                            );
-                                        }
-                                    )}
-                                </ol>
-                                <div className="text-right">
-                                    รวมทั้งหมด {totalPriceOrders} บ.
-                                </div>
+                                                    <FontAwesomeIcon
+                                                        icon={faTimesCircle}
+                                                        className="text-[#CBD5DD] text-xl hover:text-i-red duration-300"
+                                                    />
+                                                </span>
+                                            </li>
+                                        );
+                                    }
+                                )}
+                            </ol>
+                            <div className="text-right">
+                                รวมทั้งหมด {totalPriceOrders} บ.
                             </div>
                             <div>
                                 <div className="flex flex-row mb-2">

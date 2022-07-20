@@ -11,6 +11,7 @@ import PatientCard from '../../components/appointment/PatientCard';
 import ReportHistory from '../../components/appointment/ReportHistory';
 import NewReport from '../../components/appointment/NewReport';
 import PatientHistories from '../../components/appointment/PatientHistories';
+import Dashboard from '../../components/appointment/Dashboard/Index';
 import { Patient } from '../../types';
 
 const VideoCard = dynamic(
@@ -21,7 +22,7 @@ const VideoCard = dynamic(
 );
 
 function Appointment() {
-    const [groupId, setGroupId] = useState('');
+    const [groupId, setGroupId] = useState();
     const [patient, setPatient] = useState<Patient>();
     const [specialistId, setSpecialistId] = useState('');
     const [appointmentId, setAppointmentId] = useState<any>();
@@ -148,13 +149,20 @@ function Appointment() {
                             </motion.div>
                         </AnimatePresence>
                     </div>
-                    <div className="w-[400px] bg-white">
-                        <div className="w-[400px]">
-                            <VideoCard
-                                groupId={groupId}
-                                memberId={patient.member_id}
-                                appointmentId={appointmentId}
-                            />
+                    <div className="w-[400px] bg-white flex flex-col">
+                        <div className="flex-grow overflow-y-auto overflow-x-hidden">
+                            <div className="w-[400px]">
+                                {groupId && (
+                                    <VideoCard
+                                        groupId={groupId}
+                                        memberId={patient.member_id}
+                                        appointmentId={appointmentId}
+                                    />
+                                )}
+                            </div>
+                            {patient && (
+                                <Dashboard patientId={patient.member_id} />
+                            )}
                         </div>
                     </div>
                 </section>

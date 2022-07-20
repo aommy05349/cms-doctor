@@ -1,19 +1,21 @@
 import { FC, useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUp, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import numeral from 'numeral';
 
+import NotFound from '../common/NotFound';
+import Loader from '../common/Loader';
 import { Patient, PatientHistory } from '../../types';
 import { patientApi } from '../../services';
 
-const PatientHistoryItem: FC<{ history: PatientHistory }> = ({ history }) => (
+const PatientHistoryItem: FC<{ data: PatientHistory }> = ({ data }) => (
     <li className="py-4 border-b-2 border-b-gray-400 text-sm last:border-b-transparent">
         <div className="flex justify-between space-x-2 ">
-            <span>{moment(history.update_dtm).format('MMMM DD, YYYY')}</span>
-            <span>บันทึกล่าสุด: {history.expert_fname}</span>
+            <span>{moment(data.update_dtm).format('MMMM DD, YYYY')}</span>
+            <span>บันทึกล่าสุด: {data.expert_fname}</span>
         </div>
-        <div className="p-4">{history.additional_information}</div>
+        <div className="p-4">{data.additional_information}</div>
     </li>
 );
 
@@ -25,29 +27,21 @@ interface Props {
 const PatientHistories: FC<Props> = ({ patientId, onClose }) => {
     const [histories, setHistories] = useState<Array<PatientHistory>>();
 
-    const fetchHistories = async () => {
-        if (!patientId) return;
+    const fetchHistories = async (patientId: Patient['member_id']) => {
         const res = await patientApi.getPatientHistories(patientId);
         setHistories(res || []);
     };
 
     useEffect(() => {
-        fetchHistories();
+        if (patientId === undefined) return;
+        fetchHistories(patientId);
         // eslint-disable-next-line
     }, [patientId]);
 
-    let content = (
-        <div className="w-full h-20 flex justify-center items-center text-gray-500">
-            ยังไม่มีบันทึกจากผู้ช่วยแพทย์
-        </div>
-    );
+    let content = <NotFound>ยังไม่มีบันทึกจากผู้ช่วยแพทย์</NotFound>;
 
     if (!histories) {
-        content = (
-            <div className="w-full h-20 flex justify-center items-center text-gray-500">
-                <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
-            </div>
-        );
+        content = <Loader />;
     }
 
     if (histories && histories.length > 0) {
@@ -56,7 +50,7 @@ const PatientHistories: FC<Props> = ({ patientId, onClose }) => {
                 {histories.map((history) => (
                     <PatientHistoryItem
                         key={history.addinfo_id}
-                        history={history}
+                        data={history}
                     />
                 ))}
             </ul>

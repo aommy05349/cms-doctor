@@ -11,6 +11,7 @@ const nextConfig = {
             'storage.googleapis.com',
             'cdngarenanow-a.akamaihd.net',
             'firebasestorage.googleapis.com',
+            'smile-migraine-api-2k6beg54tq-as.a.run.app',
         ],
     },
 };
