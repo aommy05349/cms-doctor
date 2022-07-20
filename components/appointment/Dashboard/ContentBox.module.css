@@ -1,4 +1,14 @@
 .contentBox {
+    position: relative;
+    padding: 8px 16px;
+    width: 100%;
+}
+
+.contentBox::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
     min-height: 205px;
     background: linear-gradient(
@@ -7,5 +17,4 @@
         rgba(255, 255, 255, 0) 4.88%
     );
     box-shadow: inset 0px 1px 0px #efefef;
-    padding: 8px 16px;
 }

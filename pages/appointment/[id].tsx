@@ -149,17 +149,21 @@ function Appointment() {
                             </motion.div>
                         </AnimatePresence>
                     </div>
-                    <div className="w-[400px] bg-white">
-                        <div className="w-[400px]">
-                            {groupId && (
-                                <VideoCard
-                                    groupId={groupId}
-                                    memberId={patient.member_id}
-                                    appointmentId={appointmentId}
-                                />
+                    <div className="w-[400px] bg-white flex flex-col">
+                        <div className="flex-grow overflow-y-auto overflow-x-hidden">
+                            <div className="w-[400px]">
+                                {groupId && (
+                                    <VideoCard
+                                        groupId={groupId}
+                                        memberId={patient.member_id}
+                                        appointmentId={appointmentId}
+                                    />
+                                )}
+                            </div>
+                            {patient && (
+                                <Dashboard patientId={patient.member_id} />
                             )}
                         </div>
-                        {patient && <Dashboard patientId={patient.member_id} />}
                     </div>
                 </section>
             )}
