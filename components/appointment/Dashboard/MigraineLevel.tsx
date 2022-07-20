@@ -1,16 +1,9 @@
 import { FC, useEffect, useState } from 'react';
 import Image from 'next/image';
 
+import Loader from '../../common/Loader';
 import { patientApi } from '../../../services';
 import { Patient, MigraineLevel as MigraineLevelType } from '../../../types';
-
-const MigraineLevelSkeleton: FC = () => (
-    <div className="flex flex-col space-y-1">
-        <div className="h-5 w-32 bg-gray-300 rounded-2xl animate-pulse" />
-        <div className="h-8 w-40 bg-gray-300 rounded-2xl animate-pulse" />
-        <div className="h-5 w-1/2 bg-gray-300 rounded-2xl animate-pulse" />
-    </div>
-);
 
 interface Props {
     patientId: Patient['member_id'];
@@ -29,7 +22,7 @@ const MigraineLevel: FC<Props> = ({ patientId }) => {
         fetchMigraineLevel(patientId);
     }, [patientId]);
 
-    if (!migraineLevel) return <MigraineLevelSkeleton />;
+    if (!migraineLevel) return <Loader />;
 
     const MIGRAINE_LEVEL_BUBBLE_IMAGE_URL = [
         '/images/migraine-bubble-level/unknow.svg',
