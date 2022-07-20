@@ -27,14 +27,14 @@ interface Props {
 const PatientHistories: FC<Props> = ({ patientId, onClose }) => {
     const [histories, setHistories] = useState<Array<PatientHistory>>();
 
-    const fetchHistories = async () => {
-        if (!patientId) return;
+    const fetchHistories = async (patientId: Patient['member_id']) => {
         const res = await patientApi.getPatientHistories(patientId);
         setHistories(res || []);
     };
 
     useEffect(() => {
-        fetchHistories();
+        if (patientId === undefined) return;
+        fetchHistories(patientId);
         // eslint-disable-next-line
     }, [patientId]);
 
