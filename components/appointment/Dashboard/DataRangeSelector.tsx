@@ -44,7 +44,7 @@ const DataRangeSelector: FC<Props> = ({ value, onChange }) => {
     ];
 
     return (
-        <div className="grid grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-3 gap-4 mb-8 px-4">
             {RANGE_LIST.map((range) => (
                 <RangeButton
                     key={range.value}

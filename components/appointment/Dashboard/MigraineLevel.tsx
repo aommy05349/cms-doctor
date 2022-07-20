@@ -34,7 +34,7 @@ const MigraineLevel: FC<Props> = ({ patientId }) => {
     ];
 
     return (
-        <div className="flex space-x-4 mb-8">
+        <div className="flex space-x-4 mb-8 px-4">
             <div className="grow flex flex-col space-y-1">
                 <p className="text-sm font-semibold">อยู่ในระดับ</p>
                 <p className="text-2xl font-semibold">{migraineLevel.detail}</p>

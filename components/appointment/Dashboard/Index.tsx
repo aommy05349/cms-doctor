@@ -15,8 +15,8 @@ const Dashboard: FC<Props> = ({ patientId }) => {
     const [dataRange, setDataRange] = useState<number>(30);
 
     return (
-        <div className="px-4 py-3">
-            <header className="flex justify-between space-x-4 text-sm mb-5">
+        <div className="py-3">
+            <header className="flex justify-between space-x-4 text-sm mb-5 px-4">
                 <h3 className="truncate font-bold">
                     ข้อมูลจากการบันทึกในแอปพลิเคชัน
                 </h3>
