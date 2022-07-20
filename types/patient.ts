@@ -64,3 +64,16 @@ export interface FrequencyTrigger {
     trigger_id: string;
     trigger_name: string;
 }
+
+export interface FrequencyMedication {
+    medicine_id: string;
+    name: string;
+    count_med: string;
+    type: string;
+    shape: string;
+    color: string;
+    color_top: string;
+    color_bottom: string;
+    status: string;
+    image: string;
+}

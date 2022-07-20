@@ -5,6 +5,7 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import MigraineLevel from './MigraineLevel';
 import DataRangeSelector from './DataRangeSelector';
 import FrequencyTriggerList from './FrequencyTriggerList';
+import FrequencyMedicationList from './FrequencyMedicationList';
 import { Patient } from '../../../types';
 
 interface Props {
@@ -28,6 +29,10 @@ const Dashboard: FC<Props> = ({ patientId }) => {
             <MigraineLevel patientId={patientId} />
             <DataRangeSelector value={dataRange} onChange={setDataRange} />
             <FrequencyTriggerList patientId={patientId} dataRange={dataRange} />
+            <FrequencyMedicationList
+                patientId={patientId}
+                dataRange={dataRange}
+            />
         </div>
     );
 };

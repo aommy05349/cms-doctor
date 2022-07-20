@@ -68,6 +68,15 @@ export default {
             return error;
         }
     },
+    getFrequencyMedication: async (id, prev = 180) => {
+        try {
+            const url = `/getFrequencyMedication/${id}/prev/${prev}`;
+            const res = await apiApp.get(url);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
     getListenning: async (memberId) => {
         try {
             const url = `/telemigraine/listenning/${memberId}`;

@@ -80,7 +80,7 @@ const FrequencyTriggerList: FC<Props> = ({ patientId, dataRange }) => {
     }
 
     return (
-        <div>
+        <div className="mb-8">
             <h3 className="text-sm font-bold mb-3 px-4">สิ่งกระตุ้น</h3>
             <ContentBox>{content}</ContentBox>
         </div>
