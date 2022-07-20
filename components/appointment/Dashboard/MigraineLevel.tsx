@@ -25,12 +25,12 @@ const MigraineLevel: FC<Props> = ({ patientId }) => {
     if (!migraineLevel) return <Loader />;
 
     const MIGRAINE_LEVEL_BUBBLE_IMAGE_URL = [
-        '/images/migraine-bubble-level/unknow.svg',
-        '/images/migraine-bubble-level/1.svg',
-        '/images/migraine-bubble-level/2.svg',
-        '/images/migraine-bubble-level/3.svg',
-        '/images/migraine-bubble-level/4.svg',
-        '/images/migraine-bubble-level/5.svg',
+        '/images/migraine-level-bubble/unknow.svg',
+        '/images/migraine-level-bubble/1.svg',
+        '/images/migraine-level-bubble/2.svg',
+        '/images/migraine-level-bubble/3.svg',
+        '/images/migraine-level-bubble/4.svg',
+        '/images/migraine-level-bubble/5.svg',
     ];
 
     return (

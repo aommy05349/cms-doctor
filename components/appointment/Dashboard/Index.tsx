@@ -6,6 +6,7 @@ import MigraineLevel from './MigraineLevel';
 import DataRangeSelector from './DataRangeSelector';
 import FrequencyTriggerList from './FrequencyTriggerList';
 import FrequencyMedicationList from './FrequencyMedicationList';
+import MigraineLevelInfoModal from './MigraineLevelInfoModal';
 import { Patient } from '../../../types';
 
 interface Props {
@@ -14,26 +15,39 @@ interface Props {
 
 const Dashboard: FC<Props> = ({ patientId }) => {
     const [dataRange, setDataRange] = useState<number>(30);
+    const [isShowMLIModal, setShowMLIModal] = useState<boolean>(false);
 
     return (
-        <div className="py-3">
-            <header className="flex justify-between space-x-4 text-sm mb-5 px-4">
-                <h3 className="truncate font-bold">
-                    ข้อมูลจากการบันทึกในแอปพลิเคชัน
-                </h3>
-                <button className="truncate text-i-green flex items-center space-x-1">
-                    <FontAwesomeIcon icon={faQuestionCircle} />
-                    <span>อธิบายระดับการปวด</span>
-                </button>
-            </header>
-            <MigraineLevel patientId={patientId} />
-            <DataRangeSelector value={dataRange} onChange={setDataRange} />
-            <FrequencyTriggerList patientId={patientId} dataRange={dataRange} />
-            <FrequencyMedicationList
-                patientId={patientId}
-                dataRange={dataRange}
+        <>
+            <div className="py-3">
+                <header className="flex justify-between space-x-4 text-sm mb-5 px-4">
+                    <h3 className="truncate font-bold">
+                        ข้อมูลจากการบันทึกในแอปพลิเคชัน
+                    </h3>
+                    <button
+                        className="truncate text-i-green flex items-center space-x-1"
+                        onClick={() => setShowMLIModal(true)}
+                    >
+                        <FontAwesomeIcon icon={faQuestionCircle} />
+                        <span>อธิบายระดับการปวด</span>
+                    </button>
+                </header>
+                <MigraineLevel patientId={patientId} />
+                <DataRangeSelector value={dataRange} onChange={setDataRange} />
+                <FrequencyTriggerList
+                    patientId={patientId}
+                    dataRange={dataRange}
+                />
+                <FrequencyMedicationList
+                    patientId={patientId}
+                    dataRange={dataRange}
+                />
+            </div>
+            <MigraineLevelInfoModal
+                show={isShowMLIModal}
+                onClose={() => setShowMLIModal(false)}
             />
-        </div>
+        </>
     );
 };
 
