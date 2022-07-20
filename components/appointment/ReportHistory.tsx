@@ -106,22 +106,24 @@ export default function ReportHistory({ memberId }: ReportProps) {
                                     </p>
                                 </div>
                                 <div className="p-4 text-[14px] flex-1 relative">
-                                    <h2 className="font-noto-bold text-[14px] mb-2">
-                                        คำสั่งรักษา
-                                    </h2>
-                                    <button
-                                        onClick={() => {
-                                            resendAppointment(
-                                                data.header_report
-                                                    .appointment_date,
-                                                data.header_report
-                                                    .appointment_time
-                                            );
-                                        }}
-                                        className="absolute right-2 top-2 bg-[#EFFAF5] text-i-green rounded-[8px] px-4 py-2"
-                                    >
-                                        ส่งสรุปการรักษา
-                                    </button>
+                                    <div className="flex justify-between items-baseline space-x-2 mb-2">
+                                        <h2 className="font-noto-bold text-sm">
+                                            คำสั่งรักษา
+                                        </h2>
+                                        <button
+                                            onClick={() => {
+                                                resendAppointment(
+                                                    data.header_report
+                                                        .appointment_date,
+                                                    data.header_report
+                                                        .appointment_time
+                                                );
+                                            }}
+                                            className="rounded text-sm text-white bg-i-green truncate  px-4 py-2"
+                                        >
+                                            บันทึกและส่งสรุปการรักษา
+                                        </button>
+                                    </div>
                                     <h3 className="text-[#179B97] mb-2">
                                         วินิจฉัย
                                     </h3>
