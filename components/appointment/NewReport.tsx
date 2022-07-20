@@ -172,7 +172,6 @@ export default function NewReport({
 
     async function getSpecialist() {
         const res = await specialistApi.getSpecialistById(specialistId);
-
         setSpecialists(res.data);
         const result = res.data.available_date.map((e: string) => new Date(e));
         setIncludeDate(result);
@@ -187,7 +186,6 @@ export default function NewReport({
             specialistId,
             dateString
         );
-        console.log(res.data);
         if (res.data) {
             const schedules = res.data.filter((e: any) => e.is_available);
             setScheduleAppointment(schedules);
@@ -205,7 +203,6 @@ export default function NewReport({
             schedule_time_id: scheduleSelected.schedule_time_id,
         };
         const res = await specialistApi.saveNextAppointment(data);
-        console.log('saveAppointment api 1', res);
 
         // New ยิง firebase
         const dataSendFirebase = {
@@ -217,7 +214,6 @@ export default function NewReport({
         const resFirebase = await specialistApi.updateNextAppointmentFirebase(
             dataSendFirebase
         );
-        console.log('resFirebase', resFirebase);
         if (res.data.apppointment_id && resFirebase.success) {
             Swal.fire({
                 title: 'เรียบร้อย',
@@ -225,13 +221,10 @@ export default function NewReport({
                 icon: 'success',
             });
             setNextAppointmentId(res.data.apppointment_id);
-        } else {
-            console.log('error something');
         }
     }
 
     async function createOrders() {
-        // บันทึกรายการยา
         const data = {
             doctor_appointment_id: appointmentId,
             next_doctor_appointment_id: nextAppointmentId
@@ -251,7 +244,6 @@ export default function NewReport({
         if (isMigrainePremiumCare && !patient.is_premium_member)
             data.item_patient_order.push(migrainePremiumCare);
         const res = await specialistApi.createOrders(data);
-        console.log('createOrders', res);
         if (!res.success) {
             return false;
         }
@@ -259,7 +251,6 @@ export default function NewReport({
 
     async function createReport() {
         const res = await specialistApi.createReport(formData);
-        console.log('create report', res);
         if (!res.success) {
             return false;
         }
@@ -271,7 +262,6 @@ export default function NewReport({
             doctor_appointment_status: 2, // 2 = successful_doctor_consultation
         };
         const res = await specialistApi.updateStatusSuccessConsult(data);
-        console.log('updateStatusSuccessConsult', res);
         if (!res.success) {
             return false;
         }
@@ -284,14 +274,12 @@ export default function NewReport({
             specialists_id: specialistId,
         };
         const res = await specialistApi.sendToChat(data);
-        console.log('sendToChat', res);
         if (!res.success) {
             return false;
         }
     }
 
     async function sendAppointment() {
-        // ส่งสรุปการรักษา
         Swal.fire({
             title: 'ยืนยัน ?',
             text: 'ต้องการส่งสรุปการรักษา ใช่หรือไม่ ?',
@@ -372,6 +360,7 @@ export default function NewReport({
         initFormData();
         getSpecialist();
         setIsMigrainePremiumCare(patient.is_premium_member);
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
@@ -383,7 +372,7 @@ export default function NewReport({
         <>
             {specialists && (
                 <div className="flex flex-col bg-white rounded-[6px] mb-[20px]">
-                    <div className="p-4 flex flex-row text-[14px] border-b-2">
+                    <div className="p-4 flex flex-row text-[14px] border-b">
                         <div>
                             {headerReport && headerReport.appointment_date}{' '}
                             {headerReport && headerReport.appointment_time}
@@ -392,14 +381,24 @@ export default function NewReport({
                             {specialists.specialist_prename}{' '}
                             {specialists.specialist_fname}
                             {specialists.specialist_lname}{' '}
-                            {' ผู้เข้ารับคำปรึกษา '} {patient.fname}{' '}
+                            {' ผู้เข้ารับคำปรึกษา: '} {patient.fname}{' '}
                             {patient.lname}
                         </div>
                     </div>
-                    <div className=" flex flex-row">
-                        <div className="p-4 text-[14px] border-r-2 flex-1 ">
-                            <h2 className="font-noto-bold text-[14px] mb-2">
-                                รายละเอียด
+                    <div className="grid grid-cols-2 divide-x text-sm">
+                        <div className="p-4">
+                            <h2 className="font-noto-bold">ประวัติผู้ป่วย</h2>
+                            <FieldEditor
+                                value={formData.frequency_and_severity}
+                                setValue={(text) =>
+                                    setFormData({
+                                        ...formData,
+                                        frequency_and_severity: text,
+                                    })
+                                }
+                            />
+                            <h2 className="font-noto-bold mb-2">
+                                ประเมินโรคไมเกรน
                             </h2>
                             <FieldEditor
                                 title="ความถี่และความรุนแรง"
@@ -475,20 +474,16 @@ export default function NewReport({
                                 }
                             />
                         </div>
-                        <div className="p-4 text-[14px] flex-1 relative flex flex-col">
-                            <div className="flex space-x-2 justify-between items-baseline">
-                                <h2 className="font-noto-bold text-sm truncate">
-                                    คำสั่งรักษา
-                                </h2>
-                                <button
-                                    onClick={() => {
-                                        sendAppointment();
-                                    }}
-                                    className="rounded text-sm text-white bg-i-green truncate  px-4 py-2"
-                                >
-                                    บันทึกและส่งสรุปการรักษา
-                                </button>
-                            </div>
+                        <div className="p-4 relative">
+                            <button
+                                onClick={() => {
+                                    sendAppointment();
+                                }}
+                                className="rounded text-sm text-white bg-i-green truncate  px-4 py-2 absolute top-2 right-4"
+                            >
+                                บันทึกและส่งสรุปการรักษา
+                            </button>
+                            <h2 className="font-noto-bold mb-2">คำสั่งรักษา</h2>
                             <FieldEditor
                                 title="วินิจฉัย"
                                 value={formData.diagnose}
@@ -509,106 +504,110 @@ export default function NewReport({
                                     })
                                 }
                             />
-                            <div className="flex flex-row">
-                                <h2 className="flex-1 py-2 font-noto-bold text-[14px]">
-                                    รายการยา
-                                </h2>
-                                <button
-                                    className="text-i-green font-noto-bold p-2"
-                                    onClick={() => {
-                                        setIsShowModalMedicine(true);
-                                    }}
-                                >
-                                    <FontAwesomeIcon
-                                        icon={faPlus}
-                                        className="mr-2 font-bold"
-                                    />
-                                    เพิ่มรายการยา
-                                </button>
-                            </div>
-                            <ol start={0}>
-                                {scheduleSelected && (
-                                    <li className="flex flex-row">
-                                        <span className="flex-1 py-2">
-                                            0. Tele Migraine {dateSelected}{' '}
-                                            {scheduleSelected.start_time +
-                                                ' - ' +
-                                                scheduleSelected.end_time}
-                                        </span>
-                                        <span className="py-2 pr-2">
-                                            {specialists.service_fee + ' บ.'}
-                                        </span>
-                                    </li>
-                                )}
-                                {isMigrainePremiumCare &&
-                                    !patient.is_premium_member && (
+                            <div className="mb-4">
+                                <div className="flex justify-between items-baseline space-x-2">
+                                    <h2 className="font-noto-bold mb-2">
+                                        รายการยา
+                                    </h2>
+                                    <button
+                                        className="text-i-green font-noto-bold p-2"
+                                        onClick={() => {
+                                            setIsShowModalMedicine(true);
+                                        }}
+                                    >
+                                        <FontAwesomeIcon
+                                            icon={faPlus}
+                                            className="mr-2 font-bold"
+                                        />
+                                        เพิ่มรายการยา
+                                    </button>
+                                </div>
+                                <ol start={0}>
+                                    {scheduleSelected && (
                                         <li className="flex flex-row">
                                             <span className="flex-1 py-2">
-                                                {scheduleSelected ? 1 : 0}.
-                                                Migraine Care Programe 3 เดือน
+                                                0. Tele Migraine {dateSelected}{' '}
+                                                {scheduleSelected.start_time +
+                                                    ' - ' +
+                                                    scheduleSelected.end_time}
                                             </span>
                                             <span className="py-2 pr-2">
-                                                {`${MIGRAINE_CARE_PROGRAME_PRICE} บ.`}
+                                                {specialists.service_fee +
+                                                    ' บ.'}
                                             </span>
-                                            {!patient.is_premium_member && (
-                                                <span
-                                                    className="py-2 cursor-pointer"
-                                                    onClick={() => {
-                                                        setIsMigrainePremiumCare(
-                                                            false
-                                                        );
-                                                    }}
-                                                >
-                                                    <FontAwesomeIcon
-                                                        icon={faTimesCircle}
-                                                        className="text-[#CBD5DD] text-xl hover:text-i-red duration-300"
-                                                    />
-                                                </span>
-                                            )}
                                         </li>
                                     )}
-                                {formData.patient_order.map(
-                                    (e: any, index: number) => {
-                                        return (
-                                            <li
-                                                className="flex flex-row"
-                                                key={index}
-                                            >
+                                    {isMigrainePremiumCare &&
+                                        !patient.is_premium_member && (
+                                            <li className="flex flex-row">
                                                 <span className="flex-1 py-2">
-                                                    {index +
-                                                        (scheduleSelected &&
-                                                        !patient.is_premium_member &&
-                                                        isMigrainePremiumCare
-                                                            ? 2
-                                                            : 1)}
-                                                    . {e.common_name} {e.amount}{' '}
-                                                    {e.unit}{' '}
+                                                    {scheduleSelected ? 1 : 0}.
+                                                    Migraine Care Programe 3
+                                                    เดือน
                                                 </span>
                                                 <span className="py-2 pr-2">
-                                                    {e.indications}
+                                                    {`${MIGRAINE_CARE_PROGRAME_PRICE} บ.`}
                                                 </span>
-                                                <span className="py-2 pr-2">
-                                                    {e.price * e.amount}
-                                                    {' บ.'}
-                                                </span>
-                                                <span
-                                                    className="py-2 cursor-pointer"
-                                                    onClick={() => {
-                                                        deleteOrder(index);
-                                                    }}
-                                                >
-                                                    <FontAwesomeIcon
-                                                        icon={faTimesCircle}
-                                                        className="text-[#CBD5DD] text-xl hover:text-i-red duration-300"
-                                                    />
-                                                </span>
+                                                {!patient.is_premium_member && (
+                                                    <span
+                                                        className="py-2 cursor-pointer"
+                                                        onClick={() => {
+                                                            setIsMigrainePremiumCare(
+                                                                false
+                                                            );
+                                                        }}
+                                                    >
+                                                        <FontAwesomeIcon
+                                                            icon={faTimesCircle}
+                                                            className="text-[#CBD5DD] text-xl hover:text-i-red duration-300"
+                                                        />
+                                                    </span>
+                                                )}
                                             </li>
-                                        );
-                                    }
-                                )}
-                            </ol>
-                            <div className="text-right">
-                                รวมทั้งหมด {totalPriceOrders} บ.
+                                        )}
+                                    {formData.patient_order.map(
+                                        (e: any, index: number) => {
+                                            return (
+                                                <li
+                                                    className="flex flex-row"
+                                                    key={index}
+                                                >
+                                                    <span className="flex-1 py-2">
+                                                        {index +
+                                                            (scheduleSelected &&
+                                                            !patient.is_premium_member &&
+                                                            isMigrainePremiumCare
+                                                                ? 2
+                                                                : 1)}
+                                                        . {e.common_name}{' '}
+                                                        {e.amount} {e.unit}{' '}
+                                                    </span>
+                                                    <span className="py-2 pr-2">
+                                                        {e.indications}
+                                                    </span>
+                                                    <span className="py-2 pr-2">
+                                                        {e.price * e.amount}
+                                                        {' บ.'}
+                                                    </span>
+                                                    <span
+                                                        className="py-2 cursor-pointer"
+                                                        onClick={() => {
+                                                            deleteOrder(index);
+                                                        }}
+                                                    >
+                                                        <FontAwesomeIcon
+                                                            icon={faTimesCircle}
+                                                            className="text-[#CBD5DD] text-xl hover:text-i-red duration-300"
+                                                        />
+                                                    </span>
+                                                </li>
+                                            );
+                                        }
+                                    )}
+                                </ol>
+                                <div className="text-right">
+                                    รวมทั้งหมด {totalPriceOrders} บ.
+                                </div>
                             </div>
                             <div>
                                 <div className="flex flex-row mb-2">
@@ -872,7 +871,6 @@ export default function NewReport({
                                                 : 'text-[#6C6C6C]'
                                         }`}
                                         onClick={() => {
-                                            console.log('e', e);
                                             setScheduleSelected(e);
                                         }}
                                     >
