@@ -389,11 +389,11 @@ export default function NewReport({
                         <div className="p-4">
                             <h2 className="font-noto-bold">ประวัติผู้ป่วย</h2>
                             <FieldEditor
-                                value={formData.frequency_and_severity}
+                                value={formData.note}
                                 setValue={(text) =>
                                     setFormData({
                                         ...formData,
-                                        frequency_and_severity: text,
+                                        note: text,
                                     })
                                 }
                             />
@@ -460,16 +460,6 @@ export default function NewReport({
                                     setFormData({
                                         ...formData,
                                         comorbidity: text,
-                                    })
-                                }
-                            />
-                            <FieldEditor
-                                title="บันทึก อื่นๆ"
-                                value={formData.note}
-                                setValue={(text) =>
-                                    setFormData({
-                                        ...formData,
-                                        note: text,
                                     })
                                 }
                             />
