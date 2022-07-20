@@ -2,6 +2,8 @@ import { FC } from 'react';
 import Image from 'next/image';
 import numeral from 'numeral';
 
+import { Patient } from '../../../types';
+
 const LevelScore: FC<{ className?: string; image: string; value: number }> = ({
     className,
     image,
@@ -22,14 +24,19 @@ const LevelScore: FC<{ className?: string; image: string; value: number }> = ({
     </li>
 );
 
-interface Props {}
+interface Props {
+    patientId: Patient['member_id'];
+    dataRange: number;
+}
 
-const Chart: FC<Props> = () => {
+const Chart: FC<Props> = ({ dataRange }) => {
     return (
         <div className="mb-8 p-4">
             <header className="flex space-x-2">
                 <div className="grow truncate">
-                    <h3 className="font-noto-bold">ปวดไมเกรน 31 วัน</h3>
+                    <h3 className="font-noto-bold">
+                        ปวดไมเกรน {dataRange} วัน
+                    </h3>
                     <p className="text-sm mt-1">มีนาคม 2562</p>
                 </div>
                 <ul className="shrink-0 flex space-x-4">
@@ -60,3 +67,7 @@ const Chart: FC<Props> = () => {
 };
 
 export default Chart;
+
+Chart.defaultProps = {
+    dataRange: 30,
+};

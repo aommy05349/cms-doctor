@@ -34,7 +34,7 @@ const Dashboard: FC<Props> = ({ patientId }) => {
                     </button>
                 </header>
                 <MigraineLevel patientId={patientId} />
-                <Chart />
+                <Chart patientId={patientId} dataRange={dataRange} />
                 <DataRangeSelector value={dataRange} onChange={setDataRange} />
                 <FrequencyTriggerList
                     patientId={patientId}
