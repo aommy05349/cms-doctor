@@ -2,7 +2,7 @@ import { EditFilled } from '@fluentui/react-icons';
 import React, { useState } from 'react';
 
 type FieldEditorProps = {
-    title: string;
+    title?: string;
     value: string;
     setValue: (text: string) => void;
 };
@@ -22,7 +22,7 @@ export default function FieldEditor({
 
     return (
         <div>
-            <h3 className="text-[#179B97]">{title}</h3>
+            {title && <h3 className="text-[#179B97]">{title}</h3>}
             <div
                 className="min-h-[50px] duration-300 ease-in"
                 onClick={() => {

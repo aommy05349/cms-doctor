@@ -13,7 +13,7 @@ export default function ReportHistory({ memberId }: ReportProps) {
 
     async function getHistoryReports() {
         const res = await patientApi.getReportHistory(memberId);
-        console.log('history reports', res.data);
+        console.log('report histories', res.data);
         setReports(res.data);
     }
     useEffect(() => {
@@ -32,13 +32,13 @@ export default function ReportHistory({ memberId }: ReportProps) {
     return (
         <div>
             {reports &&
-                reports.map((data: any, index: number) => {
+                reports.map((data: any) => {
                     return (
                         <div
                             className="flex flex-col bg-white rounded-[6px] mb-[20px]"
                             key={data.patient_report.id}
                         >
-                            <div className="p-4 flex flex-row text-[14px] border-b-2">
+                            <div className="p-4 flex flex-row text-[14px] border-b">
                                 <div>
                                     {data.header_report.appointment_date}{' '}
                                     {data.header_report.appointment_time}
@@ -51,90 +51,78 @@ export default function ReportHistory({ memberId }: ReportProps) {
                                     {data.header_report.patient_name}
                                 </div>
                             </div>
-                            <div className=" flex flex-row">
-                                <div className="p-4 text-[14px] border-r-2 flex-1 ">
-                                    <h2 className="font-noto-bold text-[14px] mb-2">
-                                        รายละเอียด
+                            <div className="grid grid-cols-2 divide-x text-sm">
+                                <div className="p-4">
+                                    <h2 className="font-noto-bold">
+                                        ประวัติผู้ป่วย
                                     </h2>
-                                    <h3 className="text-[#179B97] mb-2">
+                                    <p className="px-2 mb-2">
+                                        {data.patient_report.note || '-'}
+                                    </p>
+                                    <h2 className="font-noto-bold mb-2">
+                                        ประเมินโรคไมเกรน
+                                    </h2>{' '}
+                                    <h3 className="text-[#179B97]">
                                         ความถี่และความรุนแรง
                                     </h3>
-                                    <p className="mb-2 ml-2">
-                                        {
-                                            data.patient_report
-                                                .frequency_and_severity
-                                        }
+                                    <p className="px-2 mb-2">
+                                        {data.patient_report
+                                            .frequency_and_severity || '-'}
                                     </p>
-                                    <h3 className="text-[#179B97] mb-2">
+                                    <h3 className="text-[#179B97]">
                                         สิ่งกระตุ้น
                                     </h3>
-                                    <p className="mb-2 ml-2">
-                                        {data.patient_report.trigger_note}
+                                    <p className="px-2 mb-2">
+                                        {data.patient_report.trigger_note ||
+                                            '-'}
                                     </p>
-                                    <h3 className="text-[#179B97] mb-2">
+                                    <h3 className="text-[#179B97]">
                                         พฤติกรรมกระตุ้น หรือลดไมเกรน
                                     </h3>
-                                    <p className="mb-2 ml-2">
-                                        {
-                                            data.patient_report
-                                                .behaviors_trigger_reduce_migraines
-                                        }
+                                    <p className="px-2 mb-2">
+                                        {data.patient_report
+                                            .behaviors_trigger_reduce_migraines ||
+                                            '-'}
                                     </p>
-                                    <h3 className="text-[#179B97] mb-2">
-                                        ยาแก้ปวด
-                                    </h3>
-                                    <p className="mb-2 ml-2">
-                                        {data.patient_report.acute}
+                                    <h3 className="text-[#179B97]">ยาแก้ปวด</h3>
+                                    <p className="px-2 mb-2">
+                                        {data.patient_report.acute || '-'}
                                     </p>
-                                    <h3 className="text-[#179B97] mb-2">
+                                    <h3 className="text-[#179B97]">
                                         ยาป้องกัน
                                     </h3>
-                                    <p className="mb-2 ml-2">
-                                        {data.patient_report.prevention}
+                                    <p className="px-2 mb-2">
+                                        {data.patient_report.prevention || '-'}
                                     </p>
-                                    <h3 className="text-[#179B97] mb-2">
-                                        โรคร่วม
-                                    </h3>
-                                    <p className="mb-2 ml-2">
-                                        {data.patient_report.comorbidity}
-                                    </p>
-                                    <h3 className="text-[#179B97] mb-2">
-                                        บันทึก อื่นๆ
-                                    </h3>
-                                    <p className="mb-2 ml-2">
-                                        {data.patient_report.note}
+                                    <h3 className="text-[#179B97]">โรคร่วม</h3>
+                                    <p className="px-2 mb-2">
+                                        {data.patient_report.comorbidity || '-'}
                                     </p>
                                 </div>
-                                <div className="p-4 text-[14px] flex-1 relative">
-                                    <div className="flex justify-between items-baseline space-x-2 mb-2">
-                                        <h2 className="font-noto-bold text-sm">
-                                            คำสั่งรักษา
-                                        </h2>
-                                        <button
-                                            onClick={() => {
-                                                resendAppointment(
-                                                    data.header_report
-                                                        .appointment_date,
-                                                    data.header_report
-                                                        .appointment_time
-                                                );
-                                            }}
-                                            className="rounded text-sm text-white bg-i-green truncate  px-4 py-2"
-                                        >
-                                            บันทึกและส่งสรุปการรักษา
-                                        </button>
-                                    </div>
-                                    <h3 className="text-[#179B97] mb-2">
-                                        วินิจฉัย
-                                    </h3>
-                                    <p className="mb-2 ml-2">
-                                        {data.patient_report.diagnose}
+                                <div className="p-4 relative">
+                                    <button
+                                        onClick={() => {
+                                            resendAppointment(
+                                                data.header_report
+                                                    .appointment_date,
+                                                data.header_report
+                                                    .appointment_time
+                                            );
+                                        }}
+                                        className="rounded text-sm text-white bg-i-green truncate  px-4 py-2 absolute top-2 right-4"
+                                    >
+                                        บันทึกและส่งสรุปการรักษา
+                                    </button>
+                                    <h2 className="font-noto-bold mb-2">
+                                        คำสั่งรักษา
+                                    </h2>
+                                    <h3 className="text-[#179B97]">วินิจฉัย</h3>
+                                    <p className="px-2 mb-2">
+                                        {data.patient_report.diagnose || '-'}
                                     </p>
-                                    <h3 className="text-[#179B97] mb-2">
-                                        คำแนะนำ
-                                    </h3>
-                                    <p className="mb-2 ml-2">
-                                        {data.patient_report.advice}
+                                    <h3 className="text-[#179B97]">คำแนะนำ</h3>
+                                    <p className="px-2 mb-2">
+                                        {data.patient_report.advice || '-'}
                                     </p>
                                     <h2 className="font-noto-bold text-[14px] mb-2">
                                         รายการยา
