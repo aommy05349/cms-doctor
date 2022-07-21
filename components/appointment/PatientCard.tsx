@@ -70,7 +70,9 @@ export default function PatientCard({ data }: patientProps) {
                         {!histories && (
                             <Loader className="h-auto justify-start" />
                         )}
-                        {histories && histories[0].additional_information}
+                        {histories &&
+                            histories[0] &&
+                            histories[0].additional_information}
                         {histories && !histories[0] && '-'}
                     </p>
                 </div>
