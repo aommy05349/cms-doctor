@@ -33,8 +33,6 @@ interface Props {
 }
 
 const Chart: FC<Props> = ({ dataRange }) => {
-    const COLORS = ['#25AC67', '#0679E0', '#FDC72F', '#FC5605'];
-
     let content: any = null;
 
     switch (dataRange) {
