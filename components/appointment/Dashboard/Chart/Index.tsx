@@ -99,7 +99,7 @@ const Chart: FC<Props> = ({ patientId, dataRange }) => {
                     <h3 className="font-noto-bold">
                         ปวดไมเกรน{' '}
                         {dataRange === 30
-                            ? '1 เดือน'
+                            ? moment().daysInMonth() + ' วัน'
                             : dataRange === 90
                             ? '3 เดือน'
                             : '6 เดือน'}
