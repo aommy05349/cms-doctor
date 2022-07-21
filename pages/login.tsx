@@ -31,7 +31,7 @@ export default function LoginPage() {
                 location.href = '/';
             } catch (error) {
                 setLoading(false);
-                console.error(err);
+                console.error(error);
             }
         } else {
             Swal.fire({
