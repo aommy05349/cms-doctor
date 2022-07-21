@@ -13,7 +13,6 @@ export default function ReportHistory({ memberId }: ReportProps) {
 
     async function getHistoryReports() {
         const res = await patientApi.getReportHistory(memberId);
-        console.log('report histories', res.data);
         setReports(res.data);
     }
     useEffect(() => {

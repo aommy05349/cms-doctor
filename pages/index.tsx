@@ -32,7 +32,6 @@ function Home() {
     async function getList() {
         setLoading(true);
         const res = await boardApi.getPatients(filters);
-        console.log('Patient List', res.data.patient_list);
         if (res.data) {
             countdownTime(res.data.patient_list);
             setTotalPage(res.data.summary.total);
@@ -92,7 +91,7 @@ function Home() {
             });
             setAppointment(newAppointments);
         } else {
-            setAppointment([])
+            setAppointment([]);
         }
     }
 

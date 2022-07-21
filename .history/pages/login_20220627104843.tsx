@@ -22,7 +22,6 @@ export default function login() {
             apiApp.defaults.headers.common['Authorization'] =
                 'Bearer ' + res.data.token;
             const resSetCookie = await authApi.createSession(res.data.token);
-            console.log('resSetCookie', resSetCookie);
             router.push('/');
         }
     }

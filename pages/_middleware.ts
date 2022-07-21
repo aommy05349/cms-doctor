@@ -16,12 +16,8 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
             SkipPath = true;
         }
     });
-    // console.log('nextPath', nextPath);
-    // console.log('hasAuth', hasAuth);
-    // console.log('SkipPath', SkipPath);
-    // console.log('---------------------------------------- ');
+
     if (!SkipPath) {
-        // require auth path
         if (hasAuth) {
             return NextResponse.next();
         } else {
