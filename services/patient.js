@@ -104,4 +104,13 @@ export default {
             return error;
         }
     },
+    getMedications: async (memberId, prev) => {
+        try {
+            const url = `/medications/${memberId}/prev/${prev}`;
+            const res = await apiApp.get(url);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
 };

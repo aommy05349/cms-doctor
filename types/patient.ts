@@ -65,16 +65,18 @@ export interface FrequencyTrigger {
     trigger_name: string;
 }
 
+export interface Medication {
+    pain_reliever: Array<FrequencyMedication>;
+    preventive_medicine: Array<FrequencyMedication>;
+}
+
 export interface FrequencyMedication {
+    member_id: Patient['member_id'];
     medicine_id: string;
-    name: string;
-    count_med: string;
-    type: string;
-    shape: string;
-    color: string;
-    color_top: string;
-    color_bottom: string;
     status: string;
+    name: string;
+    type: string;
+    count_med: string;
     image: string;
 }
 
