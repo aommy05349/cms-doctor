@@ -7,11 +7,16 @@ export interface TotalPain {
     hardPain: number;
 }
 
+const getTotalDailyByValue = (
+    value: number,
+    painRecord: Array<PainRecordDaily>
+) => painRecord.filter((e) => +e.score_pain === value).length;
+
 const getTotalDailyPain = (painRecord: Array<PainRecordDaily>): TotalPain => {
-    const noPain = painRecord.filter((e) => +e.score_pain === 0).length;
-    const softPain = painRecord.filter((e) => +e.score_pain === 1).length;
-    const mediumPain = painRecord.filter((e) => +e.score_pain === 2).length;
-    const hardPain = painRecord.filter((e) => +e.score_pain === 3).length;
+    const noPain = getTotalDailyByValue(0, painRecord);
+    const softPain = getTotalDailyByValue(1, painRecord);
+    const mediumPain = getTotalDailyByValue(2, painRecord);
+    const hardPain = getTotalDailyByValue(3, painRecord);
     return {
         noPain,
         softPain,
@@ -23,9 +28,7 @@ const getTotalDailyPain = (painRecord: Array<PainRecordDaily>): TotalPain => {
 const getTotalMonthlyByKey = (
     key: keyof PainRecordMonthly['score_pain'],
     painRecord: Array<PainRecordMonthly>
-): number => {
-    return painRecord.reduce((sum, e) => e.score_pain[key] + sum, 0);
-};
+): number => painRecord.reduce((sum, e) => e.score_pain[key] + sum, 0);
 
 const getTotalMonthlyPain = (
     painRecord: Array<PainRecordMonthly>

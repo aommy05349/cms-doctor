@@ -77,6 +77,23 @@ const Chart: FC<Props> = ({ patientId, dataRange }) => {
         painRecord
     );
 
+    const pariodText =
+        dataRange === 30
+            ? moment().daysInMonth() + ' วัน'
+            : dataRange === 90
+            ? '3 เดือน'
+            : '6 เดือน';
+
+    const getMonthRangeText = (painRecord: Array<PainRecordMonthly>) =>
+        painRecord[0].label + '-' + painRecord[painRecord.length - 1].label;
+
+    const dateText =
+        (dataRange === 30
+            ? moment().format('MMMM')
+            : getMonthRangeText(painRecord as Array<PainRecordMonthly>)) +
+        ' ' +
+        moment().add(543, 'year').format('YYYY');
+
     const content =
         dataRange === 30 ? (
             <DailyChart painRecord={painRecord as Array<PainRecordDaily>} />
@@ -84,31 +101,13 @@ const Chart: FC<Props> = ({ patientId, dataRange }) => {
             <MonthlyChart painRecord={painRecord as Array<PainRecordMonthly>} />
         );
 
-    const getMonthRangeText = (painRecord: Array<PainRecordMonthly>) =>
-        painRecord[0].label + '-' + painRecord[painRecord.length - 1].label;
-
-    const monthText =
-        dataRange === 30
-            ? moment().format('MMMM')
-            : getMonthRangeText(painRecord as Array<PainRecordMonthly>);
-
     return (
         <div className="px-4">
             <header className="flex space-x-2">
                 <div className="grow truncate">
-                    <h3 className="font-noto-bold">
-                        ปวดไมเกรน{' '}
-                        {dataRange === 30
-                            ? moment().daysInMonth() + ' วัน'
-                            : dataRange === 90
-                            ? '3 เดือน'
-                            : '6 เดือน'}
-                    </h3>
+                    <h3 className="font-noto-bold">ปวดไมเกรน {pariodText}</h3>
                     <p className="text-sm mt-1">
-                        {!monthText.includes('undefined') &&
-                            monthText +
-                                ' ' +
-                                moment().add(543, 'year').format('YYYY')}
+                        {!dateText.includes('undefined') && dateText}
                     </p>
                 </div>
                 <ul className="shrink-0 flex space-x-4">
