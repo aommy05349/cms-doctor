@@ -4,8 +4,6 @@ import { AzureCommunicationTokenCredential } from '@azure/communication-common';
 import { teleApiApp } from '../services/config';
 
 export const createAutoRefreshingCredential = (userId, token) => {
-    console.log('userId', userId);
-    console.log('token', token);
     const options = {
         token,
         tokenRefresher: refreshTokenAsync(userId),

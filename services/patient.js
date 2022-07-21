@@ -14,7 +14,6 @@ export default {
         try {
             const url = `/members/${memberId}`;
             const res = await apiApp.get(url);
-            console.log(res.data[0]);
             return res.data[0];
         } catch (error) {
             return error;

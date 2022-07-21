@@ -28,17 +28,17 @@ export default function LoginPage() {
                 'Bearer ' + res.data.token;
             const resSetCookie = await authApi.createSession(res.data.token);
             try {
-                location.href='/'
+                location.href = '/';
             } catch (error) {
-                setLoading(false)
-                console.log(error);
+                setLoading(false);
+                console.error(err);
             }
         } else {
             Swal.fire({
                 title: 'ไม่สามารถเข้าสู่ระบบได้',
                 text: 'กรุณาตรวจสอบอีเมลและรหัสผ่านของท่านอีกครั้ง',
-                icon: 'error'
-            })
+                icon: 'error',
+            });
         }
     }
 
