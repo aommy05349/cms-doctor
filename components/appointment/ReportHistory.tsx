@@ -56,7 +56,7 @@ export default function ReportHistory({ memberId }: ReportProps) {
                                     <h2 className="font-noto-bold">
                                         ประวัติผู้ป่วย
                                     </h2>
-                                    <p className="px-2 mb-2">
+                                    <p className="px-2 mb-2 whitespace-pre-line">
                                         {data.patient_report.note || '-'}
                                     </p>
                                     <h2 className="font-noto-bold mb-2">
@@ -65,37 +65,37 @@ export default function ReportHistory({ memberId }: ReportProps) {
                                     <h3 className="text-[#179B97]">
                                         ความถี่และความรุนแรง
                                     </h3>
-                                    <p className="px-2 mb-2">
+                                    <p className="px-2 mb-2 whitespace-pre-line">
                                         {data.patient_report
                                             .frequency_and_severity || '-'}
                                     </p>
                                     <h3 className="text-[#179B97]">
                                         สิ่งกระตุ้น
                                     </h3>
-                                    <p className="px-2 mb-2">
+                                    <p className="px-2 mb-2 whitespace-pre-line">
                                         {data.patient_report.trigger_note ||
                                             '-'}
                                     </p>
                                     <h3 className="text-[#179B97]">
                                         พฤติกรรมกระตุ้น หรือลดไมเกรน
                                     </h3>
-                                    <p className="px-2 mb-2">
+                                    <p className="px-2 mb-2 whitespace-pre-line">
                                         {data.patient_report
                                             .behaviors_trigger_reduce_migraines ||
                                             '-'}
                                     </p>
                                     <h3 className="text-[#179B97]">ยาแก้ปวด</h3>
-                                    <p className="px-2 mb-2">
+                                    <p className="px-2 mb-2 whitespace-pre-line">
                                         {data.patient_report.acute || '-'}
                                     </p>
                                     <h3 className="text-[#179B97]">
                                         ยาป้องกัน
                                     </h3>
-                                    <p className="px-2 mb-2">
+                                    <p className="px-2 mb-2 whitespace-pre-line">
                                         {data.patient_report.prevention || '-'}
                                     </p>
                                     <h3 className="text-[#179B97]">โรคร่วม</h3>
-                                    <p className="px-2 mb-2">
+                                    <p className="px-2 mb-2 whitespace-pre-line">
                                         {data.patient_report.comorbidity || '-'}
                                     </p>
                                 </div>
@@ -117,11 +117,11 @@ export default function ReportHistory({ memberId }: ReportProps) {
                                         คำสั่งรักษา
                                     </h2>
                                     <h3 className="text-[#179B97]">วินิจฉัย</h3>
-                                    <p className="px-2 mb-2">
+                                    <p className="px-2 mb-2 whitespace-pre-line">
                                         {data.patient_report.diagnose || '-'}
                                     </p>
                                     <h3 className="text-[#179B97]">คำแนะนำ</h3>
-                                    <p className="px-2 mb-2">
+                                    <p className="px-2 mb-2 whitespace-pre-line">
                                         {data.patient_report.advice || '-'}
                                     </p>
                                     <h2 className="font-noto-bold text-[14px] mb-2">

@@ -1,13 +1,19 @@
 import { FC } from 'react';
-
-import { ApexOptions } from 'apexcharts';
 import dynamic from 'next/dynamic';
+import { ApexOptions } from 'apexcharts';
 
 const ApexChart = dynamic(() => import('react-apexcharts'), {
     ssr: false,
 });
 
-const TreeMonth: FC = () => {
+import { PainRecordMonthly } from '../../../../types';
+interface Props {
+    painRecord: Array<PainRecordMonthly>;
+}
+
+const MonthlyChart: FC<Props> = ({ painRecord }) => {
+    if (!painRecord) return null;
+
     const options: ApexOptions = {
         chart: {
             id: 'migraine-level-chart',
@@ -31,7 +37,6 @@ const TreeMonth: FC = () => {
         plotOptions: {
             bar: {
                 borderRadius: 2,
-                columnWidth: '30%',
             },
         },
         legend: {
@@ -46,26 +51,26 @@ const TreeMonth: FC = () => {
                     colors: '#6C6C6C',
                 },
             },
-            categories: ['เดือน 1', 'เดือน 2', 'เดือน 3'],
+            categories: painRecord.map((e) => e.label),
         },
     };
 
     const series = [
         {
             name: 'ไม่ปวด',
-            data: [4, 7, 13],
+            data: painRecord.map((e) => e.score_pain.score_0),
         },
         {
             name: 'ปวดน้อย',
-            data: [3, 7, 15],
+            data: painRecord.map((e) => e.score_pain.score_1),
         },
         {
-            name: 'ปวดกลาง',
-            data: [6, 8, 10],
+            name: 'ปวดปานกลาง',
+            data: painRecord.map((e) => e.score_pain.score_2),
         },
         {
             name: 'ปวดมาก',
-            data: [6, 8, 10],
+            data: painRecord.map((e) => e.score_pain.score_3),
         },
     ];
     return (
@@ -73,4 +78,4 @@ const TreeMonth: FC = () => {
     );
 };
 
-export default TreeMonth;
+export default MonthlyChart;

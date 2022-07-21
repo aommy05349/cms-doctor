@@ -8,6 +8,7 @@ import ContentBox from './ContentBox';
 import { patientApi } from '../../../services';
 import {
     Patient,
+    Medication,
     FrequencyMedication as FrequencyMedicationType,
 } from '../../../types';
 import { HOST_API } from '../../../services/config';
@@ -50,17 +51,15 @@ interface Props {
 }
 
 const FrequencyMedicationList: FC<Props> = ({ patientId, dataRange }) => {
-    const [frequencyMedicationList, setFrequencyMedicationList] =
-        useState<Array<FrequencyMedicationType>>();
+    const [medication, setMedication] = useState<Medication>();
 
     const fetchFrequencyMedicationList = async (
         patientId: Patient['member_id'],
         dataRange: number
     ) => {
-        const {
-            data: { data },
-        } = await patientApi.getFrequencyMedication(patientId, dataRange);
-        setFrequencyMedicationList(data || []);
+        const { data } = await patientApi.getMedications(patientId, dataRange);
+        console.log('data', data);
+        setMedication(data);
     };
 
     useEffect(() => {
@@ -68,29 +67,50 @@ const FrequencyMedicationList: FC<Props> = ({ patientId, dataRange }) => {
         fetchFrequencyMedicationList(patientId, dataRange);
     }, [patientId, dataRange]);
 
-    let content = <NotFound>ไม่พบข้อมูลยาแก้ปวด</NotFound>;
+    let painContent = <NotFound>ไม่พบข้อมูลยาแก้ปวด</NotFound>;
+    let preventiveContent = <NotFound>ไม่พบข้อมูลยาป้องกัน</NotFound>;
 
-    if (!frequencyMedicationList) {
-        content = <Loader />;
+    if (!medication) {
+        painContent = <Loader />;
+        preventiveContent = <Loader />;
     }
 
-    if (frequencyMedicationList && frequencyMedicationList.length > 0) {
-        content = (
-            <ul className="flex flex-col">
-                {frequencyMedicationList.map((frequencyMedication) => (
-                    <FrequencyMedicationItem
-                        key={frequencyMedication.medicine_id}
-                        data={frequencyMedication}
-                    />
-                ))}
-            </ul>
-        );
+    if (medication) {
+        const { pain_reliever, preventive_medicine } = medication;
+
+        if (pain_reliever.length > 0) {
+            painContent = (
+                <ul className="flex flex-col">
+                    {pain_reliever.map((data) => (
+                        <FrequencyMedicationItem
+                            key={data.medicine_id}
+                            data={data}
+                        />
+                    ))}
+                </ul>
+            );
+        }
+
+        if (preventive_medicine.length > 0) {
+            preventiveContent = (
+                <ul className="flex flex-col">
+                    {preventive_medicine.map((data) => (
+                        <FrequencyMedicationItem
+                            key={data.medicine_id}
+                            data={data}
+                        />
+                    ))}
+                </ul>
+            );
+        }
     }
 
     return (
         <div className="mb-8">
             <h3 className="text-sm font-bold mb-3 px-4">ยาแก้ปวด</h3>
-            <ContentBox>{content}</ContentBox>
+            <ContentBox className="mb-8">{painContent}</ContentBox>
+            <h3 className="text-sm font-bold mb-3 px-4">ยาป้องกัน</h3>
+            <ContentBox>{preventiveContent}</ContentBox>
         </div>
     );
 };

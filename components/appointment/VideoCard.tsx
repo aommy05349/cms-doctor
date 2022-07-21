@@ -48,12 +48,8 @@ export default function VideoCard({
     }, [callIdRef.current]);
 
     useEffect(() => {
-        console.log('groupId', groupId);
-        console.log(
-            'room url',
-            `${window.location.href}?room=${appointmentId}`
-        );
         getToken();
+        // eslint-disable-next-line
     }, []);
 
     useEffect(() => {
@@ -69,19 +65,14 @@ export default function VideoCard({
     }, [statusState]);
 
     async function getToken() {
-        console.log('appointmentId : ', appointmentId);
         const res = await specialistApi.getSpecialistToken(appointmentId);
-        console.log('room_doctor_identify_token', res.data);
         if (res.data) {
-            console.log('res', res.data);
             getAdaptor(
                 {
                     communicationUserId: res.data.room_doctor_identify_token,
                 },
                 res.data.room_doctor_user_access_token
             );
-        } else {
-            console.log(res);
         }
     }
 
@@ -89,20 +80,20 @@ export default function VideoCard({
         const data = {
             member_id: memberId,
             doctor_in_room: true,
+            doctor_out_room: false,
             successful_doctor_consultation: false,
         };
-        const res = await specialistApi.endCall(data);
-        console.log('start call', res.data);
+        specialistApi.endCall(data);
     }
 
     async function endCall() {
         const data = {
             member_id: memberId,
-            doctor_in_room: false,
+            doctor_in_room: true,
+            doctor_out_room: true,
             successful_doctor_consultation: true,
         };
-        const res = await specialistApi.endCall(data);
-        console.log('end call', res.data);
+        specialistApi.endCall(data);
     }
 
     async function getAdaptor(user: any, token: string) {
@@ -119,7 +110,7 @@ export default function VideoCard({
             locator: callLocator,
         });
         adapter.on('error', (e) => {
-            console.log('Adapter error event:', e);
+            console.error('Adapter error event:', e);
         });
         adapter.onStateChange((state: CallAdapterState) => {
             callIdRef.current = state?.call?.id;
