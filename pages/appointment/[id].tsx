@@ -2,7 +2,6 @@ import React, { ReactElement, useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import Swal from 'sweetalert2';
-import { motion, AnimatePresence } from 'framer-motion';
 
 import MainLayout from '../../components/layouts/Main';
 import TopNav from '../../components/appointment/TopNav';
@@ -10,7 +9,6 @@ import { patientApi, specialistApi } from '../../services';
 import PatientCard from '../../components/appointment/PatientCard';
 import ReportHistory from '../../components/appointment/ReportHistory';
 import NewReport from '../../components/appointment/NewReport';
-import PatientHistories from '../../components/appointment/PatientHistories';
 import Dashboard from '../../components/appointment/Dashboard/Index';
 import { Patient } from '../../types';
 
@@ -26,8 +24,6 @@ function Appointment() {
     const [patient, setPatient] = useState<Patient>();
     const [specialistId, setSpecialistId] = useState('');
     const [appointmentId, setAppointmentId] = useState<any>();
-
-    const [isShowHistories, setShowHistories] = useState<boolean>(false);
 
     const router = useRouter();
 
@@ -61,10 +57,6 @@ function Appointment() {
         if (res.data) {
             setGroupId(res.data.group_id);
         }
-    }
-
-    function handleToggleHistories() {
-        setShowHistories((prev) => !prev);
     }
 
     async function checkSavedReport(appointmentId: string) {
@@ -109,45 +101,17 @@ function Appointment() {
                 <section className="flex flex-row flex-grow animate-[fadeIn_.5s_ease-in] h-[90vh]">
                     <div className="flex flex-col flex-grow bg-[#CBD5DD]">
                         <div className="border-r-[1px] border-gray-100">
-                            <PatientCard
-                                data={patient}
-                                isShowHistories={isShowHistories}
-                                onToggleHistories={handleToggleHistories}
-                            />
+                            <PatientCard data={patient} />
                         </div>
-                        <AnimatePresence exitBeforeEnter>
-                            <motion.div
-                                key={
-                                    isShowHistories
-                                        ? 'showHistories'
-                                        : 'hideHistories'
-                                }
-                                initial={{ y: 10, opacity: 0 }}
-                                animate={{ y: 0, opacity: 1 }}
-                                exit={{ y: -10, opacity: 0 }}
-                                transition={{ duration: 0.2 }}
-                                className="flex-grow  p-5 overflow-auto"
-                            >
-                                {isShowHistories ? (
-                                    <PatientHistories
-                                        patientId={patient.member_id}
-                                        onClose={() => setShowHistories(false)}
-                                    />
-                                ) : (
-                                    <>
-                                        <NewReport
-                                            patient={patient}
-                                            specialistId={specialistId}
-                                            appointmentId={appointmentId}
-                                        />
+                        <div className="flex-grow  p-5 overflow-auto">
+                            <NewReport
+                                patient={patient}
+                                specialistId={specialistId}
+                                appointmentId={appointmentId}
+                            />
 
-                                        <ReportHistory
-                                            memberId={patient.member_id}
-                                        />
-                                    </>
-                                )}
-                            </motion.div>
-                        </AnimatePresence>
+                            <ReportHistory memberId={patient.member_id} />
+                        </div>
                     </div>
                     <div className="w-[400px] bg-white flex flex-col">
                         <div className="flex-grow overflow-y-auto overflow-x-hidden">

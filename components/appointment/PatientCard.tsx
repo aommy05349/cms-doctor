@@ -1,22 +1,18 @@
-import React from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import moment from 'moment';
-import { motion, AnimatePresence } from 'framer-motion';
 
-import { Patient } from '../../types';
+import Loader from '../common/Loader';
+import { patientApi } from '../../services';
+import { Patient, PatientHistory } from '../../types';
 
 interface patientProps {
     data: Patient;
-    isShowHistories: boolean;
-    onToggleHistories: () => void;
 }
 
-export default function PatientCard({
-    data,
-    isShowHistories,
-    onToggleHistories,
-}: patientProps) {
-    console.log('patient :', data);
+export default function PatientCard({ data }: patientProps) {
+    const [histories, setHistories] = useState<Array<PatientHistory>>();
+
     function getGenderText(id: string) {
         if (id == 'm') {
             return 'ชาย';
@@ -26,6 +22,18 @@ export default function PatientCard({
             return 'ไม่ระบุ';
         }
     }
+
+    const fetchHistories = async (patientId: Patient['member_id']) => {
+        const res = await patientApi.getPatientHistories(patientId);
+        setHistories(res || []);
+    };
+
+    useEffect(() => {
+        if (data === undefined) return;
+        fetchHistories(data.member_id);
+        // eslint-disable-next-line
+    }, [data]);
+
     return (
         <div className="flex flex-row text-[14px] py-5 px-7 bg-white border-b-2">
             <div className="flex-1 flex flex-col border-r-gray-100 border-r-[1px] pr-4">
@@ -54,27 +62,17 @@ export default function PatientCard({
                         </div>
                     </div>
                 </div>
-                <div className="flex justify-between space-x-4 mt-8">
-                    <span className="truncate">บันทึกอาการไมเกรน</span>
-                    <AnimatePresence exitBeforeEnter>
-                        <motion.button
-                            key={
-                                isShowHistories
-                                    ? 'showHistories'
-                                    : 'hideHistories'
-                            }
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="text-i-green truncate"
-                            onClick={onToggleHistories}
-                        >
-                            {isShowHistories
-                                ? 'ปิดบันทึกจากผู้ช่วยแพทย์'
-                                : 'บันทึกจากผู้ช่วยแพทย์'}
-                        </motion.button>
-                    </AnimatePresence>
+                <div className="flex flex-col space-y-4 mt-8">
+                    <h2 className="truncate text-sm text-gray-500">
+                        บันทึกจากผู้ช่วยแพทย์
+                    </h2>
+                    <p>
+                        {!histories && (
+                            <Loader className="h-auto justify-start" />
+                        )}
+                        {histories && histories[0].additional_information}
+                        {histories && !histories[0] && '-'}
+                    </p>
                 </div>
             </div>
             <div className="flex-1 px-4">
