@@ -69,9 +69,7 @@ export default function VideoCard({
     }, [statusState]);
 
     async function getToken() {
-        console.log('appointmentId : ', appointmentId);
         const res = await specialistApi.getSpecialistToken(appointmentId);
-        console.log('room_doctor_identify_token', res.data);
         if (res.data) {
             console.log('res', res.data);
             getAdaptor(
@@ -89,20 +87,20 @@ export default function VideoCard({
         const data = {
             member_id: memberId,
             doctor_in_room: true,
+            doctor_out_room: false,
             successful_doctor_consultation: false,
         };
         const res = await specialistApi.endCall(data);
-        console.log('start call', res.data);
     }
 
     async function endCall() {
         const data = {
             member_id: memberId,
-            doctor_in_room: false,
+            doctor_in_room: true,
+            doctor_out_room: true,
             successful_doctor_consultation: true,
         };
         const res = await specialistApi.endCall(data);
-        console.log('end call', res.data);
     }
 
     async function getAdaptor(user: any, token: string) {
