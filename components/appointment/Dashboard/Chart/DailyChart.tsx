@@ -1,13 +1,26 @@
 import { FC } from 'react';
-
-import { ApexOptions } from 'apexcharts';
+import moment from 'moment';
 import dynamic from 'next/dynamic';
+import { ApexOptions } from 'apexcharts';
 
 const ApexChart = dynamic(() => import('react-apexcharts'), {
     ssr: false,
 });
 
-const OneMonth: FC = () => {
+import { PainRecordDaily } from '../../../../types';
+
+interface Props {
+    painRecord: Array<PainRecordDaily>;
+}
+
+const DailyChart: FC<Props> = ({ painRecord }) => {
+    if (!painRecord) return null;
+
+    const daysInMonth = moment().daysInMonth();
+    const freeSpace = daysInMonth - painRecord.length;
+
+    const getDays = (val: string) => val.split('-')[2];
+
     const COLORS = ['#25AC67', '#0679E0', '#FDC72F', '#FC5605'];
 
     const options: ApexOptions = {
@@ -17,10 +30,7 @@ const OneMonth: FC = () => {
         dataLabels: {
             enabled: false,
         },
-        colors: Array.from(
-            Array(30).keys(),
-            () => COLORS[Math.floor(Math.random() * (3 - 0 + 1) + 0)]
-        ),
+        colors: painRecord.map((e) => COLORS[+e.score_pain]),
         fill: {
             type: 'gradient',
             opacity: 1,
@@ -49,18 +59,25 @@ const OneMonth: FC = () => {
             labels: {
                 style: {
                     colors: '#6C6C6C',
+                    fontSize: '10px',
                 },
                 formatter: (val) => {
-                    return +val % 2 === 0 ? '' : val;
+                    return +val % 2 === 0 ? '' : +val + '';
                 },
             },
-            categories: Array.from(Array(30).keys()).map((e) => e + 1),
+            categories: [
+                ...painRecord.map((e) => getDays(e.date)),
+                ...Array(freeSpace).fill(''),
+            ],
         },
     };
 
     const series = [
         {
-            data: Array.from(Array(30).keys(), () => Math.random() * 10),
+            data: [
+                ...painRecord.map((e) => +e.score_pain),
+                ...Array(freeSpace).fill(0),
+            ],
         },
     ];
     return (
@@ -68,4 +85,4 @@ const OneMonth: FC = () => {
     );
 };
 
-export default OneMonth;
+export default DailyChart;

@@ -1,11 +1,31 @@
-import { FC } from 'react';
+import { FC, useEffect, useState } from 'react';
 import Image from 'next/image';
 import numeral from 'numeral';
 
-import OneMonth from './OneMonth';
-import TreeMonth from './TreeMonth';
-import SixMonth from './SixMonth';
-import { Patient } from '../../../../types';
+import DailyChart from './DailyChart';
+import MonthlyChart from './MonthlyChart';
+import Loader from '../../../common/Loader';
+import { patientApi } from '../../../../services';
+import getTotalPain from '../../../../utils/getTotalPain';
+import { Patient, PainRecordDaily, PainRecordMonthly } from '../../../../types';
+import moment from 'moment';
+
+moment.locale('th', {
+    months: [
+        'มกราคม',
+        'กุมภาพันธ์',
+        'มีนาคม',
+        'เมษายน',
+        'พฤษภาคม',
+        'มิถุนายน',
+        'กรกฎาคม',
+        'สิงหาคม',
+        'กันยายน',
+        'ตุลาคม',
+        'พฤศจิกายน',
+        'ธันวาคม',
+    ],
+});
 
 const LevelScore: FC<{ className?: string; image: string; value: number }> = ({
     className,
@@ -32,54 +52,84 @@ interface Props {
     dataRange: number;
 }
 
-const Chart: FC<Props> = ({ dataRange }) => {
-    let content: any = null;
+const Chart: FC<Props> = ({ patientId, dataRange }) => {
+    const [painRecord, setPainRecord] = useState<
+        Array<PainRecordDaily> | Array<PainRecordMonthly>
+    >();
 
-    switch (dataRange) {
-        case 30:
-            content = <OneMonth />;
-            break;
-        case 90:
-            content = <TreeMonth />;
-            break;
-        case 180:
-            content = <SixMonth />;
-            break;
-        default:
-            break;
-    }
+    const fetchPainRecord = async (
+        patientId: Patient['member_id'],
+        dataRange: number
+    ) => {
+        const { data } = await patientApi.getPainRecord(patientId, dataRange);
+        setPainRecord(data);
+    };
 
-    const randomNumber = (max: number, min: number) =>
-        Math.floor(Math.random() * (max - min + 1) + min);
+    useEffect(() => {
+        if (patientId === undefined || dataRange === undefined) return;
+        fetchPainRecord(patientId, dataRange);
+    }, [patientId, dataRange]);
+
+    if (!painRecord) return <Loader />;
+
+    const totalPain = getTotalPain(
+        dataRange === 30 ? 'daily' : 'monthly',
+        painRecord
+    );
+
+    const content =
+        dataRange === 30 ? (
+            <DailyChart painRecord={painRecord as Array<PainRecordDaily>} />
+        ) : (
+            <MonthlyChart painRecord={painRecord as Array<PainRecordMonthly>} />
+        );
+
+    const getMonthRangeText = (painRecord: Array<PainRecordMonthly>) =>
+        painRecord[0].label + '-' + painRecord[painRecord.length - 1].label;
+
+    const monthText =
+        dataRange === 30
+            ? moment().format('MMMM')
+            : getMonthRangeText(painRecord as Array<PainRecordMonthly>);
 
     return (
         <div className="px-4">
             <header className="flex space-x-2">
                 <div className="grow truncate">
                     <h3 className="font-noto-bold">
-                        ปวดไมเกรน {dataRange} วัน
+                        ปวดไมเกรน{' '}
+                        {dataRange === 30
+                            ? '1 เดือน'
+                            : dataRange === 90
+                            ? '3 เดือน'
+                            : '6 เดือน'}
                     </h3>
-                    <p className="text-sm mt-1">มีนาคม 2562</p>
+                    <p className="text-sm mt-1">
+                        {!monthText.includes('undefined') &&
+                            monthText +
+                                ' ' +
+                                moment().add(543, 'year').format('YYYY')}
+                    </p>
                 </div>
                 <ul className="shrink-0 flex space-x-4">
                     <LevelScore
                         image="/images/migraine-level-face/no-pain.svg"
-                        value={randomNumber(0, 15)}
+                        value={totalPain.noPain}
                         className="text-[#179B97]"
                     />
                     <LevelScore
                         image="/images/migraine-level-face/pain-soft.svg"
-                        value={randomNumber(0, 15)}
+                        value={totalPain.softPain}
                         className="text-[#0679E0]"
                     />
                     <LevelScore
                         image="/images/migraine-level-face/pain-middle.svg"
-                        value={randomNumber(0, 15)}
+                        value={totalPain.mediumPain}
                         className="text-[#FDC72F]"
                     />
                     <LevelScore
                         image="/images/migraine-level-face/pain-hard.svg"
-                        value={randomNumber(0, 15)}
+                        value={totalPain.hardPain}
                         className="text-[#FC5605]"
                     />
                 </ul>

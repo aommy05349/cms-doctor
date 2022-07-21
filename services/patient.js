@@ -95,4 +95,13 @@ export default {
             return error;
         }
     },
+    getPainRecord: async (memberId, prev) => {
+        try {
+            const url = `/pain-record/${memberId}/prev/${prev}`;
+            const res = await apiApp.get(url);
+            return res.data;
+        } catch (error) {
+            return error;
+        }
+    },
 };

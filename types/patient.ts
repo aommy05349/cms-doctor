@@ -77,3 +77,19 @@ export interface FrequencyMedication {
     status: string;
     image: string;
 }
+
+export interface PainRecordDaily {
+    date: string;
+    score_pain: string;
+}
+
+export interface PainRecordMonthly {
+    date: string;
+    label: string;
+    score_pain: {
+        score_0: number;
+        score_1: number;
+        score_2: number;
+        score_3: number;
+    };
+}
