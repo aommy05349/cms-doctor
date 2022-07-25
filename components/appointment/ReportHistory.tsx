@@ -1,7 +1,8 @@
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { patientApi, specialistApi } from '../../services';
+import numeral from 'numeral';
+import { patientApi } from '../../services';
 
 interface ReportProps {
     memberId: string;
@@ -134,7 +135,13 @@ export default function ReportHistory({ memberId }: ReportProps) {
                                                         className="mb-2"
                                                         key={index}
                                                     >
-                                                        {e.common_name}{' '}
+                                                        {e.clinical_name}
+                                                        {e.mg
+                                                            ? numeral(
+                                                                  +e.mg
+                                                              ).format('0,0') +
+                                                              ' mg'
+                                                            : ''}{' '}
                                                         {e.amount} {e.unit}{' '}
                                                         {e.indications}
                                                     </li>
