@@ -43,6 +43,12 @@ const DailyChart: FC<Props> = ({ painRecord }) => {
                 stops: [0, 90, 100],
             },
         },
+        tooltip: {
+            y: {
+                title: { formatter: () => 'Pain Score:' },
+                formatter: (val) => val - 1 + '',
+            },
+        },
         plotOptions: {
             bar: {
                 distributed: true,
@@ -75,7 +81,9 @@ const DailyChart: FC<Props> = ({ painRecord }) => {
     const series = [
         {
             data: [
-                ...painRecord.map((e) => +e.score_pain),
+                ...painRecord.map((e) =>
+                    e.score_pain !== null ? +e.score_pain + 1 : 0
+                ),
                 ...Array(freeSpace).fill(0),
             ],
         },
