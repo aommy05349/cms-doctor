@@ -15,6 +15,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import th from 'date-fns/locale/th';
 import moment from 'moment';
 import { Patient } from '../../types';
+import numeral from 'numeral';
 import Swal from 'sweetalert2';
 registerLocale('th', th);
 
@@ -702,7 +703,7 @@ export default function NewReport({
                             <thead className="font-noto-medium bg-[#cbd5dd] text-[12px]">
                                 <tr>
                                     <td className="w-[40px] text-center">N.</td>
-                                    <td>ชื่อสามัญ</td>
+                                    <td>ชื่อยาจากคลีนิก</td>
                                     <td>ชื่อการค้า</td>
                                     <td>จำนวน</td>
                                     <td>ข้อบ่งใช้</td>
@@ -745,7 +746,14 @@ export default function NewReport({
                                                 <td className="w-[40px] text-center">
                                                     {index + 1}
                                                 </td>
-                                                <td>{e.common_name}</td>
+                                                <td>
+                                                    {e.clinical_name}
+                                                    {e.mg
+                                                        ? numeral(+e.mg).format(
+                                                              '0,0'
+                                                          ) + ' mg'
+                                                        : ''}
+                                                </td>
                                                 <td>
                                                     <div className="flex flex-row items-center h-full">
                                                         <div className="flex-1">
