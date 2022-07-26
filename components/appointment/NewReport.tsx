@@ -125,18 +125,28 @@ export default function NewReport({
         }
     }
 
+    function checkDuplicateMedication(medication: any) {
+        return !!formData.patient_order.find(
+            (e: any) => e.id === medication.id
+        );
+    }
+
     function addOrder(order: any) {
-        setFormData({
-            ...formData,
-            patient_order: [
-                ...formData.patient_order,
-                {
-                    ...order,
-                    amount: '',
-                    indications: '',
-                },
-            ],
-        });
+        const isDuplicate = checkDuplicateMedication(order);
+
+        if (!isDuplicate) {
+            setFormData({
+                ...formData,
+                patient_order: [
+                    ...formData.patient_order,
+                    {
+                        ...order,
+                        amount: '',
+                        indications: '',
+                    },
+                ],
+            });
+        }
         setIsShowSearchResult(false);
     }
 
@@ -570,8 +580,17 @@ export default function NewReport({
                                                             isMigrainePremiumCare
                                                                 ? 2
                                                                 : 1)}
-                                                        . {e.common_name}{' '}
-                                                        {e.amount} {e.unit}{' '}
+                                                        . {e.clinical_name}{' '}
+                                                        {e.mg
+                                                            ? numeral(
+                                                                  +e.mg
+                                                              ).format('0,0') +
+                                                              ' mg'
+                                                            : ''}{' '}
+                                                        {numeral(
+                                                            e.amount || 0
+                                                        ).format('0,0')}{' '}
+                                                        {e.unit}{' '}
                                                     </span>
                                                     <span className="py-2 pr-2">
                                                         {e.indications}
@@ -690,7 +709,12 @@ export default function NewReport({
                                                     addOrder(data);
                                                 }}
                                             >
-                                                {data.common_name}
+                                                {data.clinical_name}{' '}
+                                                {data.mg
+                                                    ? numeral(+data.mg).format(
+                                                          '0,0'
+                                                      ) + ' mg'
+                                                    : ''}
                                             </div>
                                         );
                                     })}
