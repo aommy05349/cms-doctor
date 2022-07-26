@@ -1,9 +1,13 @@
 import { FC, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 import MigraineLevel from './MigraineLevel';
-import Chart from './Chart/Index';
+
+const Chart = dynamic(() => import('./Chart/Index'), {
+    ssr: false,
+});
 import DataRangeSelector from './DataRangeSelector';
 import FrequencyTriggerList from './FrequencyTriggerList';
 import FrequencyMedicationList from './FrequencyMedicationList';

@@ -6,7 +6,7 @@ import DailyChart from './DailyChart';
 import MonthlyChart from './MonthlyChart';
 import Loader from '../../../common/Loader';
 import { patientApi } from '../../../../services';
-import getTotalPain from '../../../../utils/getTotalPain';
+import getTotalPain, { TotalPain } from '../../../../utils/getTotalPain';
 import { Patient, PainRecordDaily, PainRecordMonthly } from '../../../../types';
 import moment from 'moment';
 
@@ -56,6 +56,14 @@ const Chart: FC<Props> = ({ patientId, dataRange }) => {
     const [painRecord, setPainRecord] = useState<
         Array<PainRecordDaily> | Array<PainRecordMonthly>
     >();
+    const [totalPain, setTotalPain] = useState<TotalPain>({
+        noPain: 0,
+        softPain: 0,
+        mediumPain: 0,
+        hardPain: 0,
+    });
+
+    const [chart, setChart] = useState<any>();
 
     const fetchPainRecord = async (
         patientId: Patient['member_id'],
@@ -63,6 +71,16 @@ const Chart: FC<Props> = ({ patientId, dataRange }) => {
     ) => {
         const { data } = await patientApi.getPainRecord(patientId, dataRange);
         setPainRecord(data);
+        setTotalPain(
+            getTotalPain(dataRange === 30 ? 'daily' : 'monthly', data)
+        );
+        setChart(
+            dataRange === 30 ? (
+                <DailyChart painRecord={data as Array<PainRecordDaily>} />
+            ) : (
+                <MonthlyChart painRecord={data as Array<PainRecordMonthly>} />
+            )
+        );
     };
 
     useEffect(() => {
@@ -71,11 +89,6 @@ const Chart: FC<Props> = ({ patientId, dataRange }) => {
     }, [patientId, dataRange]);
 
     if (!painRecord) return <Loader />;
-
-    const totalPain = getTotalPain(
-        dataRange === 30 ? 'daily' : 'monthly',
-        painRecord
-    );
 
     const pariodText =
         dataRange === 30
@@ -93,13 +106,6 @@ const Chart: FC<Props> = ({ patientId, dataRange }) => {
             : getMonthRangeText(painRecord as Array<PainRecordMonthly>)) +
         ' ' +
         moment().add(543, 'year').format('YYYY');
-
-    const content =
-        dataRange === 30 ? (
-            <DailyChart painRecord={painRecord as Array<PainRecordDaily>} />
-        ) : (
-            <MonthlyChart painRecord={painRecord as Array<PainRecordMonthly>} />
-        );
 
     return (
         <div className="px-4">
@@ -133,7 +139,7 @@ const Chart: FC<Props> = ({ patientId, dataRange }) => {
                     />
                 </ul>
             </header>
-            {content}
+            {chart}
         </div>
     );
 };

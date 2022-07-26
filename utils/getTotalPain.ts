@@ -10,7 +10,9 @@ export interface TotalPain {
 const getTotalDailyByValue = (
     value: number,
     painRecord: Array<PainRecordDaily>
-) => painRecord.filter((e) => +e.score_pain === value).length;
+) =>
+    painRecord.filter((e) => e.score_pain !== null && +e.score_pain === value)
+        .length;
 
 const getTotalDailyPain = (painRecord: Array<PainRecordDaily>): TotalPain => {
     const noPain = getTotalDailyByValue(0, painRecord);

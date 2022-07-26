@@ -184,8 +184,12 @@ export default function NewReport({
     async function getSpecialist() {
         const res = await specialistApi.getSpecialistById(specialistId);
         setSpecialists(res.data);
-        const result = res.data.available_date.map((e: string) => new Date(e));
-        setIncludeDate(result);
+        if (res.data && res.data.available_date) {
+            const result = res.data.available_date.map(
+                (e: string) => new Date(e)
+            );
+            setIncludeDate(result);
+        }
     }
 
     async function getScheduleAppointment(date: Date) {
