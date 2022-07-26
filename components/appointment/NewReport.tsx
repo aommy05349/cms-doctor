@@ -747,7 +747,7 @@ export default function NewReport({
                                                     {index + 1}
                                                 </td>
                                                 <td>
-                                                    {e.clinical_name}
+                                                    {e.clinical_name}{' '}
                                                     {e.mg
                                                         ? numeral(+e.mg).format(
                                                               '0,0'

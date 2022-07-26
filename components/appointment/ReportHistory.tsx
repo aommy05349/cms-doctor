@@ -135,7 +135,7 @@ export default function ReportHistory({ memberId }: ReportProps) {
                                                         className="mb-2"
                                                         key={index}
                                                     >
-                                                        {e.clinical_name}
+                                                        {e.clinical_name}{' '}
                                                         {e.mg
                                                             ? numeral(
                                                                   +e.mg

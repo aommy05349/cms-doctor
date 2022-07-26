@@ -63,7 +63,14 @@ function Appointment() {
         const { data } = await specialistApi.getNewCardByAppointmentId(
             appointmentId
         );
-        return !!data && !!data.patient_report;
+
+        if (!data) return true;
+
+        const { doctor_in_room, patient_report } = data;
+
+        if (!doctor_in_room) return true;
+
+        return doctor_in_room && patient_report;
     }
 
     async function handleBack() {
